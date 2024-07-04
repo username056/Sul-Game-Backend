@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.member.presentation;
+package org.sejong.sulgamewiki.member.application;
 
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.member.domain.CustomUserDetails;

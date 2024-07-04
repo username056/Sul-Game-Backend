@@ -45,6 +45,7 @@ public class WebSecurityConfig {
             .authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers(
                     "/", // 기본화면
+                    "/api/popular-game/**", //FIXME: 삭제해야함
                     "/api/signup", // 회원가입
                     "/api/login", // 로그인
                     "/docs/**", // Swagger
