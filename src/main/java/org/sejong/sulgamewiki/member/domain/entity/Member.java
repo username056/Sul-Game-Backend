@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDate;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -21,6 +22,7 @@ import org.sejong.sulgamewiki.member.domain.constants.MemberStatus;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Member extends BaseEntity {
 
   @Id
@@ -49,18 +51,6 @@ public class Member extends BaseEntity {
   private MemberStatus status;
 
   private MemberRole role;
-
-  public Member(String nickname, String email, String password, LocalDate birthDate, String university, String profileImageUrl, String phone, MemberStatus status, MemberRole role) {
-    this.nickname = nickname;
-    this.email = email;
-    this.password = password;
-    this.birthDate = birthDate;
-    this.university = university;
-    this.profileImageUrl = profileImageUrl;
-    this.phone = phone;
-    this.status = status;
-    this.role = role;
-  }
 
   public void updateNickname(String nickname) {
     this.nickname = nickname;
