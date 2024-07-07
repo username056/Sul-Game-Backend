@@ -1,9 +1,10 @@
 package org.sejong.sulgamewiki.game.popular.application;
 
-import static org.sejong.sulgamewiki.game.exception.GameErrorCode.*;
+import static org.sejong.sulgamewiki.game.common.exception.GameErrorCode.*;
 
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.game.exception.GameException;
+import lombok.extern.slf4j.Slf4j;
+import org.sejong.sulgamewiki.game.common.exception.GameException;
 import org.sejong.sulgamewiki.game.popular.domain.entity.PopularGame;
 import org.sejong.sulgamewiki.game.popular.domain.repository.PopularGameRepository;
 import org.sejong.sulgamewiki.game.popular.dto.PopularGameDto;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PopularGameService {
   private final PopularGameRepository popularGameRepository;
 

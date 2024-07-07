@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.game.popular.domain.entity;
+package org.sejong.sulgamewiki.game.creative.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.sejong.sulgamewiki.common.entity.BaseGame;
-import org.sejong.sulgamewiki.member.domain.entity.Member;
+import org.sejong.sulgamewiki.game.popular.domain.entity.PopularGame;
 
 @ToString
 @Entity
@@ -25,9 +25,13 @@ import org.sejong.sulgamewiki.member.domain.entity.Member;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PopularGame extends BaseGame {
+public class CreativeGame extends BaseGame {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "popular_game_id")
+  private PopularGame popularGame;
 }

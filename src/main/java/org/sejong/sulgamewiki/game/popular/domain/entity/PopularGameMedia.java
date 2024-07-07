@@ -2,6 +2,8 @@ package org.sejong.sulgamewiki.game.popular.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,21 +15,32 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
-import org.sejong.sulgamewiki.common.entity.BaseGame;
-import org.sejong.sulgamewiki.member.domain.entity.Member;
+import org.sejong.sulgamewiki.common.entity.BaseMedia;
+import org.sejong.sulgamewiki.common.entity.constants.MediaType;
 
 @ToString
 @Entity
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PopularGame extends BaseGame {
-
+public class PopularGameMedia extends BaseMedia {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(nullable = false)
+  private String mediaUrl;
+
+  @Column(nullable = false)
+  private Long fileSize;
+
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private MediaType mediaType;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "popular_game_id", nullable = false)
+  private PopularGame popularGame;
 }
