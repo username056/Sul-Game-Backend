@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.game.exception;
+package org.sejong.sulgamewiki.game.common.exception;
 
 import org.sejong.sulgamewiki.common.exception.CustomException;
 import org.sejong.sulgamewiki.common.exception.ErrorCode;

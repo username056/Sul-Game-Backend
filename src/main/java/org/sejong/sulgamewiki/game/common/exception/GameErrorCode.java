@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.game.exception;
+package org.sejong.sulgamewiki.game.common.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
