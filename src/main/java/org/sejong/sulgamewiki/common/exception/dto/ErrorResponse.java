@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.common.exception;
+package org.sejong.sulgamewiki.common.exception.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
