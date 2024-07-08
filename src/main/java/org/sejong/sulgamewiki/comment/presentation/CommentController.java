@@ -19,10 +19,10 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @GetMapping
-    public List<Comment> getCommentsByGameId(@PathVariable Long gameId) {
-        return commentService.getCommentsByGameId(gameId);
-    }
+//    @GetMapping
+//    public List<Comment> getCommentsByGameId(@PathVariable Long gameId) {
+//        return commentService.getCommentsByGameId(gameId);
+//    }
 
     @PostMapping
     public Comment addComment(@PathVariable Long gameId, @RequestBody Comment comment) {

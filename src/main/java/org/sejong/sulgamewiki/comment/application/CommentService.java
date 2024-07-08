@@ -21,11 +21,11 @@ public class CommentService {
         this.popularGameRepository = popularGameRepository;
     }
 
-    public List<Comment> getCommentsByGameId(Long gameId) {
-        PopularGame game = popularGameRepository.findById(gameId)
-                .orElseThrow(() -> new RuntimeException("Game not found"));
-        return game.getComments();
-    }
+//    public List<Comment> getCommentsByGameId(Long gameId) {
+//        PopularGame game = popularGameRepository.findById(gameId)
+//                .orElseThrow(() -> new RuntimeException("Game not found"));
+//        return game.getComments();
+//    }
 
     public Comment addComment(Long gameId, Comment comment) {
         PopularGame game = popularGameRepository.findById(gameId)
