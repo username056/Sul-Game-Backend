@@ -3,6 +3,7 @@ package org.sejong.sulgamewiki.admin.application;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.admin.domain.entity.Admin;
 import org.sejong.sulgamewiki.admin.domain.repository.AdminRepository;
+import org.sejong.sulgamewiki.admin.dto.AdminDto;
 import org.sejong.sulgamewiki.admin.exception.AdminErrorCode;
 import org.sejong.sulgamewiki.admin.exception.AdminException;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,10 @@ public class AdminService {
         return adminRepository.findAll();
     }
 
-    public Admin getAdminById(Long id) {
-        return adminRepository.findById(id)
+    public AdminDto getAdminById(Long id) {
+        Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_NOT_FOUND));
+        return AdminDto.from(admin);
     }
 
     public Admin createAdmin(Admin admin) {
@@ -32,7 +34,7 @@ public class AdminService {
         Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_NOT_FOUND));
 
-        admin.setUsername(adminDetails.getUsername());
+        admin.setNickname(adminDetails.getNickname());
         admin.setEmail(adminDetails.getEmail());
         admin.setPassword(adminDetails.getPassword());
         admin.setId(adminDetails.getId());
