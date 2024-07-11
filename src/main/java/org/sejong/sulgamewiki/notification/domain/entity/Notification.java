@@ -2,6 +2,8 @@ package org.sejong.sulgamewiki.notification.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.sejong.sulgamewiki.common.entity.BaseEntity;
+import org.sejong.sulgamewiki.member.domain.entity.Member;
 
 import java.time.Instant;
 
@@ -9,22 +11,22 @@ import java.time.Instant;
 @Table(name = "notifications")
 @Getter
 @Setter
-@Builder
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class Notification {
+public class Notification extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type;
+    private NotificationType notificationType;
 
     @Column(nullable = false)
     private String message;
 
-    @Column(nullable = false)
-    private Instant timestamp;
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 }
