@@ -1,19 +1,22 @@
 package org.sejong.sulgamewiki.notification.application;
 
+
+import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.notification.domain.entity.Notification;
 import org.sejong.sulgamewiki.notification.domain.repository.NotificationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class NotificationService {
 
-    @Autowired
-    private NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
-    public List<Notification> getAllNotifications() {
-        return notificationRepository.findAll();
+    public Page<Notification> getNotificationsByMemberId(Long memberId, Pageable pageable) {
+        return notificationRepository.findByMemberId(memberId, pageable);
     }
 }
