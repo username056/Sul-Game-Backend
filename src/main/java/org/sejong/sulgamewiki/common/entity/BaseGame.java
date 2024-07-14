@@ -21,10 +21,13 @@ public abstract class BaseGame extends BaseEntity {
   private String description;
 
   @Column(nullable = false)
+  @Builder.Default
   private int likes = 0;
 
   @Column(nullable = false)
+  @Builder.Default
   private int views = 0;
+
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id", nullable = false)
