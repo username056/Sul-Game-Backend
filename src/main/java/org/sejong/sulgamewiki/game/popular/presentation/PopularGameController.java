@@ -1,6 +1,7 @@
 package org.sejong.sulgamewiki.game.popular.presentation;
 
 import lombok.RequiredArgsConstructor;
+import org.sejong.sulgamewiki.common.docs.PopularGameControllerDocs;
 import org.sejong.sulgamewiki.common.utils.annotations.FilesParameter;
 import org.sejong.sulgamewiki.game.popular.application.PopularGameService;
 import org.sejong.sulgamewiki.game.popular.dto.request.CreatePopularGameRequest;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/popular-game")
 @RequiredArgsConstructor
-public class PopularGameController {
+public class PopularGameController implements PopularGameControllerDocs {
 
   private final PopularGameService popularGameService;
 
