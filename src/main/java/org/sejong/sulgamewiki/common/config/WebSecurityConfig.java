@@ -5,16 +5,11 @@ import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -45,7 +40,7 @@ public class WebSecurityConfig {
             .authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers(
                     "/", // 기본화면
-                    "/api/popular-game/**", //FIXME: 삭제해야함
+                    "/api/**", //FIXME: 일시적으로 전체 API 주소 허용 (삭제해야함)
                     "/api/signup", // 회원가입
                     "/api/login", // 로그인
                     "/docs/**", // Swagger
