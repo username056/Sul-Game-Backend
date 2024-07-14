@@ -40,6 +40,9 @@ dependencies {
 
 	// maria DB
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+	// Hibernate 호환성문제
+	implementation group: 'com.fasterxml', name: 'classmate', version: '1.7.0'
 }
 
 tasks.named('test') {
