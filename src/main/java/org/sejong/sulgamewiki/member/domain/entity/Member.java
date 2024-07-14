@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.common.entity.BaseEntity;
 import org.sejong.sulgamewiki.member.domain.constants.MemberRole;
 import org.sejong.sulgamewiki.member.domain.constants.MemberStatus;
@@ -21,8 +22,8 @@ import org.sejong.sulgamewiki.member.domain.constants.MemberStatus;
 @ToString(exclude = "password")
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@SuperBuilder
+@NoArgsConstructor
 public class Member extends BaseEntity {
 
   @Id
