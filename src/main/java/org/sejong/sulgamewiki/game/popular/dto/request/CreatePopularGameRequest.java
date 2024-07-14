@@ -1,6 +1,6 @@
 package org.sejong.sulgamewiki.game.popular.dto.request;
 
-import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,5 +10,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class CreatePopularGameRequest {
   private String title;
   private String description;
-  private ArrayList<MultipartFile> multipartFiles;
+  private List<MultipartFile> multipartFiles;
 }

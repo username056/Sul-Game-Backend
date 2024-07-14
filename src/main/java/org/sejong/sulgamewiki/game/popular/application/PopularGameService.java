@@ -32,7 +32,7 @@ public class PopularGameService {
     // PopularEntity DB 저장
     PopularGame savedPopularGame = popularGameRepository.save(popularGame);
 
-    //TODO: MultipartFIle -> AWS S3 -> URL 받아오는 로직 필요
+    //TODO: List<MultipartFIle> files -> AWS S3 -> URL 받아오는 로직 필요
     //TODO: PopularGameMedia 생성 로직 필요
 
     // CreatePopularGameResponse DTO 로 변환
