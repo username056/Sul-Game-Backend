@@ -12,7 +12,7 @@ import org.sejong.sulgamewiki.member.domain.entity.Member;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @SuperBuilder
-public abstract class BaseGame extends BaseEntity {
+public abstract class BasePost extends BaseEntity {
 
   @Column(nullable = false, length = 100)
   private String title;
