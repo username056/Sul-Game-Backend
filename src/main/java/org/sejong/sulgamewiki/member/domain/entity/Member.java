@@ -6,14 +6,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.common.entity.BaseMember;
 import org.sejong.sulgamewiki.member.domain.constants.MemberRole;
@@ -32,11 +28,6 @@ public class Member extends BaseMember {
 
   private String university;
 
-  private String phone;
-
-  @Column(name = "profile_image_url")
-  private String profileImageUrl;
-
   @Enumerated(EnumType.STRING)
   private MemberStatus status;
 
@@ -45,7 +36,6 @@ public class Member extends BaseMember {
   public void updateUniversity(String university) {
     this.university = university;
   }
-
   public void updateStatus(MemberStatus status) {
     this.status = status;
   }
