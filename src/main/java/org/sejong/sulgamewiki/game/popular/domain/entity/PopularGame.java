@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.sejong.sulgamewiki.common.entity.BaseGame;
+import org.sejong.sulgamewiki.common.entity.BasePost;
 import org.sejong.sulgamewiki.game.popular.dto.request.CreatePopularGameRequest;
 import org.sejong.sulgamewiki.member.domain.entity.Member;
 
@@ -22,7 +22,7 @@ import org.sejong.sulgamewiki.member.domain.entity.Member;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PopularGame extends BaseGame {
+public class PopularGame extends BasePost {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
