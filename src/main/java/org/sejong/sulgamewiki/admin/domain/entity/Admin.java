@@ -9,7 +9,7 @@ import org.sejong.sulgamewiki.common.entity.BaseMember;
 @Setter
 @NoArgsConstructor
 @Table(name = "admin")
-@ToString(exclude = "password")
+//@ToString(callSuper = true, exclude = "password")
 public class Admin extends BaseMember {
 
 

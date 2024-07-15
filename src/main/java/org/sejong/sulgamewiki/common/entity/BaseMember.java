@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @MappedSuperclass
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "password")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public abstract class BaseMember extends BaseEntity {
@@ -58,5 +58,5 @@ public abstract class BaseMember extends BaseEntity {
     public void updatePhone(String phone) {
         this.phone = phone;
     }
-    
+
 }

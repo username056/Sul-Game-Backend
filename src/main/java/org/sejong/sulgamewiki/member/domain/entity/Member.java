@@ -12,7 +12,7 @@ import org.sejong.sulgamewiki.common.entity.BaseMember;
 import org.sejong.sulgamewiki.member.domain.constants.MemberRole;
 import org.sejong.sulgamewiki.member.domain.constants.MemberStatus;
 
-@ToString(exclude = "password")
+//@ToString(callSuper = true, exclude = "password")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
