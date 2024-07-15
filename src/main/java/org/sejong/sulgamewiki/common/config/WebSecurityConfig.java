@@ -5,16 +5,11 @@ import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -26,6 +21,22 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+  private static final String[] AUTH_WHITELIST = {
+      "/", // 기본화면
+      "/api/**", //FIXME: 일시적으로 전체 API 주소 허용 (삭제해야함)
+      "/api/signup", // 회원가입
+      "/api/login", // 로그인
+      "/docs/**", // Swagger
+      "/v3/api-docs/**" // Swagger
+  };
+
+  private static final String[] ALLOWED_ORIGINS = {
+      "https://api.sul-game.info",
+      "https://www.sul-game.info",
+      "http://220.85.169.165:8085",
+      "http://localhost:8080",
+      "http://10.0.2.2:8080"
+  };
   @Bean
   public WebSecurityCustomizer configure() {
     return (web) -> web.ignoring()
@@ -43,14 +54,7 @@ public class WebSecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
 
             .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(
-                    "/", // 기본화면
-                    "/api/popular-game/**", //FIXME: 삭제해야함
-                    "/api/signup", // 회원가입
-                    "/api/login", // 로그인
-                    "/docs/**", // Swagger
-                    "/v3/api-docs/**" // Swagger
-                ).permitAll()
+                .requestMatchers(AUTH_WHITELIST).permitAll()
 //                .requestMatchers(HttpMethod.GET, "/api/my-page").hasRole("USER") //FIXME: 예시 페이지
                 .anyRequest().authenticated()
             )
@@ -75,16 +79,8 @@ public class WebSecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOriginPatterns(
-        Arrays.asList(
-            "https://api.sul-game.info",
-            "https://www.sul-game.info",
-            "http://220.85.169.165:8085",
-            "http://localhost:8080",
-            "http://10.0.2.2:8080"));
-
-    configuration.setAllowedMethods(
-        Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+    configuration.setAllowedOriginPatterns(Arrays.asList(ALLOWED_ORIGINS));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
     configuration.setAllowCredentials(true);
     configuration.setAllowedHeaders(Collections.singletonList("*"));
     configuration.setMaxAge(3600L);
