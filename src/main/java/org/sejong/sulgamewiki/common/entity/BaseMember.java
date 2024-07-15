@@ -2,12 +2,13 @@ package org.sejong.sulgamewiki.common.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.common.entity.BaseEntity;
 
 import java.time.LocalDate;
 
 
-@MappedSuperclass
+@SuperBuilder
 @Getter
 @Setter
 @ToString(exclude = "password")
@@ -15,9 +16,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public abstract class BaseMember extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(nullable = false, unique = true)
     private String nickname;
