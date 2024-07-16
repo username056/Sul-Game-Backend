@@ -12,6 +12,7 @@ import org.sejong.sulgamewiki.member.domain.entity.Member;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 public class Comment extends BaseEntity {
 
     @Id
@@ -27,6 +28,7 @@ public class Comment extends BaseEntity {
 
     private Long typeId;
 
+    @Enumerated(EnumType.STRING)
     private CommentType commentType;
 
 
