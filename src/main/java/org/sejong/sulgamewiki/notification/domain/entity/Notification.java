@@ -26,5 +26,8 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private String message;
 
-    private Long memberId;
+    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
+
 }
