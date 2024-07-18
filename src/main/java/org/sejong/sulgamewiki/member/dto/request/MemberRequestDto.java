@@ -1,6 +1,7 @@
 package org.sejong.sulgamewiki.member.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,9 +11,7 @@ import org.sejong.sulgamewiki.member.domain.entity.Member;
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class MemberRequestDto {
     private Long id;
     private String university;

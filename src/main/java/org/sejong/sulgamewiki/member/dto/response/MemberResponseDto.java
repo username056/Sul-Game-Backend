@@ -8,8 +8,6 @@ import java.util.List;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class MemberResponseDto {
     private Long id;
     private String university;
