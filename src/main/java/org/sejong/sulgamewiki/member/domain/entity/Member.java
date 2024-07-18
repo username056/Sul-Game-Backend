@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.common.entity.BaseMember;
-import org.sejong.sulgamewiki.member.domain.constants.MemberRole;
 import org.sejong.sulgamewiki.member.domain.constants.MemberStatus;
 
 @Entity
@@ -31,7 +30,10 @@ public class Member extends BaseMember {
   @Enumerated(EnumType.STRING)
   private MemberStatus status;
 
-  private MemberRole role;
+
+
+  // TODO: 즐겨찾는 게시물 목록
+
 
   public void updateUniversity(String university) {
     this.university = university;
@@ -40,7 +42,4 @@ public class Member extends BaseMember {
     this.status = status;
   }
 
-  public void updateRole(MemberRole role) {
-    this.role = role;
-  }
 }
