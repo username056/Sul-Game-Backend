@@ -26,7 +26,5 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private String message;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    private Long memberId;
 }
