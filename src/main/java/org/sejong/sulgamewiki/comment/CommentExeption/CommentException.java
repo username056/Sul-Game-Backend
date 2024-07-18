@@ -5,6 +5,6 @@ import org.sejong.sulgamewiki.common.exception.ErrorCode;
 
 public class CommentException extends CustomException {
     public CommentException(ErrorCode errorCode, String source) {
-        super(errorCode, source);
+        super(errorCode, "comment");
     }
 }

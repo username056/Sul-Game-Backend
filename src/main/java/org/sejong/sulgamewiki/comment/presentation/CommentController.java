@@ -3,12 +3,10 @@ package org.sejong.sulgamewiki.comment.presentation;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.comment.domain.entity.Comment;
 import org.sejong.sulgamewiki.comment.application.CommentService;
-import org.sejong.sulgamewiki.comment.dto.CommentDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.sejong.sulgamewiki.comment.dto.request.CommentRequest;
+import org.sejong.sulgamewiki.comment.dto.response.CommentResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/comment")
@@ -18,14 +16,9 @@ public class CommentController {
 
 
     @PostMapping
-    public ResponseEntity<Comment> addComment(@RequestBody CommentDTO request) {
-        Comment comment = commentService.addComment(
-                request.getContent(),
-                request.getTypeId(),
-                request.getCommentType(),
-                request.getMemberId()
-        );
-        return ResponseEntity.ok(comment);
+    public ResponseEntity<CommentResponse> addComment(@RequestBody CommentRequest request) {
+        CommentResponse response = commentService.addComment(request);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{commentId}")
