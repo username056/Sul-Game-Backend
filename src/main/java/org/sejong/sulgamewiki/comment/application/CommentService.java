@@ -2,6 +2,7 @@ package org.sejong.sulgamewiki.comment.application;
 
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.comment.CommentExeption.CommentErrorCode;
+import org.sejong.sulgamewiki.comment.CommentExeption.CommentException;
 import org.sejong.sulgamewiki.comment.domain.entity.Comment;
 import org.sejong.sulgamewiki.comment.domain.entity.CommentType;
 import org.sejong.sulgamewiki.comment.domain.repository.CommentRepository;
@@ -42,7 +43,7 @@ public class CommentService {
 
     public void deleteComment(Long commentId) {
         if (!commentRepository.existsById(commentId)) {
-            throw new IllegalArgumentException(CommentErrorCode.COMMENT_NOT_FOUND.getMessage());
+            throw new CommentException(CommentErrorCode.COMMENT_NOT_FOUND, "CommentService.deleteComment");
         }
         commentRepository.deleteById(commentId);
     }
