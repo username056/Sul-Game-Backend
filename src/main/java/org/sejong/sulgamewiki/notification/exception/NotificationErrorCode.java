@@ -3,7 +3,7 @@ package org.sejong.sulgamewiki.notification.exception;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.common.exception.ErrorCode;
-import org.sejong.sulgamewiki.common.exception.ErrorSource;
+import org.sejong.sulgamewiki.common.exception.constants.ErrorSource;
 import org.springframework.http.HttpStatus;
 
 @Getter
