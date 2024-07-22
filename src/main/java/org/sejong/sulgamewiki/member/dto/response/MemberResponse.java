@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class MemberResponseDto {
+public class MemberResponse {
     private Long id;
     private String university;
     private MemberStatus status;
@@ -18,7 +18,7 @@ public class MemberResponseDto {
     private List<String> favoriteIntroPosts;
 
     public static MemberResponse from(Member member) {
-        return MemberResponseDto.builder()
+        return MemberResponse.builder()
                 .id(member.getId())
                 .university(member.getUniversity())
                 .status(member.getStatus())
