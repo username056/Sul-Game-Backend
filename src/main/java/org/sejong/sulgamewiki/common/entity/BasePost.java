@@ -17,6 +17,9 @@ public abstract class BasePost extends BaseEntity {
   @Column(nullable = false, length = 100)
   private String title;
 
+  @Column(length = 30)
+  private String introduction;
+
   @Column(length = 500)
   private String description;
 
