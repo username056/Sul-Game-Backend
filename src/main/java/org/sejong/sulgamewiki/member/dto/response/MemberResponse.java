@@ -13,15 +13,19 @@ public class MemberResponseDto {
     private String university;
     private MemberStatus status;
     private Boolean isNotificationsEnabled;
-    private List<String> favoritePosts;
+    private List<String> favoritePopularGames;
+    private List<String> favoriteCreativeGames;
+    private List<String> favoriteIntroPosts;
 
-    public static MemberResponseDto from(Member member) {
+    public static MemberResponse from(Member member) {
         return MemberResponseDto.builder()
                 .id(member.getId())
                 .university(member.getUniversity())
                 .status(member.getStatus())
                 .isNotificationsEnabled(member.getIsNotificationsEnabled())
-                .favoritePosts(member.getFavoritePosts())
+                .favoritePopularGames(member.getFavoritePopularGames())
+                .favoriteCreativeGames(member.getFavoriteCreativeGames())
+                .favoriteIntroPosts(member.getFavoriteIntroPosts())
                 .build();
     }
 }

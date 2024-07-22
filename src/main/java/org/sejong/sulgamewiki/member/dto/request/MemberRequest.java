@@ -17,7 +17,9 @@ public class MemberRequestDto {
     private String university;
     private MemberStatus status;
     private Boolean isNotificationsEnabled;
-    private List<String> favoritePosts;
+    private List<String> favoritePopularGames;
+    private List<String> favoriteCreativeGames;
+    private List<String> favoriteIntroPosts;
 
     public Member toEntity() {
         return Member.builder()
@@ -25,7 +27,9 @@ public class MemberRequestDto {
                 .university(university)
                 .status(status)
                 .isNotificationsEnabled(isNotificationsEnabled)
-                .favoritePosts(favoritePosts)
+                .favoritePopularGames(favoritePopularGames)
+                .favoriteCreativeGames(favoriteCreativeGames)
+                .favoriteIntroPosts(favoriteIntroPosts)
                 .build();
     }
 }
