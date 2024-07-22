@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.intro.domain.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,17 +20,19 @@ import org.sejong.sulgamewiki.member.domain.entity.Member;
 @AllArgsConstructor
 public class Intro extends BasePost {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long Id;
 
-    public static Intro toEntity(Member member, CreateIntroRequest request) {
-        return Intro.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .member(member)
-                .likes(0)
-                .views(0)
-                .build();
-    }
+  @Column(nullable = false, length = 200)
+  private String lyrics;
+  public static Intro toEntity(Member member, CreateIntroRequest request) {
+    return Intro.builder()
+        .title(request.getTitle())
+        .description(request.getDescription())
+        .member(member)
+        .likes(0)
+        .views(0)
+        .build();
+  }
 }

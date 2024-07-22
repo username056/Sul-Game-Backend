@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.comment.CommentExeption;
+package org.sejong.sulgamewiki.comment.CommentException;
 
 import org.sejong.sulgamewiki.common.exception.CustomException;
 import org.sejong.sulgamewiki.common.exception.ErrorCode;

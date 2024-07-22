@@ -16,30 +16,33 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class IntroService {
-    private final MemberRepository memberRepository;
-    private final IntroRepository introRepository;
 
-    public CreateIntroResponse createIntro(Long memberId, CreateIntroRequest request) {
-        // Member 정보 가져오기
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+  private final MemberRepository memberRepository;
+  private final IntroRepository introRepository;
 
-        // CreateIntroRequest, Member 로 -> Intro 엔티티 객체 생성
-        Intro intro = Intro.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .member(member)
-                .likes(0)
-                .views(0)
-                .build();
+  public CreateIntroResponse createIntro(Long memberId,
+      CreateIntroRequest request) {
+    // Member 정보 가져오기
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(
+            () -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        // Intro 엔티티 DB 저장
-        Intro savedIntro = introRepository.save(intro);
+    // CreateIntroRequest, Member 로 -> Intro 엔티티 객체 생성
+    Intro intro = Intro.builder()
+        .title(request.getTitle())
+        .description(request.getDescription())
+        .member(member)
+        .likes(0)
+        .views(0)
+        .build();
 
-        //TODO: List<MultipartFile> files -> AWS S3 -> URL 받아오는 로직 필요
-        //TODO: IntroMedia 생성 로직 필요
+    // Intro 엔티티 DB 저장
+    Intro savedIntro = introRepository.save(intro);
 
-        // CreateIntroResponse DTO 로 변환
-        return CreateIntroResponse.from(savedIntro);
-    }
+    //TODO: List<MultipartFile> files -> AWS S3 -> URL 받아오는 로직 필요
+    //TODO: IntroMedia 생성 로직 필요
+
+    // CreateIntroResponse DTO 로 변환
+    return CreateIntroResponse.from(savedIntro);
+  }
 }
