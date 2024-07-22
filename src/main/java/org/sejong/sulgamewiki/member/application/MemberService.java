@@ -32,5 +32,9 @@ public class MemberService {
     existingMember.updateFromRequest(memberRequest);
     return memberRepository.save(existingMember);
   }
-
+  public void deleteMember(Long id) {
+    Member existingMember = memberRepository.findById(id)
+        .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+    memberRepository.delete(existingMember);
+  }
 }
