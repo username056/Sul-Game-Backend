@@ -31,7 +31,7 @@ public class CreativeGame extends BasePost {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(length = 30)
+  @Column(length = 90)
   private String introduction;
 
   @ManyToOne(fetch = FetchType.LAZY)
