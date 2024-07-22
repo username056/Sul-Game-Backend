@@ -11,7 +11,7 @@ import org.sejong.sulgamewiki.member.domain.constants.MemberStatus;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.sejong.sulgamewiki.member.dto.request.MemberRequest;
+import org.sejong.sulgamewiki.member.dto.request.MemberDto;
 
 @Entity
 @Getter
@@ -26,8 +26,9 @@ public class Member extends BaseMember {
 
   private String university;
 
+  // 근데 이거 유니버시티가 필수가 아닌데 얘는 필수면 어캄. 확인하는거 하나 필요할듯
   @Column(nullable = false)
-  private boolean isUniversityPublic;
+  private boolean isUniversityVisible;
 
   @Enumerated(EnumType.STRING)
   private MemberStatus status;
@@ -86,14 +87,14 @@ public class Member extends BaseMember {
   }
 
 
-  public void updateFromRequest(MemberRequest memberRequest) {
-    this.university = memberRequest.getUniversity();
-    this.isUniversityPublic = memberRequest.isUniversityPublic();
-    this.status = memberRequest.getStatus();
-    this.isNotificationsEnabled = memberRequest.getIsNotificationsEnabled();
-    this.favoritePopularGames = new ArrayList<>(memberRequest.getFavoritePopularGames());
-    this.favoriteCreativeGames = new ArrayList<>(memberRequest.getFavoriteCreativeGames());
-    this.favoriteIntroPosts = new ArrayList<>(memberRequest.getFavoriteIntroPosts());
+  public void updateFromRequest(MemberDto memberDto) {
+    this.university = memberDto.getUniversity();
+    this.isUniversityPublic = memberDto.isUniversityPublic();
+    this.status = memberDto.getStatus();
+    this.isNotificationsEnabled = memberDto.getIsNotificationsEnabled();
+    this.favoritePopularGames = new ArrayList<>(memberDto.getFavoritePopularGames());
+    this.favoriteCreativeGames = new ArrayList<>(memberDto.getFavoriteCreativeGames());
+    this.favoriteIntroPosts = new ArrayList<>(memberDto.getFavoriteIntroPosts());
   }
 
 }

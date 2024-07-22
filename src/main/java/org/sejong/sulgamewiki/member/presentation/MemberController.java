@@ -1,17 +1,15 @@
 package org.sejong.sulgamewiki.member.presentation;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.member.application.MemberService;
 import org.sejong.sulgamewiki.member.domain.entity.Member;
-import org.sejong.sulgamewiki.member.dto.request.MemberRequest;
+import org.sejong.sulgamewiki.member.dto.request.MemberDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,8 +20,8 @@ public class MemberController {
   private final MemberService memberService;
 
   @PostMapping
-  public ResponseEntity<Member> createMember(@RequestBody MemberRequest memberRequest) {
-    Member member = memberService.createMember(memberRequest);
+  public ResponseEntity<Member> createMember(@RequestBody MemberDto memberDto) {
+    Member member = memberService.createMember(memberDto);
     return ResponseEntity.ok(member);
   }
 

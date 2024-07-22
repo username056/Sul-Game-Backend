@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class MemberRequest {
+public class MemberDto {
     private Long id;
     private String university;
     private MemberStatus status;
