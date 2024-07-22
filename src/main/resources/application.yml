@@ -12,6 +12,21 @@ spring:
           type:
             resolver: org.hibernate.type.BasicTypeResolverStandardImpl
           dialect: org.hibernate.dialect.MariaDBDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 877903331004-vd5gr1otqh7ekjrjqkietgcl9adhdm7c.apps.googleusercontent.com
+            client-secret: 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
+            scope: profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
   datasource:
     url: jdbc:mariadb://${DB_HOST}:3306/${DB_NAME}
     username: ${DB_USERNAME}
