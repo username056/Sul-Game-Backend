@@ -14,7 +14,7 @@ public class MemberDto {
     private String university;
     private MemberStatus status;
     private Boolean isNotificationsEnabled;
-    private Boolean isUniversityPublic;
+    private Boolean isUniversityVisible;
     private List<String> favoritePopularGames;
     private List<String> favoriteCreativeGames;
     private List<String> favoriteIntroPosts;
@@ -23,7 +23,7 @@ public class MemberDto {
         return Member.builder()
                 .id(id)
                 .university(university)
-                .isUniversityPublic(isUniversityPublic)
+                .isUniversityVisible(isUniversityVisible())
                 .status(status)
                 .isNotificationsEnabled(isNotificationsEnabled)
                 .favoritePopularGames(favoritePopularGames)
@@ -32,7 +32,7 @@ public class MemberDto {
                 .build();
     }
 
-    public boolean isUniversityPublic() {
-        return isUniversityPublic;
+    public boolean isUniversityVisible() {
+        return isUniversityVisible;
     }
 }

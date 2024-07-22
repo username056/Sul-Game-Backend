@@ -3,6 +3,7 @@ package org.sejong.sulgamewiki.member.domain.entity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -33,22 +34,26 @@ public class Member extends BaseMember {
   @Enumerated(EnumType.STRING)
   private MemberStatus status;
 
+  @Builder.Default
   @Column(nullable = false)
   private Boolean isNotificationsEnabled = true;
 
   @ElementCollection
   @CollectionTable(name = "member_popular_game_stars", joinColumns = @JoinColumn(name = "member_id"))
   @Column(name = "post_id")
+  @Builder.Default
   private List<String> favoritePopularGames = new ArrayList<>();
 
   @ElementCollection
   @CollectionTable(name = "member_creative_game_stars", joinColumns = @JoinColumn(name = "member_id"))
   @Column(name = "post_id")
+  @Builder.Default
   private List<String> favoriteCreativeGames = new ArrayList<>();
 
   @ElementCollection
   @CollectionTable(name = "member_intro_stars", joinColumns = @JoinColumn(name = "member_id"))
   @Column(name = "post_id")
+  @Builder.Default
   private List<String> favoriteIntroPosts = new ArrayList<>();
 
   public void updateUniversity(String university) {
@@ -89,7 +94,7 @@ public class Member extends BaseMember {
 
   public void updateFromRequest(MemberDto memberDto) {
     this.university = memberDto.getUniversity();
-    this.isUniversityPublic = memberDto.isUniversityPublic();
+    this.isUniversityVisible = memberDto.isUniversityVisible();
     this.status = memberDto.getStatus();
     this.isNotificationsEnabled = memberDto.getIsNotificationsEnabled();
     this.favoritePopularGames = new ArrayList<>(memberDto.getFavoritePopularGames());
