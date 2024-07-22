@@ -27,7 +27,8 @@ public class WebSecurityConfig {
       "/api/signup", // 회원가입
       "/api/login", // 로그인
       "/docs/**", // Swagger
-      "/v3/api-docs/**" // Swagger
+      "/v3/api-docs/**", // Swagger
+      "/login/oauth2/code/google" // OAuth 리디렉션 URI
   };
 
   private static final String[] ALLOWED_ORIGINS = {
@@ -58,8 +59,11 @@ public class WebSecurityConfig {
 //                .requestMatchers(HttpMethod.GET, "/api/my-page").hasRole("USER") //FIXME: 예시 페이지
                 .anyRequest().authenticated()
             )
+            .oauth2Login(oauth2Login -> oauth2Login
+                .defaultSuccessUrl("/home",true)
+            )
             .logout(logout -> logout
-                .logoutSuccessUrl("/login")
+                .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
