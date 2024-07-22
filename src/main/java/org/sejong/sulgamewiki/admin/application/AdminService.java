@@ -36,7 +36,6 @@ public class AdminService {
 
         admin.setNickname(adminDetails.getNickname());
         admin.setEmail(adminDetails.getEmail());
-        admin.setPassword(adminDetails.getPassword());
         admin.setId(adminDetails.getId());
 
         return adminRepository.save(admin);

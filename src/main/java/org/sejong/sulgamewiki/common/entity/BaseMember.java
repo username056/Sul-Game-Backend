@@ -3,7 +3,7 @@ package org.sejong.sulgamewiki.common.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.sejong.sulgamewiki.common.entity.BaseEntity;
+import org.sejong.sulgamewiki.common.entity.constants.MemberRole;
 
 import java.time.LocalDate;
 
@@ -16,22 +16,18 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public abstract class BaseMember extends BaseEntity {
 
-
     @Column(nullable = false, unique = true)
     private String nickname;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
-
-    private String phone;
-
     private LocalDate birthDate;
 
     @Column(name = "profile_image_url")
     private String profileImageUrl;
+
+    private MemberRole role;
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
@@ -41,10 +37,6 @@ public abstract class BaseMember extends BaseEntity {
         this.email = email;
     }
 
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-
     public void updateBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
@@ -52,9 +44,8 @@ public abstract class BaseMember extends BaseEntity {
     public void updateProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
-
-    public void updatePhone(String phone) {
-        this.phone = phone;
+    
+    public void updateRole(MemberRole role) {
+        this.role = role;
     }
-
 }

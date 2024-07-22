@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.member.domain.constants;
+package org.sejong.sulgamewiki.common.entity.constants;
 
 import lombok.Getter;
 
