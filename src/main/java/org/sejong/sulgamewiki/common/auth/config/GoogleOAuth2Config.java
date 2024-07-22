@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.common.auth.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -12,6 +13,12 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 @Configuration
 public class GoogleOAuth2Config {
+  @Value("${spring.security.oauth2.client.registration.google.client-id}")
+  String clientId;
+
+  @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+  String clientSecret;
+
   @Bean
   public ClientRegistrationRepository clientRegistrationRepository() {
     return new InMemoryClientRegistrationRepository(this.googleClientRegistration());
@@ -19,8 +26,8 @@ public class GoogleOAuth2Config {
 
   private ClientRegistration googleClientRegistration() {
     return ClientRegistrations.fromIssuerLocation("https://accounts.google.com")
-        .clientId("877903331004-vd5gr1otqh7ekjrjqkietgcl9adhdm7c.apps.googleusercontent.com")
-        .clientSecret("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")
+        .clientId("")
+        .clientSecret("")
         .build();
   }
 
