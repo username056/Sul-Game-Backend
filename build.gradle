@@ -43,6 +43,9 @@ dependencies {
 
 	// Hibernate 호환성문제
 	implementation group: 'com.fasterxml', name: 'classmate', version: '1.7.0'
+
+	// OAuth
+	implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
 }
 
 tasks.named('test') {

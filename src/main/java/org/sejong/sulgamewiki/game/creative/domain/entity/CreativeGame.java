@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.game.creative.domain.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +30,9 @@ public class CreativeGame extends BasePost {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(length = 90)
+  private String introduction;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "popular_game_id")

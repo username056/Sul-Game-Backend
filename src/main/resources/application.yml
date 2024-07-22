@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: prod
   jpa:
     generate-ddl: true
     hibernate:
@@ -12,12 +14,6 @@ spring:
           type:
             resolver: org.hibernate.type.BasicTypeResolverStandardImpl
           dialect: org.hibernate.dialect.MariaDBDialect
-  datasource:
-    url: jdbc:mariadb://${DB_HOST}:3306/${DB_NAME}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    driver-class-name: org.mariadb.jdbc.Driver
-
 mvc:
   path-match:
     matching-strategy: ant_path_matcher
@@ -31,11 +27,3 @@ springdoc:
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-exp-time: ${JWT_ACCESS_EXP_TIME}
-
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor: TRACE

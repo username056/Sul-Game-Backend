@@ -39,3 +39,6 @@ out/
 ### CICD ####
 ./.github/workflows
 /.github/workflows
+
+### Application.yml ###
+/src/main/resources/application-dev.yml

@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.game.popular.domain.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,6 +28,9 @@ public class PopularGame extends BasePost {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(length = 90)
+  private String introduction;
 
   public static PopularGame toEntity(Member member, CreatePopularGameRequest request) {
     return PopularGame.builder()
