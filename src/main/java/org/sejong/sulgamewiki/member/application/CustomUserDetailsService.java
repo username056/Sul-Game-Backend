@@ -1,6 +1,7 @@
 package org.sejong.sulgamewiki.member.application;
 
 import lombok.RequiredArgsConstructor;
+import org.sejong.sulgamewiki.member.domain.CustomUserDetails;
 import org.sejong.sulgamewiki.member.domain.entity.Member;
 import org.sejong.sulgamewiki.member.domain.repository.MemberRepository;
 import org.sejong.sulgamewiki.member.dto.response.MemberResponse;
@@ -23,6 +24,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         .orElseThrow(
             () -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-    return (UserDetails) MemberResponse.from(member);
+    return return new CustomUserDetails(member);
   }
 }
