@@ -24,6 +24,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         .orElseThrow(
             () -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-    return return new CustomUserDetails(member);
+    return new CustomUserDetails(member);
   }
 }
