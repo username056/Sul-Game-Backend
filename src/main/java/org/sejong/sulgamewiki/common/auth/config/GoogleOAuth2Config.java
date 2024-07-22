@@ -26,8 +26,8 @@ public class GoogleOAuth2Config {
 
   private ClientRegistration googleClientRegistration() {
     return ClientRegistrations.fromIssuerLocation("https://accounts.google.com")
-        .clientId("")
-        .clientSecret("")
+        .clientId(clientId)
+        .clientSecret(clientSecret)
         .build();
   }
 
