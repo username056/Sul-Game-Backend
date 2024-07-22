@@ -1,9 +1,22 @@
 package org.sejong.sulgamewiki.comment.domain.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.sejong.sulgamewiki.common.entity.BaseEntity;
-import org.sejong.sulgamewiki.game.popular.domain.entity.PopularGame;
 import org.sejong.sulgamewiki.member.domain.entity.Member;
 
 @Entity
@@ -12,6 +25,7 @@ import org.sejong.sulgamewiki.member.domain.entity.Member;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 public class Comment extends BaseEntity {
 
     @Id
@@ -27,7 +41,6 @@ public class Comment extends BaseEntity {
 
     private Long typeId;
 
+    @Enumerated(EnumType.STRING)
     private CommentType commentType;
-
-
 }
