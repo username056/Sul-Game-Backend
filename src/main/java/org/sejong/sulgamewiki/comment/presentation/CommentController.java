@@ -1,7 +1,6 @@
 package org.sejong.sulgamewiki.comment.presentation;
 
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.comment.domain.entity.Comment;
 import org.sejong.sulgamewiki.comment.application.CommentService;
 import org.sejong.sulgamewiki.comment.dto.request.CommentRequest;
 import org.sejong.sulgamewiki.comment.dto.response.CommentResponse;
@@ -16,14 +15,14 @@ public class CommentController {
 
 
     @PostMapping
-    public ResponseEntity<CommentResponse> addComment(@RequestBody CommentRequest request) {
-        CommentResponse response = commentService.addComment(request);
+    public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest request) {
+        CommentResponse response = commentService.createComment(request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, @RequestParam Long memberId) {
+        commentService.deleteComment(commentId, memberId);
         return ResponseEntity.noContent().build();
     }
 }
