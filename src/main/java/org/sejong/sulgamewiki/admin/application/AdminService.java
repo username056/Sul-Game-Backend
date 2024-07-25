@@ -16,8 +16,9 @@ public class AdminService {
 
     private final AdminRepository adminRepository;
 
-    public List<Admin> getAllAdmins() {
-        return adminRepository.findAll();
+    public AdminDto createAdmin(Admin admin) {
+        Admin savedAdmin = adminRepository.save(admin);
+        return AdminDto.from(savedAdmin);
     }
 
     public AdminDto getAdminById(Long id) {
@@ -26,19 +27,14 @@ public class AdminService {
         return AdminDto.from(admin);
     }
 
-    public Admin createAdmin(Admin admin) {
-        return adminRepository.save(admin);
-    }
-
-    public Admin updateAdmin(Long id, Admin adminDetails) {
+    public AdminDto updateAdmin(Long id, Admin adminDetails) {
         Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_NOT_FOUND));
-
         admin.setNickname(adminDetails.getNickname());
         admin.setEmail(adminDetails.getEmail());
-        admin.setId(adminDetails.getId());
 
-        return adminRepository.save(admin);
+        Admin updatedAdmin = adminRepository.save(admin);
+        return AdminDto.from(updatedAdmin);
     }
 
     public void deleteAdmin(Long id) {
