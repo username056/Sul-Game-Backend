@@ -11,16 +11,16 @@ import java.time.LocalDate;
 @SuperBuilder
 @Getter
 @Setter
-@ToString(exclude = "password")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public abstract class BaseMember extends BaseEntity {
 
-    @Column(nullable = false, unique = true)
-    private String nickname;
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false, unique = true)
+    private String nickname;
 
     private LocalDate birthDate;
 

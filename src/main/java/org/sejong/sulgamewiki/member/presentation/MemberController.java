@@ -3,8 +3,8 @@ package org.sejong.sulgamewiki.member.presentation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.member.application.MemberService;
-import org.sejong.sulgamewiki.member.domain.entity.Member;
-import org.sejong.sulgamewiki.member.dto.request.MemberDto;
+import org.sejong.sulgamewiki.member.dto.request.CreateMemberRequest;
+import org.sejong.sulgamewiki.member.dto.response.CreateMemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,22 +19,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
   private final MemberService memberService;
 
-  @PostMapping
-  public ResponseEntity<Member> createMember(@RequestBody MemberDto memberDto) {
-    Member member = memberService.createMember(memberDto);
-    return ResponseEntity.ok(member);
+  @PostMapping// TODO: 이대로 수정하기
+  public ResponseEntity<CreateMemberResponse> createMember(
+      @RequestBody CreateMemberRequest createMemberRequest) {
+    CreateMemberResponse createMemberResponse
+        = memberService.createMember(createMemberRequest);
+    return ResponseEntity.ok(createMemberResponse);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<Member> getMember(@PathVariable Long id) {
-    Member member = memberService.getMember(id);
-    return ResponseEntity.ok(member);
-  }
-
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
-    memberService.deleteMember(id);
-    return ResponseEntity.noContent().build();
-  }
+//
+//  @GetMapping("/{id}")
+//  public ResponseEntity<CreaeteMemberResponse> getMember(
+//      @PathVariable Long id) {
+//    CreaeteMemberResponse creaeteMemberResponse
+//        = memberService.getMemberById(id);
+//    return ResponseEntity.ok(creaeteMemberResponse);
+//  }
+//
+//  @DeleteMapping("/{id}")
+//  public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
+//    memberService.deleteMember(id);
+//    return ResponseEntity.noContent().build();
+//  }
 
 }
