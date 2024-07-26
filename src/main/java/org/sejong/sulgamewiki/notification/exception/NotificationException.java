@@ -1,13 +1,14 @@
 package org.sejong.sulgamewiki.notification.exception;
 
 import org.sejong.sulgamewiki.common.exception.CustomException;
+import org.sejong.sulgamewiki.common.exception.constants.ErrorSource;
 import org.springframework.http.HttpStatus;
 
 public class NotificationException extends CustomException {
     private final NotificationErrorCode errorCode;
 
     public NotificationException(NotificationErrorCode errorCode) {
-        super(errorCode, errorCode.getErrorSource().getSource());
+        super(errorCode, errorCode.getErrorSource().name());
         this.errorCode = errorCode;
     }
 

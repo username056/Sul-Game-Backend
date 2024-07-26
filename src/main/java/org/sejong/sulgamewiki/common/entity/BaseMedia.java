@@ -10,12 +10,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.common.entity.constants.MediaType;
 
 @MappedSuperclass
 @Getter
 @Setter
 @ToString
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public abstract class BaseMedia extends BaseEntity {

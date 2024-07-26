@@ -26,7 +26,8 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private String message;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
 }
