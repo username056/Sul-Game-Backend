@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.common.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.common.exception.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(CustomException.class)
@@ -26,6 +28,8 @@ public class GlobalExceptionHandler {
         ex.getMessage(),
         "global"
     );
+    log.error(ex.getMessage(), ex);
+    ex.printStackTrace();
     return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
