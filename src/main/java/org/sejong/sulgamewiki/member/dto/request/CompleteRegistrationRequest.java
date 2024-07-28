@@ -1,12 +1,12 @@
 package org.sejong.sulgamewiki.member.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 import lombok.Getter;
+import lombok.ToString;
 
-
+@ToString
 @Getter
-public class CreateMemberRequest {
+public class CompleteRegistrationRequest {
   private Long memberId;
   private String nickName;
   private LocalDate birthDate;

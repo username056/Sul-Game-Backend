@@ -5,13 +5,13 @@ import org.sejong.sulgamewiki.member.domain.entity.Member;
 
 @Builder
 public class CreateMemberResponse {
-  public String memberId;
+  public Long memberId;
   public String nickName;
 
   public static CreateMemberResponse from(Member member) {
     return CreateMemberResponse.builder()
-        .memberId(builder().memberId)
-        .nickName(builder().nickName)
+        .memberId(member.getId())
+        .nickName(member.getNickNameFromBaseMember())
         .build();
   }
 }
