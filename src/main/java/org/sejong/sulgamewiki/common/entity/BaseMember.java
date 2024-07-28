@@ -8,18 +8,20 @@ import org.sejong.sulgamewiki.common.entity.constants.MemberRole;
 import java.time.LocalDate;
 
 
-@SuperBuilder
-@Getter
+@ToString
 @Setter
+@Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@MappedSuperclass
 public abstract class BaseMember extends BaseEntity {
 
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String nickname;
 
     private LocalDate birthDate;
@@ -28,24 +30,4 @@ public abstract class BaseMember extends BaseEntity {
     private String profileImageUrl;
 
     private MemberRole role;
-
-    public void updateNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void updateEmail(String email) {
-        this.email = email;
-    }
-
-    public void updateBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public void updateProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
-    }
-    
-    public void updateRole(MemberRole role) {
-        this.role = role;
-    }
 }
