@@ -29,7 +29,6 @@ public class GlobalExceptionHandler {
         "global"
     );
     log.error(ex.getMessage(), ex);
-    ex.printStackTrace();
     return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
