@@ -1,21 +1,22 @@
 package org.sejong.sulgamewiki.member.presentation;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.sejong.sulgamewiki.common.log.LogMonitoringInvocation;
 import org.sejong.sulgamewiki.member.application.MemberService;
+import org.sejong.sulgamewiki.member.dto.request.CompleteRegistrationRequest;
 import org.sejong.sulgamewiki.member.dto.request.CreateMemberRequest;
 import org.sejong.sulgamewiki.member.dto.response.CreateMemberResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
   private final MemberService memberService;
 
@@ -25,6 +26,17 @@ public class MemberController {
     CreateMemberResponse createMemberResponse
         = memberService.createMember(createMemberRequest);
     return ResponseEntity.ok(createMemberResponse);
+  }
+
+  @LogMonitoringInvocation
+  @PostMapping("/complete-registration")
+  public ResponseEntity<CreateMemberResponse> completeRegistration(
+       @RequestBody CompleteRegistrationRequest request
+  ){
+    log.debug(request.getUniversity());
+    log.debug("Received request with memberId: {}", request.getMemberId());
+    CreateMemberResponse response = memberService.completeRegistration(request);
+    return ResponseEntity.ok(response);
   }
 
 //
