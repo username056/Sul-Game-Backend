@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public abstract class BaseMember extends BaseEntity {
 
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
     @Column(unique = true)
