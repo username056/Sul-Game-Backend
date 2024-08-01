@@ -30,16 +30,6 @@ public class CreativeGameMedia extends BaseMedia {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
-  private String mediaUrl;
-
-  @Column(nullable = false)
-  private Long fileSize;
-
-  @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  private MediaType mediaType;
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "creative_game_id", nullable = false)
   private CreativeGame creativeGame;
