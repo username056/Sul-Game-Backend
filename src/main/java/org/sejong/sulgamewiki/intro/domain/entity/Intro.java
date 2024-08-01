@@ -30,6 +30,7 @@ public class Intro extends BasePost {
     return Intro.builder()
         .title(request.getTitle())
         .description(request.getDescription())
+        .lyrics(request.getLyrics())
         .member(member)
         .likes(0)
         .views(0)
