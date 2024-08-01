@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.intro.presentation;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,21 +21,22 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/intro")
 @RequiredArgsConstructor
-public class IntroController implements IntroControllerDocs {
+public class IntroController {
 
   private final IntroService introService;
 
   @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Operation(description = "인트로 생성")
   public ResponseEntity<CreateIntroResponse> createIntro(
       @RequestParam Long memberId,
-      @ModelAttribute CreateIntroRequest request,
-      @RequestParam("multipartFiles") List<MultipartFile> files
-//            @RequestBody CreateIntroRequest request
-//            @ModelAttribute MultipartFile multipartFile
+      @RequestBody CreateIntroRequest request,
+      @FilesParameter List<MultipartFile> multipartFile
+//      @FilesParameter CreateIntroRequest request
+//      @ModelAttribute @RequestParam("multipartFiles") List<MultipartFile> files
 
   ) {
     CreateIntroResponse introResponse = introService.createIntro(memberId,
-        request, files);
+        request, multipartFile);
     return ResponseEntity.ok(introResponse);
   }
 

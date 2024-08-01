@@ -14,17 +14,15 @@ import org.sejong.sulgamewiki.member.domain.entity.Member;
 @SuperBuilder
 public abstract class BasePost extends BaseEntity {
 
-  @Column(nullable = false, length = 100)
+  @Column(length = 100)
   private String title;
 
   @Column(length = 500)
   private String description;
 
-  @Column(nullable = false)
   @Builder.Default
   private int likes = 0;
 
-  @Column(nullable = false)
   @Builder.Default
   private int views = 0;
 
