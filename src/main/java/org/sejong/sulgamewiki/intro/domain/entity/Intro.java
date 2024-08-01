@@ -24,12 +24,13 @@ public class Intro extends BasePost {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long Id;
 
-  @Column(nullable = false, length = 200)
+  @Column(length = 200)
   private String lyrics;
   public static Intro toEntity(Member member, CreateIntroRequest request) {
     return Intro.builder()
         .title(request.getTitle())
         .description(request.getDescription())
+        .lyrics(request.getLyrics())
         .member(member)
         .likes(0)
         .views(0)

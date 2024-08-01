@@ -14,6 +14,10 @@ spring:
           type:
             resolver: org.hibernate.type.BasicTypeResolverStandardImpl
           dialect: org.hibernate.dialect.MariaDBDialect
+  servlet:
+    multipart:
+      max-request-size: 30MB
+      max-file-size: 30MB
 mvc:
   path-match:
     matching-strategy: ant_path_matcher
@@ -27,3 +31,15 @@ springdoc:
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-exp-time: ${JWT_ACCESS_EXP_TIME}
+
+cloud:
+  aws:
+    s3:
+      bucket: sul-game-media
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      access-key: ${S3_AccessKey}
+      secret-key: ${S3_SecretKey}

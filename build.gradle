@@ -51,6 +51,15 @@ dependencies {
 
 	// OAuth
 	implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
+
+	// AWS S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// H2 DB
+	runtimeOnly 'com.h2database:h2'
+
+	// MySQL DB
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 tasks.named('test') {

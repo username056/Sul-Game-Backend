@@ -22,7 +22,7 @@ import org.sejong.sulgamewiki.common.entity.constants.MediaType;
 @AllArgsConstructor
 public abstract class BaseMedia extends BaseEntity {
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 2048)
   private String mediaUrl;
 
   @Column(nullable = false)

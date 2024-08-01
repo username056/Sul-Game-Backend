@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.common.entity.BaseMedia;
 import org.sejong.sulgamewiki.common.entity.constants.MediaType;
 import org.sejong.sulgamewiki.game.popular.domain.entity.PopularGame;
@@ -23,25 +24,16 @@ import org.sejong.sulgamewiki.game.popular.domain.entity.PopularGame;
 @ToString
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class IntroMedia extends BaseMedia {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(nullable = false)
-    private String mediaUrl;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false)
-    private Long fileSize;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private MediaType mediaType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "intro_id", nullable = false)
-    private PopularGame popularGame;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "intro_id", nullable = false)
+  private Intro intro;
 }
