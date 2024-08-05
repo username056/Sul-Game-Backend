@@ -4,10 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder
+@ToString
 public class CreatePopularGameRequest {
   @Schema(description = "게임의 제목", example = "딸기당근수박참외메론 게임")
   private String title;

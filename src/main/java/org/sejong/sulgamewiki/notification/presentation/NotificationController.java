@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.notification.presentation;
 
+import org.sejong.sulgamewiki.common.log.LogMonitoringInvocation;
 import org.sejong.sulgamewiki.notification.application.NotificationService;
 import org.sejong.sulgamewiki.notification.domain.entity.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @GetMapping("/members/{memberId}/notifications")
+    @LogMonitoringInvocation
     public Page<Notification> getNotificationsByMemberId(@PathVariable Long memberId, Pageable pageable) {
         return notificationService.getNotificationsByMemberId(memberId, pageable);
     }

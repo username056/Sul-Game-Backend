@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.common.docs.IntroControllerDocs;
+import org.sejong.sulgamewiki.common.log.LogMonitoringInvocation;
 import org.sejong.sulgamewiki.common.utils.annotations.FilesParameter;
 import org.sejong.sulgamewiki.intro.application.IntroService;
 import org.sejong.sulgamewiki.intro.dto.request.CreateIntroRequest;
@@ -28,9 +29,10 @@ public class IntroController {
 
   @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(description = "인트로 생성")
+  @LogMonitoringInvocation
   public ResponseEntity<CreateIntroResponse> createIntro(
       @RequestParam Long memberId,
-      @RequestBody CreateIntroRequest request,
+      @ModelAttribute CreateIntroRequest request,
       @FilesParameter List<MultipartFile> multipartFile
 //      @FilesParameter CreateIntroRequest request
 //      @ModelAttribute @RequestParam("multipartFiles") List<MultipartFile> files

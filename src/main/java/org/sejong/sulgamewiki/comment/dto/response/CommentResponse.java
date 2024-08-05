@@ -2,11 +2,13 @@ package org.sejong.sulgamewiki.comment.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.sejong.sulgamewiki.comment.domain.entity.Comment;
 import org.sejong.sulgamewiki.comment.domain.entity.CommentType;
 
 @Getter
 @Builder
+@ToString
 public class CommentResponse {
     private Long id;
     private String content;
