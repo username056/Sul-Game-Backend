@@ -1,7 +1,7 @@
 package org.sejong.sulgamewiki.game.popular.presentation;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.common.docs.PopularGameControllerDocs;
 import org.sejong.sulgamewiki.common.log.LogMonitoringInvocation;
 import org.sejong.sulgamewiki.common.utils.annotations.FilesParameter;
 import org.sejong.sulgamewiki.game.popular.application.PopularGameService;
@@ -16,11 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/popular-game")
 @RequiredArgsConstructor
-public class PopularGameController implements PopularGameControllerDocs {
+public class PopularGameController {
 
   private final PopularGameService popularGameService;
 
@@ -28,10 +29,11 @@ public class PopularGameController implements PopularGameControllerDocs {
   @LogMonitoringInvocation
   public ResponseEntity<CreatePopularGameResponse> createPopularGame(
       @RequestParam Long memberId,
-      @FilesParameter CreatePopularGameRequest request
+      @FilesParameter CreatePopularGameRequest request,
+      @FilesParameter List<MultipartFile> multipartFiles
   ) {
     CreatePopularGameResponse popularGame
-        = popularGameService.createPopularGame(memberId, request);
+        = popularGameService.createPopularGame(memberId, request, multipartFiles);
     return ResponseEntity.ok(popularGame);
   }
 
@@ -41,4 +43,26 @@ public class PopularGameController implements PopularGameControllerDocs {
     GetPopularGameResponse response = popularGameService.getPopularGame(id);
     return ResponseEntity.ok(response);
   }
+
+//  @GetMapping("")
+//  @Operation(description = "인기게임 리스트")
+//  public ResponseEntity<List<GetPopularGamesResponse>> getPopularGames() {
+//    List<GetPopularGamesResponse> response = popularGameService.getPopularGames();
+//    return ResponseEntity.ok(response);
+//  }
+
+//  @GetMapping("/update/{id}")
+//  public ResponseEntity<UpdatePopularGameResponse> updatePopularGame(
+//      @PathVariable Long popularGameId,
+//      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+//      @RequestBody UpdatePopularGameRequest request
+//  ) {
+//    UpdatePopularGameResponse response = popularGameService.updatePopularGame(
+//        popularGameId,
+//        customUserDetails.getMember().getId(),
+//        request);
+//    return ResponseEntity.ok(response);
+//  }
+
+
 }
