@@ -4,8 +4,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 public enum MediaType {
   IMAGE_PNG("image/png"),
-  IMAGE_JPEG("image/jpeg");
-  // 다른 MIME 타입 추가
+  IMAGE_JPEG("image/jpeg"),
+  IMAGE_JPG("image/jpg"),
+  VIDEO_MP4("video/mp4"),
+  VIDEO_AVI("video/x-msvideo"),
+  VIDEO_MOV("video/quicktime"),
+  AUDIO_MP3("audio/mpeg"),
+  AUDIO_WAV("audio/wav"),
+  AUDIO_AAC("audio/aac");
 
   private final String mimeType;
 
@@ -26,6 +32,11 @@ public enum MediaType {
     throw new IllegalArgumentException(
         "No enum constant for MIME type " + mimeType);
   }
+
+  public static MediaType getMediaType(MultipartFile file) {
+    return MediaType.fromMimeType(file.getContentType());
+  }
+
 }
 
 
