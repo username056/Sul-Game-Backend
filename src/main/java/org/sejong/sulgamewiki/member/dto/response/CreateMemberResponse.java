@@ -1,8 +1,12 @@
 package org.sejong.sulgamewiki.member.dto.response;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 import org.sejong.sulgamewiki.member.domain.entity.Member;
 
+@ToString
+@Getter
 @Builder
 public class CreateMemberResponse {
   public Long memberId;

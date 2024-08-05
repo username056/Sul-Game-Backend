@@ -3,11 +3,13 @@ package org.sejong.sulgamewiki.game.popular.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.sejong.sulgamewiki.game.popular.domain.entity.PopularGame;
 
 @Getter
 @Setter
 @Builder
+@ToString
 public class GetPopularGameResponse {
   private long popularGameId;
   private String title;

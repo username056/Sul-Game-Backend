@@ -21,6 +21,7 @@ public class MemberController {
   private final MemberService memberService;
 
   @PostMapping// TODO: 이대로 수정하기
+  @LogMonitoringInvocation
   public ResponseEntity<CreateMemberResponse> createMember(
       @RequestBody CreateMemberRequest createMemberRequest) {
     CreateMemberResponse createMemberResponse
@@ -28,8 +29,8 @@ public class MemberController {
     return ResponseEntity.ok(createMemberResponse);
   }
 
-  @LogMonitoringInvocation
   @PostMapping("/complete-registration")
+  @LogMonitoringInvocation
   public ResponseEntity<CreateMemberResponse> completeRegistration(
        @RequestBody CompleteRegistrationRequest request
   ){

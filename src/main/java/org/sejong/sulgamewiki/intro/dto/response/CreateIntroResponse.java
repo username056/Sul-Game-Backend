@@ -2,10 +2,12 @@ package org.sejong.sulgamewiki.intro.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.sejong.sulgamewiki.intro.domain.entity.Intro;
 
 @Getter
 @Builder
+@ToString
 public class CreateIntroResponse {
     private Long introId;
     private Long memberId;

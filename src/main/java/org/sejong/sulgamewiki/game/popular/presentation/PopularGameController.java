@@ -2,6 +2,7 @@ package org.sejong.sulgamewiki.game.popular.presentation;
 
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.common.docs.PopularGameControllerDocs;
+import org.sejong.sulgamewiki.common.log.LogMonitoringInvocation;
 import org.sejong.sulgamewiki.common.utils.annotations.FilesParameter;
 import org.sejong.sulgamewiki.game.popular.application.PopularGameService;
 import org.sejong.sulgamewiki.game.popular.dto.request.CreatePopularGameRequest;
@@ -24,6 +25,7 @@ public class PopularGameController implements PopularGameControllerDocs {
   private final PopularGameService popularGameService;
 
   @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
   public ResponseEntity<CreatePopularGameResponse> createPopularGame(
       @RequestParam Long memberId,
       @FilesParameter CreatePopularGameRequest request
@@ -34,6 +36,7 @@ public class PopularGameController implements PopularGameControllerDocs {
   }
 
   @GetMapping("/{id}")
+  @LogMonitoringInvocation
   public ResponseEntity<GetPopularGameResponse> getPopularGame(@PathVariable Long id) {
     GetPopularGameResponse response = popularGameService.getPopularGame(id);
     return ResponseEntity.ok(response);
