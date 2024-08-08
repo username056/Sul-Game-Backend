@@ -29,8 +29,9 @@ public class PopularGame extends BasePost {
 
   public static PopularGame toEntity(Member member, CreatePopularGameRequest request) {
     return PopularGame.builder()
-        .title(request.getDescription())
+        .title(request.getTitle())
         .description(request.getDescription())
+        .introduction(request.getIntroduction())
         .member(member)
         .likes(0)
         .views(0)

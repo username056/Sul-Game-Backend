@@ -29,28 +29,24 @@ public class IntroService {
   private final BaseMediaRepository baseMediaRepository;
   private final S3Service s3Service;
 
-  public CreateIntroResponse createIntro(Long memberId,
-      CreateIntroRequest request, List<MultipartFile> files) {
+  public CreateIntroResponse createIntro(
+      Long memberId,
+      CreateIntroRequest request,
+      List<MultipartFile> files) {
     // Member 정보 가져오기
     Member member = memberRepository.findById(memberId)
         .orElseThrow(
             () -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
     // CreateIntroRequest, Member 로 -> Intro 엔티티 객체 생성
-    Intro intro = Intro.builder()
-        .title(request.getTitle())
-        .description(request.getDescription())
-        .lyrics(request.getLyrics())
-        .member(member)
-        .likes(0)
-        .views(0)
-        .build();
+    Intro intro = Intro.toEntity(member, request);
 
     // Intro 엔티티 DB 저장
     Intro savedIntro = introRepository.save(intro);
 
     for (MultipartFile file : files) {
         String fileUrl = s3Service.uploadFile(file, BasePostSource.INTRO);
+
         BaseMedia introMedia = BaseMedia.builder()
             .mediaUrl(fileUrl)
             .fileSize(file.getSize())
