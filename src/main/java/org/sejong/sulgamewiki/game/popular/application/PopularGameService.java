@@ -49,9 +49,6 @@ public class PopularGameService {
     // PopularEntity DB 저장
     PopularGame savedPopularGame = popularGameRepository.save(popularGame);
 
-    List<String> popularGameMediaUrls
-        = s3Service.uploadFiles(multipartFiles, BasePostSource.POPULAR_GAME);
-
     for( MultipartFile file : multipartFiles) {
       String fileUrl = s3Service.uploadFile(file, BasePostSource.POPULAR_GAME);
 

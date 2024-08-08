@@ -1,5 +1,7 @@
 package org.sejong.sulgamewiki.game.popular.presentation;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.common.log.LogMonitoringInvocation;
@@ -8,6 +10,7 @@ import org.sejong.sulgamewiki.game.popular.application.PopularGameService;
 import org.sejong.sulgamewiki.game.popular.dto.request.CreatePopularGameRequest;
 import org.sejong.sulgamewiki.game.popular.dto.response.CreatePopularGameResponse;
 import org.sejong.sulgamewiki.game.popular.dto.response.GetPopularGameResponse;
+import org.sejong.sulgamewiki.intro.dto.request.CreateIntroRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,12 +29,32 @@ public class PopularGameController {
   private final PopularGameService popularGameService;
 
   @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Operation(description = "인기게임 생성")
   @LogMonitoringInvocation
   public ResponseEntity<CreatePopularGameResponse> createPopularGame(
+      @Parameter(description = "MemberId", required = true, example = "1")
       @RequestParam Long memberId,
-      @FilesParameter CreatePopularGameRequest request,
-      @FilesParameter List<MultipartFile> multipartFiles
+
+      @Parameter(description = "인기게임 제목", required = true, example = "인기게임 제목을 적어주세요.")
+      @RequestParam String title,
+
+      @Parameter(description = "인기게임 설명", required = true, example = "어떻게 하는 게임인지 설명해주세요.")
+      @RequestParam String description,
+
+      @Parameter(description = "인기게임 간략한 한줄소개", required = true, example = "간략한 한줄소개를 적어주세요")
+      @RequestParam String introduction,
+
+      @Parameter(description = "파일 목록", required = true)
+      @RequestParam("multipartFiles") List<MultipartFile> multipartFiles
   ) {
+    // CreatePopularGameRequest 객체를 Builder 패턴을 사용하여 생성
+    CreatePopularGameRequest request = CreatePopularGameRequest.builder()
+        .title(title)
+        .description(description)
+        .introduction(introduction)
+        .build();
+
+    // 서비스 호출하여 인기게임 생성
     CreatePopularGameResponse popularGame
         = popularGameService.createPopularGame(memberId, request, multipartFiles);
     return ResponseEntity.ok(popularGame);
