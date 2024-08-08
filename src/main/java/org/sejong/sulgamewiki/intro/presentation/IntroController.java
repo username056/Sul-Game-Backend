@@ -43,12 +43,8 @@ public class IntroController {
       @Parameter(description = "파일 목록", required = true)
       @RequestParam("multipartFiles") List<MultipartFile> files
   ) {
-    // CreateIntroRequest 객체를 Builder 패턴을 사용하여 생성
-    CreateIntroRequest request = CreateIntroRequest.builder()
-        .title(title)
-        .description(description)
-        .lyrics(lyrics)
-        .build();
+    // CreateIntroRequest 객체를 of 메서드 사용하여 생성
+    CreateIntroRequest request = CreateIntroRequest.of(title, description, lyrics);
 
     // 서비스 호출하여 인트로 생성
     CreateIntroResponse introResponse = introService.createIntro(memberId, request, files);

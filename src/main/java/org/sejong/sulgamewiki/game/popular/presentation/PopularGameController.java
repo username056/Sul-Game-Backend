@@ -48,21 +48,20 @@ public class PopularGameController {
       @RequestParam("multipartFiles") List<MultipartFile> multipartFiles
   ) {
     // CreatePopularGameRequest 객체를 Builder 패턴을 사용하여 생성
-    CreatePopularGameRequest request = CreatePopularGameRequest.builder()
-        .title(title)
-        .description(description)
-        .introduction(introduction)
-        .build();
+    CreatePopularGameRequest request = CreatePopularGameRequest.of(title,
+        description, introduction);
 
     // 서비스 호출하여 인기게임 생성
     CreatePopularGameResponse popularGame
-        = popularGameService.createPopularGame(memberId, request, multipartFiles);
+        = popularGameService.createPopularGame(memberId, request,
+        multipartFiles);
     return ResponseEntity.ok(popularGame);
   }
 
   @GetMapping("/{id}")
   @LogMonitoringInvocation
-  public ResponseEntity<GetPopularGameResponse> getPopularGame(@PathVariable Long id) {
+  public ResponseEntity<GetPopularGameResponse> getPopularGame(
+      @PathVariable Long id) {
     GetPopularGameResponse response = popularGameService.getPopularGame(id);
     return ResponseEntity.ok(response);
   }
