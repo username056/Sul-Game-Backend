@@ -46,6 +46,7 @@ public class PopularGameService {
 
     // CreatePopularGameRequest, Member 로 -> PopularEntity 객체 생성
     PopularGame popularGame = PopularGame.toEntity(member, request);
+
     // PopularEntity DB 저장
     PopularGame savedPopularGame = popularGameRepository.save(popularGame);
 
