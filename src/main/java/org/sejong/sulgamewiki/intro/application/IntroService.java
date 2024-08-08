@@ -29,8 +29,10 @@ public class IntroService {
   private final BaseMediaRepository baseMediaRepository;
   private final S3Service s3Service;
 
-  public CreateIntroResponse createIntro(Long memberId,
-      CreateIntroRequest request, List<MultipartFile> files) {
+  public CreateIntroResponse createIntro(
+      Long memberId,
+      CreateIntroRequest request,
+      List<MultipartFile> files) {
     // Member 정보 가져오기
     Member member = memberRepository.findById(memberId)
         .orElseThrow(
