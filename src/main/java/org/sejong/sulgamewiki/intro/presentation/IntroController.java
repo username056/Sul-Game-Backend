@@ -8,6 +8,7 @@ import org.sejong.sulgamewiki.common.log.LogMonitoringInvocation;
 import org.sejong.sulgamewiki.intro.application.IntroService;
 import org.sejong.sulgamewiki.intro.dto.request.CreateIntroRequest;
 import org.sejong.sulgamewiki.intro.dto.response.CreateIntroResponse;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,7 @@ public class IntroController {
 
   private final IntroService introService;
 
-  @PostMapping(value = "/", consumes = "multipart/form-data")
+  @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(description = "인트로 생성")
   @LogMonitoringInvocation
   public ResponseEntity<CreateIntroResponse> createIntro(
