@@ -7,6 +7,7 @@ import org.sejong.sulgamewiki.member.domain.entity.Member;
 import org.sejong.sulgamewiki.member.domain.repository.MemberRepository;
 import org.sejong.sulgamewiki.member.dto.request.CompleteRegistrationRequest;
 import org.sejong.sulgamewiki.member.dto.request.CreateMemberRequest;
+import org.sejong.sulgamewiki.member.dto.request.UpdateMemberResponse;
 import org.sejong.sulgamewiki.member.dto.response.CreateMemberResponse;
 import org.sejong.sulgamewiki.member.exception.MemberErrorCode;
 import org.sejong.sulgamewiki.member.exception.MemberException;
@@ -41,6 +42,32 @@ public class MemberService {
     return CreateMemberResponse.from(savedMember);
   }
 
+  public void deleteMember(Long memberId) {
+    memberRepository.deleteById(memberId);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//  public void updateMember(Long memberId, CreateMemberRequest createMemberRequest) {
+//    Member member = this.memberRepository.findById(createMemberRequest.getMemberId()).orElseThrow();
+//            memberRepository.update(Member.toEntity(createMemberRequest));
+//        return ;
+//  }
+
+
 //  public CreaeteMemberResponse getMemberById(Long id) {
 //    Member member = memberRepository.findById(id).orElseThrow(()
 //        -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
@@ -48,16 +75,12 @@ public class MemberService {
 //  }
 //
 //  public CreaeteMemberResponse updateMember(Long id, CreaeteMemberResponse creaeteMemberResponse) {
-//    Member existingMember = memberRepository.findById(id)
-//        .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+//
 //    existingMember.updateFromRequest(creaeteMemberResponse);
 //
 //    Member updatedMember = memberRepository.save(existingMember);
 //    return CreaeteMemberResponse.from(updatedMember);
 //  }
-//  public void deleteMember(Long id) {
-//    Member existingMember = memberRepository.findById(id)
-//        .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-//    memberRepository.delete(existingMember);
+
 //  }
 }

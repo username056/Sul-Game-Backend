@@ -33,13 +33,13 @@ public class IntroController {
   public ResponseEntity<CreateIntroResponse> createIntro(
       @RequestParam Long memberId,
       @ModelAttribute CreateIntroRequest request,
-      @FilesParameter List<MultipartFile> multipartFile
+      @FilesParameter List<MultipartFile> multipartFiles
 //      @FilesParameter CreateIntroRequest request
 //      @ModelAttribute @RequestParam("multipartFiles") List<MultipartFile> files
 
   ) {
     CreateIntroResponse introResponse = introService.createIntro(memberId,
-        request, multipartFile);
+        request, multipartFiles);
     return ResponseEntity.ok(introResponse);
   }
 

@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.sejong.sulgamewiki.common.entity.constants.BasePostSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,22 +23,26 @@ public class S3Service {
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
 
-  public String uploadFile(MultipartFile file, String category) throws IOException {
+  public String uploadFile(MultipartFile file, BasePostSource source)  {
     // 파일 이름 생성
-    String fileName = generateFileName(file, category);
+    String fileName = generateFileName(file, source.name());
 
-    amazonS3.putObject(
-        new PutObjectRequest(bucket, fileName, file.getInputStream(), null)
-            .withCannedAcl(CannedAccessControlList.PublicRead));
+    try {
+      amazonS3.putObject(
+          new PutObjectRequest(bucket, fileName, file.getInputStream(), null)
+              .withCannedAcl(CannedAccessControlList.PublicRead));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 
     return amazonS3.getUrl(bucket, fileName).toString();
   }
 
   // List<MulipartFile>
-  public List<String> uploadFiles(List<MultipartFile> files, String category) throws IOException{
+  public List<String> uploadFiles(List<MultipartFile> files, BasePostSource source) {
     List<String> fileUrls = new ArrayList<>();
     for (MultipartFile file : files) {
-      fileUrls.add(uploadFile(file, category));
+      fileUrls.add(uploadFile(file, source));
     }
     return fileUrls;
   }

@@ -1,9 +1,6 @@
-package org.sejong.sulgamewiki.game.popular.domain.entity;
+package org.sejong.sulgamewiki.common.like.domain.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,25 +9,29 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.sejong.sulgamewiki.common.entity.BaseMedia;
-import org.sejong.sulgamewiki.common.entity.constants.MediaType;
+import lombok.experimental.SuperBuilder;
+import org.sejong.sulgamewiki.common.entity.BasePost;
+import org.sejong.sulgamewiki.member.domain.entity.Member;
 
-@ToString
-@Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PopularGameMedia extends BaseMedia {
+@Entity
+public class LikedMember {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "popular_game_id", nullable = false)
-  private PopularGame popularGame;
+  @JoinColumn(name = "member_id", nullable = false)
+  private Member member;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "post_id", nullable = false)
+  private BasePost basePost;
+  
 }

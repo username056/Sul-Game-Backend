@@ -1,14 +1,14 @@
 package org.sejong.sulgamewiki.intro.application;
 
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.common.aws_s3.application.S3Service;
+import org.sejong.sulgamewiki.common.entity.BaseMedia;
+import org.sejong.sulgamewiki.common.entity.constants.BasePostSource;
 import org.sejong.sulgamewiki.common.entity.constants.MediaType;
+import org.sejong.sulgamewiki.common.entity.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.intro.domain.entity.Intro;
-import org.sejong.sulgamewiki.intro.domain.entity.IntroMedia;
-import org.sejong.sulgamewiki.intro.domain.repository.IntroMediaRepository;
 import org.sejong.sulgamewiki.intro.domain.repository.IntroRepository;
 import org.sejong.sulgamewiki.intro.dto.request.CreateIntroRequest;
 import org.sejong.sulgamewiki.intro.dto.response.CreateIntroResponse;
@@ -26,7 +26,7 @@ public class IntroService {
 
   private final MemberRepository memberRepository;
   private final IntroRepository introRepository;
-  private final IntroMediaRepository introMediaRepository;
+  private final BaseMediaRepository baseMediaRepository;
   private final S3Service s3Service;
 
   public CreateIntroResponse createIntro(Long memberId,
@@ -49,31 +49,21 @@ public class IntroService {
     // Intro 엔티티 DB 저장
     Intro savedIntro = introRepository.save(intro);
 
-    //TODO: List<MultipartFile> files -> AWS S3 -> URL 받아오는 로직 필요
-    //TODO: IntroMedia 생성 로직 필요
-    // S3에 파일 업로드 및 URL 저장
     for (MultipartFile file : files) {
-      try {
-        String fileUrl = s3Service.uploadFile(file, "intro");
-        IntroMedia introMedia = IntroMedia.builder()
+        String fileUrl = s3Service.uploadFile(file, BasePostSource.INTRO);
+        BaseMedia introMedia = BaseMedia.builder()
             .mediaUrl(fileUrl)
             .fileSize(file.getSize())
-            .mediaType(determineMediaType(file)) // 미디어 타입 결정 로직 추가 필요
-            .intro(savedIntro)
+            .mediaType(MediaType.getMediaType(file))
+            .basePost(savedIntro)
             .build();
         // IntroMedia 엔티티를 데이터베이스에 저장
-        introMediaRepository.save(introMedia);
-      } catch (IOException e) {
-        log.error("Failed to upload file to S3", e);
-        throw new RuntimeException("Failed to upload file to S3", e);
-      }
+        baseMediaRepository.save(introMedia);
     }
 
     // CreateIntroResponse DTO 로 변환
     return CreateIntroResponse.from(savedIntro);
   }
 
-  private MediaType determineMediaType(MultipartFile file) {
-    return MediaType.fromMimeType(file.getContentType());
-  }
+
 }
