@@ -2,6 +2,8 @@ package org.sejong.sulgamewiki.util.auth.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.sejong.sulgamewiki.object.constants.AccountStatus;
+import org.sejong.sulgamewiki.object.constants.Role;
 import org.sejong.sulgamewiki.util.auth.domain.CustomUserDetails;
 import org.sejong.sulgamewiki.object.constants.MemberRole;
 import org.sejong.sulgamewiki.object.constants.MemberStatus;
@@ -31,8 +33,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     String email = oAuth2User.getAttribute("email");
     Member newMember = Member.builder()
         .email(email)
-        .role(MemberRole.ROLE_USER)
-        .status(MemberStatus.PENDING)
+        .role(Role.ROLE_USER)
+        .accountStatus(AccountStatus.PENDING)
         .build();
     return memberRepository.save(newMember);
   }

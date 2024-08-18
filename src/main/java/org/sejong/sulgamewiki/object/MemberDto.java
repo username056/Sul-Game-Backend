@@ -10,7 +10,9 @@ import lombok.Setter;
 @Setter
 public class MemberDto {
   private Member member;
+  private MemberContentInteraction memberContentInteraction;
   private List<Member> members;
   private Long memberId;
   private String nickName;
+
 }

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import lombok.Getter;
-import org.sejong.sulgamewiki.object.constants.MemberStatus;
+import org.sejong.sulgamewiki.object.constants.AccountStatus;
 import org.sejong.sulgamewiki.object.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,32 +37,35 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
   @Override
   public String getPassword() {
-    return null;
+    return null;  // OAuth2 기반의 인증이라 비밀번호가 없음
   }
 
   @Override
   public String getUsername() {
-    return member.getEmail();
+    return String.valueOf(member.getMemberId());
   }
 
   @Override
   public boolean isAccountNonExpired() {
-    return member.getStatus() != MemberStatus.DELETED;
+    // AccountStatus가 DELETED인 경우, 계정이 만료된 것으로 간주
+    return member.getAccountStatus() != AccountStatus.DELETED;
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    return member.getStatus() != MemberStatus.INACTIVE;
+    // AccountStatus가 DELETED인 경우에만 계정을 잠긴 것으로 간주
+    return member.getAccountStatus() != AccountStatus.DELETED;
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    return true;
+    return true;  // 인증 정보는 항상 유효함
   }
 
   @Override
   public boolean isEnabled() {
-    return member.getStatus() == MemberStatus.ACTIVE;
+    // AccountStatus가 ACTIVE인 경우에만 계정이 활성화됨
+    return member.getAccountStatus() == AccountStatus.ACTIVE;
   }
 
   @Override

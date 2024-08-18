@@ -15,7 +15,15 @@ public enum ErrorCode {
 
   ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근이 거부되었습니다."),
 
+  LIKE_CANNOT_BE_UNDER_ZERO(HttpStatus.BAD_REQUEST, "좋아요는 0보다 작을수 없습니다."),
+
+  POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),
+
   // Member
+
+  MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다."),
+
+  INVALID_ACCOUNT_STATUS(HttpStatus.BAD_REQUEST, "회원 상태가 정상이 아닙니다."),
 
   // Intro
 
@@ -29,6 +37,7 @@ public enum ErrorCode {
   COMMENT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "댓글의 작성자가 아닙니다."),
 
   // S3
+  INVALID_MEDIA_TYPE(HttpStatus.BAD_REQUEST, "지원되지 않는 MIME 타입입니다"),
 
   // Auth
 

@@ -10,31 +10,17 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-
+  // 커스텀 예외 처리
   @ExceptionHandler(CustomException.class)
-  public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
-    ErrorResponse errorResponse = new ErrorResponse(
-        ex.getStatus(),
-        ex.getMessage(),
-        ex.getSource()
-    );
-    return new ResponseEntity<>(errorResponse, ex.getStatus());
+  public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
+    log.error("{}", e.getMessage());
+    ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getMessage());
+    return ResponseEntity.status(e.getErrorCode().getStatus()).body(errorResponse);
   }
 
-
-  @ExceptionHandler(MaxUploadSizeExceededException.class)
-  public ResponseEntity<String> handleMaxSizeException(MaxUploadSizeExceededException exc) {
-    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("File size exceeds the maximum allowed limit!");
-  }
-
-  @ExceptionHandler(RuntimeException.class)
-  public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
-    ErrorResponse errorResponse = new ErrorResponse(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        ex.getMessage(),
-        "global"
-    );
-    log.error(ex.getMessage(), ex);
-    return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<String> handleException(Exception e) {
+    log.error("{}", e.getMessage());
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
   }
 }

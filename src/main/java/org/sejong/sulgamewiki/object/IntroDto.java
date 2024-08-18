@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.object;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,5 +16,6 @@ public class IntroDto {
   private String title;
   private String description;
   private String lyrics;
-
+  private BasePost basePost;
+  private List<BaseMedia> baseMedias;
 }

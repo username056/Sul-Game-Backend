@@ -1,69 +1,60 @@
 package org.sejong.sulgamewiki.service;
 
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.comment.CommentException.CommentErrorCode;
-import org.sejong.sulgamewiki.comment.CommentException.CommentException;
+import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.Comment;
-import org.sejong.sulgamewiki.object.constants.CommentType;
-import org.sejong.sulgamewiki.repository.CommentRepository;
-import org.sejong.sulgamewiki.comment.dto.request.CommentRequest;
-import org.sejong.sulgamewiki.comment.dto.response.CommentResponse;
-import org.sejong.sulgamewiki.game.common.exception.GameErrorCode;
-import org.sejong.sulgamewiki.game.common.exception.GameException;
-import org.sejong.sulgamewiki.object.OfficialGame;
-import org.sejong.sulgamewiki.repository.PopularGameRepository;
+import org.sejong.sulgamewiki.object.CommentCommand;
+import org.sejong.sulgamewiki.object.CommentDto;
 import org.sejong.sulgamewiki.object.Member;
+import org.sejong.sulgamewiki.repository.BasePostRepository;
+import org.sejong.sulgamewiki.repository.CommentRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
-import org.sejong.sulgamewiki.member.exception.MemberErrorCode;
-import org.sejong.sulgamewiki.member.exception.MemberException;
+import org.sejong.sulgamewiki.util.exception.CustomException;
+import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
 
-  private final CommentRepository commentRepository;
   private final MemberRepository memberRepository;
-  private final PopularGameRepository popularGameRepository;
+  private final BasePostRepository basePostRepository;
+  private final CommentRepository commentRepository;
 
-  public CommentResponse createComment(CommentRequest request) {
-    Member member = memberRepository.findById(request.getMemberId())
-        .orElseThrow(
-            () -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+  public CommentDto createComment(CommentCommand command) {
+    CommentDto dto = CommentDto.builder().build();
 
+    Member member = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    // 게임 유형에 따라 다른 엔티티를 조회하는 로직을 추가해야 합니다.
-    if (request.getCommentType() == CommentType.POPULAR_GAME) {
-      OfficialGame officialGame = popularGameRepository.findById(request.getTypeId())
-          .orElseThrow(() -> new GameException(GameErrorCode.GAME_NOT_FOUND));
-      // 만약 다른 게임 유형이 추가될 경우, 여기에 추가적인 조건문을 작성합니다.
-    }
+    BasePost basePost = basePostRepository.findById(command.getBasePostId())
+        .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
     Comment comment = Comment.builder()
-        .content(request.getContent())
-        .typeId(request.getTypeId())
-        .commentType(request.getCommentType())
+        .content(command.getContent())
         .member(member)
+        .basePost(basePost)
+        .likeCount(0)
+        .reportedCount(0)
+        .isEdited(false)
+        .isDeleted(false)
         .build();
 
     Comment savedComment = commentRepository.save(comment);
 
-    return CommentResponse.from(savedComment);
+    dto.setComment(savedComment);
+    return dto;
   }
 
-  public void deleteComment(Long commentId, Long memberId) {
-
-    // 댓글이 존재하는지 확인
-    Comment comment = commentRepository.findById(commentId)
-        .orElseThrow(
-            () -> new CommentException(CommentErrorCode.COMMENT_NOT_FOUND,
-                "CommentService.deleteComment"));
+  public void deleteComment(CommentCommand command) {
+    Comment comment = commentRepository.findById(command.getCommentId())
+        .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
     // 댓글 작성자가 요청한 사용자인지 확인
-    if (!comment.getMember().getId().equals(memberId)) {
-      throw new CommentException(CommentErrorCode.ACCESS_DENIED,
-          "CommentService.deleteComment");
+    if (!comment.getMember().getMemberId().equals(command.getMemberId())) {
+      throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
     }
-    commentRepository.deleteById(commentId);
+
+    commentRepository.deleteById(comment.getCommentId());
   }
 }

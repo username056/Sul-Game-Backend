@@ -1,19 +1,16 @@
 package org.sejong.sulgamewiki.service;
 
 
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.util.entity.BasePost;
+import org.sejong.sulgamewiki.object.BasePost;
+import org.sejong.sulgamewiki.object.BasePostCommand;
+import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
-import org.sejong.sulgamewiki.util.exception.GlobalException;
-import org.sejong.sulgamewiki.util.like.domain.entity.LikedMember;
-import org.sejong.sulgamewiki.repository.LikedMemberRepository;
-import org.sejong.sulgamewiki.util.like.exception.LikeErrorCode;
-import org.sejong.sulgamewiki.util.like.dto.UpdateLikeResponse;
-import org.sejong.sulgamewiki.util.like.exception.LikeException;
-import org.sejong.sulgamewiki.member.domain.entity.Member;
-import org.sejong.sulgamewiki.member.domain.repository.MemberRepository;
-import org.sejong.sulgamewiki.member.exception.MemberErrorCode;
-import org.sejong.sulgamewiki.member.exception.MemberException;
+import org.sejong.sulgamewiki.repository.MemberRepository;
+import org.sejong.sulgamewiki.util.exception.CustomException;
+import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,54 +19,48 @@ public class LikeService {
 
   private final MemberRepository memberRepository;
   private final BasePostRepository basePostRepository;
-  private final LikedMemberRepository likedMemberRepository;
 
-  public UpdateLikeResponse upLike(Long postId, Long memberId) {
-    // 게임 아이디 통해 게임 찾기
-    BasePost basePost = basePostRepository.findById(postId)
-        .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+  //TODO comment Like 추가해야함
+  //FIXME: 지금 basePost에 LikedMemberIds 추가함 : 이전 코드 수정 필요
 
-    // 멤버 아이디를 통해 멤버 찾기(알림 보낼 때 필요함)
-    Member member = memberRepository.findById(memberId)
-        .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+  public BasePostDto upLike(BasePostCommand command) {
+    BasePostDto dto = BasePostDto.builder().build();
 
-    // game 좋아요 +1
+    BasePost basePost = basePostRepository.findById(command.getBasePostId())
+        .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+    Member member = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
     basePost.upLike();
+    Set<Long> likedMemberIds = basePost.getLikedMemberIds();
+    likedMemberIds.add(command.getMemberId());
+    basePost.setLikedMemberIds(likedMemberIds);
 
-    // game db에 저장
-    basePostRepository.save(basePost);
+    BasePost savedBasePost = basePostRepository.save(basePost);
 
-    // 엔티티 생성
-    LikedMember likedMember = LikedMember.builder()
-        .member(member)
-        .basePost(basePost)
-        .build();
-
-    likedMemberRepository.save(likedMember);
-
-    // dto 생성, 반환
-    return UpdateLikeResponse.builder()
-        .postId(postId)
-        .likeCount(basePost.getLikes())
-        .build();
+    dto.setBasePost(savedBasePost);
+    return dto;
   }
 
-  public UpdateLikeResponse downLike(Long postId, Long memberId) {
-    BasePost basePost = basePostRepository.findById(postId)
-        .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
-    Member member = memberRepository.findById(memberId)
-        .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-    LikedMember likedMember = likedMemberRepository.findByBasePost(basePost)
-        .orElseThrow(() -> new LikeException(LikeErrorCode.LIKE_CANNOT_BE_UNDER_ZERO));
+  public BasePostDto downLike(BasePostCommand command) {
+    BasePostDto dto = BasePostDto.builder().build();
 
-    likedMemberRepository.delete(likedMember);
+    BasePost basePost = basePostRepository.findById(command.getBasePostId())
+        .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+    Member member = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    // 좋아요 취소
     basePost.cancelLike();
-    basePostRepository.save(basePost);
+    Set<Long> likedMemberIds = basePost.getLikedMemberIds();
+    likedMemberIds.remove(command.getMemberId());
+    basePost.setLikedMemberIds(likedMemberIds);
 
-    return UpdateLikeResponse.builder()
-        .postId(basePost.getId())
-        .likeCount(basePost.getLikes())
-        .build();
+    BasePost savedBasePost = basePostRepository.save(basePost);
 
+    dto.setBasePost(savedBasePost);
+    return dto;
   }
 }

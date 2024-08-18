@@ -10,8 +10,22 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@Setter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(callSuper = true)
 public class MemberContentInteraction extends BaseTimeEntity {
 
   @Id
@@ -19,42 +33,53 @@ public class MemberContentInteraction extends BaseTimeEntity {
   private Long id;
 
   @OneToOne
-  @JoinColumn(name = "member_id", nullable = false)
   private Member member;
 
+  @Builder.Default
   @Column(nullable = false)
   private Integer totalLikeCount = 0;
 
+  @Builder.Default
   @Column(nullable = false)
   private Integer totalCommentCount = 0;
 
+  @Builder.Default
   @Column(nullable = false)
   private Integer totalPostCount = 0;
 
+  @Builder.Default
   @Column(nullable = false)
   private Integer totalCommentLikeCount = 0;
 
+  @Builder.Default
   @Column(nullable = false)
   private Integer totalPostLikeCount = 0;
 
+  @Builder.Default
   @Column(nullable = false)
   private Integer totalMediaCount = 0;
 
+  @Builder.Default
   @ElementCollection
   private List<Long> likedOfficialGameIds = new ArrayList<>();
 
+  @Builder.Default
   @ElementCollection
   private List<Long> likedCreationGameIds = new ArrayList<>();
 
+  @Builder.Default
   @ElementCollection
   private List<Long> likedIntroIds = new ArrayList<>();
 
+  @Builder.Default
   @ElementCollection
   private List<Long> bookmarkedOfficialGameIds = new ArrayList<>();
 
+  @Builder.Default
   @ElementCollection
   private List<Long> bookmarkedCreationGameIds = new ArrayList<>();
 
+  @Builder.Default
   @ElementCollection
   private List<Long> bookmarkedIntroIds = new ArrayList<>();
 }

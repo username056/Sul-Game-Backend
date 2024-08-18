@@ -10,9 +10,7 @@ import org.sejong.sulgamewiki.object.constants.CommentType;
 @Setter
 @Builder
 @ToString
-public class CommentCommand {
-  private Long commentId;
-  private Long BasePostId;
+public class BasePostCommand {
+  private Long basePostId;
   private Long memberId;
-  private String content;
 }

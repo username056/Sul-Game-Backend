@@ -1,14 +1,16 @@
 package org.sejong.sulgamewiki.service;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
-import org.sejong.sulgamewiki.object.Intro;
-import org.sejong.sulgamewiki.object.IntroCommand;
-import org.sejong.sulgamewiki.object.IntroDto;
+import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.Member;
+import org.sejong.sulgamewiki.object.OfficialGame;
+import org.sejong.sulgamewiki.object.OfficialGameCommand;
+import org.sejong.sulgamewiki.object.OfficialGameDto;
 import org.sejong.sulgamewiki.object.constants.BasePostSource;
 import org.sejong.sulgamewiki.object.constants.MediaType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
@@ -18,51 +20,63 @@ import org.sejong.sulgamewiki.util.S3Service;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class IntroService {
+public class OfficialGameService {
 
   private final MemberRepository memberRepository;
-  private final BasePostRepository basePostRepository;
   private final BaseMediaRepository baseMediaRepository;
+  private final BasePostRepository basePostRepository;
   private final S3Service s3Service;
 
-  public IntroDto createIntro(IntroCommand command) {
-    IntroDto dto = IntroDto.builder().build();
+  @Transactional
+  public OfficialGameDto createOfficialGame(OfficialGameCommand command) {
+    OfficialGameDto dto = OfficialGameDto.builder().build();
     List<BaseMedia> baseMedias = new ArrayList<>();
 
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    Intro intro = Intro.builder()
+    OfficialGame officialGame = OfficialGame.builder()
         .title(command.getTitle())
-        .lyrics(command.getLyrics())
+        .introduction(command.getIntroduction())
         .description(command.getDescription())
         .likes(0)
         .views(0)
         .member(member)
         .build();
 
-    Intro savedIntro = basePostRepository.save(intro);
+    OfficialGame savedOfficialGame = basePostRepository.save(officialGame);
 
-    for (MultipartFile file : command.getMultipartFiles()) {
-      String fileUrl = s3Service.uploadFile(file, BasePostSource.INTRO);
+    for( MultipartFile file : command.getMultipartFiles()) {
+      String fileUrl = s3Service.uploadFile(file, BasePostSource.POPULAR_GAME);
 
-      BaseMedia introMedia = BaseMedia.builder()
+      BaseMedia officialGameMedia = BaseMedia.builder()
           .mediaUrl(fileUrl)
           .fileSize(file.getSize())
           .mediaType(MediaType.getMediaType(file))
-          .basePost(savedIntro)
+          .basePost(savedOfficialGame)
           .build();
 
-      baseMedias.add(baseMediaRepository.save(introMedia));
+      baseMedias.add(baseMediaRepository.save(officialGameMedia));
     }
 
-    dto.setBasePost(savedIntro);
+    dto.setBasePost(savedOfficialGame);
     dto.setBaseMedias(baseMedias);
+    return dto;
+  }
+
+  public OfficialGameDto getOfficialGame(OfficialGameCommand command) {
+    OfficialGameDto dto = OfficialGameDto.builder().build();
+
+    BasePost officialGame = basePostRepository.findById(command.getBasePostId())
+        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+
+    dto.setBasePost(officialGame);
     return dto;
   }
 }

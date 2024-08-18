@@ -1,101 +1,100 @@
 package org.sejong.sulgamewiki.service;
 
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.util.auth.domain.CustomUserDetails;
-import org.sejong.sulgamewiki.object.MemberCommand;
-import org.sejong.sulgamewiki.object.MemberDto;
-import org.sejong.sulgamewiki.object.constants.MemberStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.Member;
+import org.sejong.sulgamewiki.object.MemberCommand;
+import org.sejong.sulgamewiki.object.MemberContentInteraction;
+import org.sejong.sulgamewiki.object.MemberDto;
+import org.sejong.sulgamewiki.object.constants.AccountStatus;
+import org.sejong.sulgamewiki.object.constants.MemberStatus;
+import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
-import org.sejong.sulgamewiki.member.exception.MemberErrorCode;
-import org.sejong.sulgamewiki.member.exception.MemberException;
+import org.sejong.sulgamewiki.util.auth.domain.CustomUserDetails;
+import org.sejong.sulgamewiki.util.exception.CustomException;
+import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService implements UserDetailsService {
   private final MemberRepository memberRepository;
+  private final MemberContentInteractionRepository memberContentInteractionRepository;
 
   @Override
-  public CustomUserDetails loadUserByUsername(MemberCommand memberCommand) throws UsernameNotFoundException {
-    Member member = memberRepository.findById(Long.parseLong(memberCommand.getMemberStringId()))
-        .orElseThrow(
-            () -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-
+  public CustomUserDetails loadUserByUsername(String stringMemberId) throws UsernameNotFoundException {
+    Member member = memberRepository.findById(Long.parseLong(stringMemberId))
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
     return new CustomUserDetails(member);
   }
 
-  public MemberDto createMember(
-      MemberCommand memberCommand) {
-    Member member = Member.toEntity(createMemberRequest);
-    Member savedMember = memberRepository.save(member);
+  public MemberDto createMember(MemberCommand memberCommand) {
+    MemberDto dto = MemberDto.builder().build();
 
-    MemberDto memberDto = MemberDto.builder().build();
-    memberDto.setMember(savedMember);
-    return memberDto;
+    Member member = Member.builder()
+        .nickname(memberCommand.getNickName())
+        .birthDate(memberCommand.getBirthDate())
+        .college(memberCommand.getUniversity())
+        .isUniversityPublic(memberCommand.getIsUniversityVisible())
+        .isNotificationEnabled(memberCommand.getIsNotiEnabled())
+        .accountStatus(AccountStatus.PENDING)
+        .build();
+
+    MemberContentInteraction memberContentInteraction = MemberContentInteraction.builder()
+        .member(member)
+        .totalLikeCount(0)
+        .totalCommentCount(0)
+        .totalPostCount(0)
+        .totalCommentLikeCount(0)
+        .totalPostLikeCount(0)
+        .totalMediaCount(0)
+        .likedOfficialGameIds(new ArrayList<>())
+        .likedCreationGameIds(new ArrayList<>())
+        .likedIntroIds(new ArrayList<>())
+        .bookmarkedOfficialGameIds(new ArrayList<>())
+        .bookmarkedCreationGameIds(new ArrayList<>())
+        .bookmarkedIntroIds(new ArrayList<>())
+        .build();
+
+    Member savedMember = memberRepository.save(member);
+    MemberContentInteraction savedMemberContentInteraction = memberContentInteractionRepository.save(
+        memberContentInteraction);
+
+    dto.setMember(savedMember);
+    dto.setMemberContentInteraction(savedMemberContentInteraction);
+    return dto;
   }
 
   @Transactional
-  public MemberDto completeRegistration(
-      MemberCommand memberCommand) {
-    Member member = memberRepository.findById(memberCommand.getMemberId())
-        .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+  public MemberDto completeRegistration(MemberCommand memberCommand) {
+    MemberDto dto = MemberDto.builder().build();
 
-    if (member.getAcountStatus() != MemberStatus.PENDING) {
-      throw new MemberException(MemberErrorCode.INVALID_MEMBER_STATUS);
+    Member member = memberRepository.findById(memberCommand.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    if (member.getAccountStatus() != AccountStatus.PENDING) {
+      log.error("회원 AccountStatus 비정상 : {}", member.getAccountStatus());
+      throw new CustomException(ErrorCode.INVALID_ACCOUNT_STATUS);
     }
 
-    member.updateFromRequest(request);
-    member.setNickName(memberCommand.getNickName());
-    member.setStatus(MemberStatus.ACTIVE);
-    Member savedMember = memberRepository.save(member);
-    MemberDto memberDto = MemberDto.builder().build();
-    memberDto.setMember(member);
-    return memberDto;
+    member.setBirthDate(memberCommand.getBirthDate());
+    member.setCollege(memberCommand.getUniversity());
+    member.setIsUniversityPublic(memberCommand.getIsUniversityVisible());
+    member.setIsNotificationEnabled(memberCommand.getIsNotiEnabled());
+    member.setAccountStatus(AccountStatus.ACTIVE);
+
+    Member updatedMember = memberRepository.save(member);
+
+    dto.setMember(updatedMember);
+    return dto;
   }
 
-  public void deleteMember(Long memberId) {
-    memberRepository.deleteById(memberId);
+  public void deleteMember(MemberCommand command) {
+    memberRepository.deleteById(command.getMemberId());
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//  public void updateMember(Long memberId, CreateMemberRequest createMemberRequest) {
-//    Member member = this.memberRepository.findById(createMemberRequest.getMemberId()).orElseThrow();
-//            memberRepository.update(Member.toEntity(createMemberRequest));
-//        return ;
-//  }
-
-
-//  public CreaeteMemberResponse getMemberById(Long id) {
-//    Member member = memberRepository.findById(id).orElseThrow(()
-//        -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-//    return CreaeteMemberResponse.from(member);
-//  }
-//
-//  public CreaeteMemberResponse updateMember(Long id, CreaeteMemberResponse creaeteMemberResponse) {
-//
-//    existingMember.updateFromRequest(creaeteMemberResponse);
-//
-//    Member updatedMember = memberRepository.save(existingMember);
-//    return CreaeteMemberResponse.from(updatedMember);
-//  }
-
-//  }
 }

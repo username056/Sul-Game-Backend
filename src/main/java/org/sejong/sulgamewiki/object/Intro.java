@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.sejong.sulgamewiki.intro.dto.request.CreateIntroRequest;
 
-@ToString
 @Entity
 @Getter
 @Setter
@@ -20,18 +18,8 @@ import org.sejong.sulgamewiki.intro.dto.request.CreateIntroRequest;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @DiscriminatorValue("Intro")
+@ToString(callSuper = true)
 public class Intro extends BasePost {
-
   @Column(length = 200)
   private String lyrics;
-  public static Intro toEntity(Member member, CreateIntroRequest request) {
-    return Intro.builder()
-        .title(request.getTitle())
-        .description(request.getDescription())
-        .lyrics(request.getLyrics())
-        .member(member)
-        .likes(0)
-        .views(0)
-        .build();
-  }
 }

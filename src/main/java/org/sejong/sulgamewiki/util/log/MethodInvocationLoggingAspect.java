@@ -8,6 +8,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class MethodInvocationLoggingAspect {
 
     LOGGER.info("[{}] RequestID: {}, Parameter: {}", signature.getMethod().getName(), requestId, Arrays.toString(joinPoint.getArgs()));
 
-    Object result = GlobalErrorCode.INTERNAL_SERVER_ERROR;
+    Object result = ErrorCode.INTERNAL_SERVER_ERROR;
     try {
       result = joinPoint.proceed();
     } finally {

@@ -10,13 +10,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.sejong.sulgamewiki.game.popular.dto.request.CreatePopularGameRequest;
 
-@ToString
 @Entity
 @Getter
 @Setter
 @SuperBuilder
+@ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @DiscriminatorValue("OfficialGame")

@@ -8,7 +8,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,18 +18,18 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.object.constants.MediaType;
 
+@Entity
 @Getter
 @Setter
-@ToString(callSuper = true) // TODO : baseEntity 제외하고 나중에 다 이렇게 바꾸기
-@Entity
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString(callSuper = true)
 public class BaseMedia extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long baseMediaId;
 
   @Column(nullable = false, length = 2048)
   private String mediaUrl;
@@ -43,6 +42,5 @@ public class BaseMedia extends BaseTimeEntity {
   private MediaType mediaType;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "post_id", nullable = false)
   private BasePost basePost;
 }

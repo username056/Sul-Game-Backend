@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.sejong.sulgamewiki.object.constants.AccountStatus;
+import org.sejong.sulgamewiki.object.constants.Role;
 import org.sejong.sulgamewiki.util.JwtUtil;
 import org.sejong.sulgamewiki.util.auth.domain.CustomUserDetails;
 import org.sejong.sulgamewiki.object.constants.MemberRole;
@@ -32,7 +34,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     Member member = memberRepository.findByEmail(email)
         .orElseGet(() -> createNewMember(oAuth2User));
 
-    if (member.getStatus() == MemberStatus.PENDING) {
+    if (member.getAccountStatus() == AccountStatus.PENDING) {
       handlePendingMember(response, member);
     } else {
       handleExistingMember(response, member);
@@ -43,15 +45,15 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     String email = oAuth2User.getAttribute("email");
     Member newMember = Member.builder()
         .email(email)
-        .role(MemberRole.ROLE_USER)
-        .status(MemberStatus.PENDING)
+        .role(Role.ROLE_USER)
+        .accountStatus(AccountStatus.PENDING)
         .build();
     return memberRepository.save(newMember);
   }
 
   private void handlePendingMember(HttpServletResponse response, Member member) throws IOException {
     response.setContentType("application/json;charset=UTF-8");
-    response.getWriter().write("{\"status\":\"PENDING\",\"memberId\":\"" + member.getId() + "\"}");
+    response.getWriter().write("{\"status\":\"PENDING\",\"memberId\":\"" + member.getMemberId() + "\"}");
   }
 
   private void handleExistingMember(HttpServletResponse response, Member member) throws IOException {
