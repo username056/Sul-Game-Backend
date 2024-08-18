@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.service;
+package org.sejong.sulgamewiki.repository;
 
 import org.sejong.sulgamewiki.object.Intro;
 import org.springframework.data.jpa.repository.JpaRepository;
