@@ -16,20 +16,17 @@ public class ExecutionTimeLoggingAspect {
   @Around("@annotation(LogTimeInvocation)|| @annotation(LogMonitoringInvocation)")
   public Object logMethod(ProceedingJoinPoint joinPoint) throws Throwable {
     MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-    // 메서드 이름
-    String methodName = signature.getMethod().getName();
-    // 메서드 실행 전 시간 기록
-    long start = System.currentTimeMillis();
+    Object result = null;
 
-    Object result;
+    long startTime = System.currentTimeMillis();
     try {
       result = joinPoint.proceed();
     } finally {
-      // 실행 시간 계산
-      long executionTime = System.currentTimeMillis() - start;
-      // 메서드의 실행 시간 로깅
-      log.info("[{}], Execution time: {} ms", methodName, executionTime);
+      long endTime = System.currentTimeMillis();
+      long durationTimeSec = endTime - startTime;
+      log.info("[{}] 실행시간: {}ms", signature.getMethod().getName(), durationTimeSec);
     }
+
     return result;
   }
 }

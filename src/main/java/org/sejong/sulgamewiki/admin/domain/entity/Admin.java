@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.admin.dto.AdminDto;
-import org.sejong.sulgamewiki.common.entity.BaseMember;
+import org.sejong.sulgamewiki.common.object.BaseMember;
 
 @Entity
 @Getter

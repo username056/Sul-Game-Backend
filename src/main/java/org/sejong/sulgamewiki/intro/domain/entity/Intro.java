@@ -7,9 +7,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.sejong.sulgamewiki.common.entity.BasePost;
+import org.sejong.sulgamewiki.common.object.BasePost;
 import org.sejong.sulgamewiki.intro.dto.request.CreateIntroRequest;
-import org.sejong.sulgamewiki.member.domain.entity.Member;
+import org.sejong.sulgamewiki.member.object.Member;
 
 @ToString
 @Entity

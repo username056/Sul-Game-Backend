@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.sejong.sulgamewiki.common.entity.BasePost;
+import org.sejong.sulgamewiki.common.object.BasePost;
 import org.sejong.sulgamewiki.game.popular.domain.entity.PopularGame;
 
 @ToString

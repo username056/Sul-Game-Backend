@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.sejong.sulgamewiki.common.auth.application.JwtUtil;
+import org.sejong.sulgamewiki.common.jwt.JwtUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
@@ -43,13 +43,21 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     String URI = request.getRequestURI();
     String authorizationHeader = request.getHeader("Authorization");
 
-    // WHITELIST URL 인 경우 -> JWT Token Validation 하지않는다.
-    if (Arrays.stream(WHITELIST)
-        .anyMatch(whiteListUri -> antPathMatcher.match(whiteListUri, URI))) {
-      log.info("WHILELIST 주소로 토큰검사 안함");
-      // Token 검사 생략
-      filterChain.doFilter(request, response);
-      return;
+//    // WHITELIST URL 인 경우 -> JWT Token Validation 하지않는다.
+//    if (Arrays.stream(WHITELIST)
+//        .anyMatch(whiteListUri -> antPathMatcher.match(whiteListUri, URI))) {
+//      log.info("WHILELIST 주소로 토큰검사 안함");
+//      // Token 검사 생략
+//      filterChain.doFilter(request, response);
+//      return;
+//    }
+
+    // 토큰 비검사 uri
+    for (String antMatchURI : WHITELIST) {
+      if (URI.startsWith(antMatchURI)) {
+        filterChain.doFilter(request, response);
+        return;
+      }
     }
 
     // 이외 주소 Token 검사

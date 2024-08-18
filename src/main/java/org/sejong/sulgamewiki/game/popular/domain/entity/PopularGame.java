@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.sejong.sulgamewiki.common.entity.BasePost;
+import org.sejong.sulgamewiki.common.object.BasePost;
 import org.sejong.sulgamewiki.game.popular.dto.request.CreatePopularGameRequest;
-import org.sejong.sulgamewiki.member.domain.entity.Member;
+import org.sejong.sulgamewiki.member.object.Member;
 
 @ToString
 @Entity

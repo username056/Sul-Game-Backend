@@ -3,11 +3,11 @@ package org.sejong.sulgamewiki.common.config;
 import java.util.Arrays;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.common.auth.application.CustomOAuth2UserService;
-import org.sejong.sulgamewiki.common.auth.application.JwtUtil;
+import org.sejong.sulgamewiki.common.auth.service.CustomOAuth2UserService;
+import org.sejong.sulgamewiki.common.jwt.JwtUtil;
 import org.sejong.sulgamewiki.common.auth.handler.OAuth2SuccessHandler;
 import org.sejong.sulgamewiki.common.filter.TokenAuthenticationFilter;
-import org.sejong.sulgamewiki.member.application.CustomUserDetailsService;
+import org.sejong.sulgamewiki.member.service.MemberService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -93,9 +93,9 @@ public class WebSecurityConfig {
   @Bean
   public AuthenticationManager authenticationManager(HttpSecurity http,
       BCryptPasswordEncoder bCryptPasswordEncoder,
-      CustomUserDetailsService customUserDetailsService) throws Exception {
+      MemberService memberService) throws Exception {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-    authProvider.setUserDetailsService(customUserDetailsService);
+    authProvider.setUserDetailsService(memberService);
     authProvider.setPasswordEncoder(bCryptPasswordEncoder);
     return new ProviderManager(authProvider);
   }

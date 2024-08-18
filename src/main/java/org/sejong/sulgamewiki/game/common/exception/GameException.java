@@ -1,6 +1,6 @@
 package org.sejong.sulgamewiki.game.common.exception;
 
-import static org.sejong.sulgamewiki.common.exception.contants.ErrorSource.GAME;
+import static org.sejong.sulgamewiki.common.exception.ErrorSource.GAME;
 
 import org.sejong.sulgamewiki.common.exception.CustomException;
 import org.sejong.sulgamewiki.common.exception.ErrorCode;

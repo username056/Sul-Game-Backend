@@ -2,10 +2,8 @@ package org.sejong.sulgamewiki.notification.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.sejong.sulgamewiki.common.entity.BaseEntity;
-import org.sejong.sulgamewiki.member.domain.entity.Member;
-
-import java.time.Instant;
+import org.sejong.sulgamewiki.common.object.BaseEntity;
+import org.sejong.sulgamewiki.member.object.Member;
 
 @Entity
 @Table(name = "notifications")

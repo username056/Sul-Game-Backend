@@ -10,8 +10,8 @@ import org.sejong.sulgamewiki.game.popular.domain.repository.PopularGameReposito
 import org.sejong.sulgamewiki.game.popular.dto.request.CreatePopularGameRequest;
 import org.sejong.sulgamewiki.game.popular.dto.response.CreatePopularGameResponse;
 import org.sejong.sulgamewiki.game.popular.dto.response.GetPopularGameResponse;
-import org.sejong.sulgamewiki.member.domain.entity.Member;
-import org.sejong.sulgamewiki.member.domain.repository.MemberRepository;
+import org.sejong.sulgamewiki.member.object.Member;
+import org.sejong.sulgamewiki.member.object.MemberRepository;
 import org.sejong.sulgamewiki.member.exception.MemberErrorCode;
 import org.sejong.sulgamewiki.member.exception.MemberException;
 import org.springframework.stereotype.Service;

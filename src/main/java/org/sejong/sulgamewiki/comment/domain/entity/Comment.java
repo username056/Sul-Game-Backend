@@ -16,8 +16,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.sejong.sulgamewiki.common.entity.BaseEntity;
-import org.sejong.sulgamewiki.member.domain.entity.Member;
+import org.sejong.sulgamewiki.common.object.BaseEntity;
+import org.sejong.sulgamewiki.member.object.Member;
 
 @Entity
 @Getter

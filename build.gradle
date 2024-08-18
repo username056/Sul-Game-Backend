@@ -60,6 +60,9 @@ dependencies {
 
 	// MySQL DB
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// HttpClient
+	implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
 }
 
 tasks.named('test') {
