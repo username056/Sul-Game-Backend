@@ -1,10 +1,8 @@
 package org.sejong.sulgamewiki.game.popular.domain.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,19 +21,17 @@ import org.sejong.sulgamewiki.member.object.Member;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@DiscriminatorValue("PopularGame")
 public class PopularGame extends BasePost {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
 
   @Column(length = 90)
   private String introduction;
 
   public static PopularGame toEntity(Member member, CreatePopularGameRequest request) {
     return PopularGame.builder()
-        .title(request.getDescription())
+        .title(request.getTitle())
         .description(request.getDescription())
+        .introduction(request.getIntroduction())
         .member(member)
         .likes(0)
         .views(0)

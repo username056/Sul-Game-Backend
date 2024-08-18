@@ -7,12 +7,12 @@ import org.sejong.sulgamewiki.intro.domain.entity.Intro;
 
 @Getter
 @Builder
-@ToString
 public class CreateIntroResponse {
     private Long introId;
     private Long memberId;
     private String title;
     private String description;
+    private String lyrics;
 
     public static CreateIntroResponse from(Intro intro) {
         return CreateIntroResponse.builder()
@@ -20,6 +20,7 @@ public class CreateIntroResponse {
                 .memberId(intro.getMember().getId())
                 .title(intro.getTitle())
                 .description(intro.getDescription())
+                .lyrics(intro.getLyrics())
                 .build();
     }
 }
