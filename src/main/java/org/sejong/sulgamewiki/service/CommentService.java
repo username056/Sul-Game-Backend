@@ -37,7 +37,6 @@ public class CommentService {
         .likeCount(0)
         .reportedCount(0)
         .isEdited(false)
-        .isDeleted(false)
         .build();
 
     Comment savedComment = commentRepository.save(comment);
