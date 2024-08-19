@@ -62,10 +62,13 @@ public abstract class BasePost extends BaseTimeEntity {
   private Member member;
 
   public void cancelLike(Long memberId) {
+    if(this.likedMemberIds.contains(memberId)) {
+      throw new CustomException(ErrorCode.NO_LIKE_TO_CANCEL);
+    }
     if (likes > 0) {
       this.likes--;
       this.likedMemberIds.remove(memberId);
-    } else {
+    } else if(likes <= 0) {
       throw new CustomException(ErrorCode.LIKE_CANNOT_BE_UNDER_ZERO);
     }
   }
@@ -74,4 +77,6 @@ public abstract class BasePost extends BaseTimeEntity {
     likes++;
     this.likedMemberIds.add(memberId);
   }
+
+
 }
