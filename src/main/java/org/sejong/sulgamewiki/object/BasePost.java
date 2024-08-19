@@ -61,14 +61,17 @@ public abstract class BasePost extends BaseTimeEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
 
-  public void cancelLike() {
-    if( likes == 0) {
+  public void cancelLike(Long memberId) {
+    if (likes > 0) {
+      this.likes--;
+      this.likedMemberIds.remove(memberId);
+    } else {
       throw new CustomException(ErrorCode.LIKE_CANNOT_BE_UNDER_ZERO);
     }
-    likes--;
   }
 
-  public void upLike() {
+  public void upLike(Long memberId) {
     likes++;
+    this.likedMemberIds.add(memberId);
   }
 }
