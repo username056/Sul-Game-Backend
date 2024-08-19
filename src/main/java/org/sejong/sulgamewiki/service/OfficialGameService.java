@@ -11,7 +11,7 @@ import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.OfficialGameCommand;
 import org.sejong.sulgamewiki.object.OfficialGameDto;
-import org.sejong.sulgamewiki.object.constants.BasePostSource;
+import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.object.constants.MediaType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
@@ -53,7 +53,7 @@ public class OfficialGameService {
     OfficialGame savedOfficialGame = basePostRepository.save(officialGame);
 
     for( MultipartFile file : command.getMultipartFiles()) {
-      String fileUrl = s3Service.uploadFile(file, BasePostSource.POPULAR_GAME);
+      String fileUrl = s3Service.uploadFile(file, SourceType.OFFICIAL_GAME);
 
       BaseMedia officialGameMedia = BaseMedia.builder()
           .mediaUrl(fileUrl)

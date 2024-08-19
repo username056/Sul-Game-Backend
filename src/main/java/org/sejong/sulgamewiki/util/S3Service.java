@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.object.constants.BasePostSource;
+import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +23,7 @@ public class S3Service {
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
 
-  public String uploadFile(MultipartFile file, BasePostSource source)  {
+  public String uploadFile(MultipartFile file, SourceType source)  {
     // 파일 이름 생성
     String fileName = generateFileName(file, source.name());
 
@@ -39,7 +39,7 @@ public class S3Service {
   }
 
   // List<MulipartFile>
-  public List<String> uploadFiles(List<MultipartFile> files, BasePostSource source) {
+  public List<String> uploadFiles(List<MultipartFile> files, SourceType source) {
     List<String> fileUrls = new ArrayList<>();
     for (MultipartFile file : files) {
       fileUrls.add(uploadFile(file, source));

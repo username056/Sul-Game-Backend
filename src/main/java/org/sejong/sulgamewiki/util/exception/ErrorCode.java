@@ -17,6 +17,8 @@ public enum ErrorCode {
 
   LIKE_CANNOT_BE_UNDER_ZERO(HttpStatus.BAD_REQUEST, "좋아요는 0보다 작을수 없습니다."),
 
+  NO_LIKE_TO_CANCEL(HttpStatus.BAD_REQUEST, "좋아요를 누르지 않은 회원입니다."),
+
   POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),
 
   // Member
