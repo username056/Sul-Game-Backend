@@ -57,6 +57,8 @@ public abstract class BasePost extends BaseTimeEntity {
   @Builder.Default
   private int views = 0;
 
+  @Builder.Default
+  private int reportedCount = 0;
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;

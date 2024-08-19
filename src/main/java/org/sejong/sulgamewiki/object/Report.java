@@ -22,7 +22,6 @@ import org.sejong.sulgamewiki.object.constants.SourceType;
 @SuperBuilder
 @ToString(callSuper = true)
 public class Report extends BaseTimeEntity{
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long reportId;
