@@ -1,9 +1,9 @@
 package org.sejong.sulgamewiki.object.constants;
 
-public enum BasePostSource {
+public enum SourceType {
   INTRO,
-  POPULAR_GAME,
-  CREATIVE_GAME,
+  OFFICIAL_GAME,
+  CREATION_GAME,
   COMMENT
 
 }

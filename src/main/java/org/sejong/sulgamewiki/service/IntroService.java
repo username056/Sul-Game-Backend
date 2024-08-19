@@ -9,7 +9,7 @@ import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.IntroCommand;
 import org.sejong.sulgamewiki.object.IntroDto;
 import org.sejong.sulgamewiki.object.Member;
-import org.sejong.sulgamewiki.object.constants.BasePostSource;
+import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.object.constants.MediaType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
@@ -49,7 +49,7 @@ public class IntroService {
     Intro savedIntro = basePostRepository.save(intro);
 
     for (MultipartFile file : command.getMultipartFiles()) {
-      String fileUrl = s3Service.uploadFile(file, BasePostSource.INTRO);
+      String fileUrl = s3Service.uploadFile(file, SourceType.INTRO);
 
       BaseMedia introMedia = BaseMedia.builder()
           .mediaUrl(fileUrl)
