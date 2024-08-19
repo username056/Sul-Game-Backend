@@ -1,7 +1,6 @@
 package org.sejong.sulgamewiki.service;
 
 
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.BasePostCommand;
@@ -23,7 +22,7 @@ public class LikeService {
   //TODO comment Like 추가해야함
   //FIXME: 지금 basePost에 LikedMemberIds 추가함 : 이전 코드 수정 필요
 
-  public BasePostDto upLike(BasePostCommand command) {
+  public BasePostDto upPostLike(BasePostCommand command) {
     BasePostDto dto = BasePostDto.builder().build();
 
     BasePost basePost = basePostRepository.findById(command.getBasePostId())
@@ -32,10 +31,7 @@ public class LikeService {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    basePost.upLike();
-    Set<Long> likedMemberIds = basePost.getLikedMemberIds();
-    likedMemberIds.add(command.getMemberId());
-    basePost.setLikedMemberIds(likedMemberIds);
+    basePost.upLike(command.getMemberId());
 
     BasePost savedBasePost = basePostRepository.save(basePost);
 
@@ -43,7 +39,7 @@ public class LikeService {
     return dto;
   }
 
-  public BasePostDto downLike(BasePostCommand command) {
+  public BasePostDto downPostLike(BasePostCommand command) {
     BasePostDto dto = BasePostDto.builder().build();
 
     BasePost basePost = basePostRepository.findById(command.getBasePostId())
@@ -53,10 +49,7 @@ public class LikeService {
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
     // 좋아요 취소
-    basePost.cancelLike();
-    Set<Long> likedMemberIds = basePost.getLikedMemberIds();
-    likedMemberIds.remove(command.getMemberId());
-    basePost.setLikedMemberIds(likedMemberIds);
+    basePost.cancelLike(command.getMemberId());
 
     BasePost savedBasePost = basePostRepository.save(basePost);
 
