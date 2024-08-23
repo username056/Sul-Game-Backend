@@ -25,7 +25,6 @@ public class OfficialGame extends BasePost {
   @Column(length = 90)
   private String introduction;
 
-  @OneToOne
-  @JoinColumn(name = "intro_id")
+  @OneToOne(mappedBy = "officialGame")
   private Intro intro;
 }
