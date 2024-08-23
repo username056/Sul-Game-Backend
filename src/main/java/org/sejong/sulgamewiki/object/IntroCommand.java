@@ -18,6 +18,6 @@ public class IntroCommand {
   private String title;
   private String description;
   private String lyrics;
-  private IntroType type;
+  private IntroType introtype;
   private List<MultipartFile> multipartFiles;
 }

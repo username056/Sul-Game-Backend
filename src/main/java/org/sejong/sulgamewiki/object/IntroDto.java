@@ -17,7 +17,7 @@ public class IntroDto {
   private String title;
   private String description;
   private String lyrics;
-  private IntroType type;
+  private IntroType introtype;
   private BasePost basePost;
   private List<BaseMedia> baseMedias;
 }
