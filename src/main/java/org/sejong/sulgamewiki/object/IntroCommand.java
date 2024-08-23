@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.sejong.sulgamewiki.object.constants.IntroType;
 import org.springframework.web.multipart.MultipartFile;
 
 @Builder
@@ -17,5 +18,6 @@ public class IntroCommand {
   private String title;
   private String description;
   private String lyrics;
+  private IntroType type;
   private List<MultipartFile> multipartFiles;
 }
