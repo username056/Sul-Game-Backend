@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.sejong.sulgamewiki.object.constants.IntroType;
 
 @Builder
 @Getter
@@ -16,6 +17,7 @@ public class IntroDto {
   private String title;
   private String description;
   private String lyrics;
+  private IntroType introtype;
   private BasePost basePost;
   private List<BaseMedia> baseMedias;
 }
