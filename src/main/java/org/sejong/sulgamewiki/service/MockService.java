@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.MemberContentInteraction;
-import org.sejong.sulgamewiki.object.MemberDto;
+import org.sejong.sulgamewiki.object.MockDto;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
 import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
@@ -23,16 +23,27 @@ public class MockService {
   private final MemberRepository memberRepository;
   private final MemberContentInteractionRepository memberContentInteractionRepository;
 
+  /**
+   * 설명: 새로운 Mock Member를 생성 DB저장
+   *
+   * 1. MockUtil을 사용하여 가짜 회원 정보를 가져옴
+   * 2. 해당 정보를 바탕으로 Member 엔터티를 생성 및 DB 저장
+   * 3. 새로운 MemberContentInteraction 엔터티를 생성 및 DB 저장
+   *
+   * @return MockDto
+   * Member member;
+   * MemberContentInteraction memberContentInteraction;
+   */
   @LogMonitoringInvocation
   @Transactional
-  public MemberDto createMockMember() {
+  public MockDto createMockMember() {
     // API를 통해서 Mock Member 정보 가져옴
-    MemberDto dto = MockUtil.getMockMemberInfo();
+    MockDto dto = MockUtil.getMockMemberInfo();
 
     // Mock Member 생성
     Member member = Member.builder()
         .email(dto.getEmail()) // 임의의 이메일
-        .nickname(dto.getName())
+        .nickname(dto.getNickname())
         .birthDate(dto.getBirthDate())
         .college("세종대학교")
         .isUniversityPublic(true)
@@ -64,10 +75,31 @@ public class MockService {
     MemberContentInteraction savedMemberContent
         = memberContentInteractionRepository.save(memberContent);
 
-    return MemberDto
+    return MockDto
         .builder()
         .member(savedMember)
         .memberContentInteraction(savedMemberContent)
+        .build();
+  }
+
+  /**
+   * 회원과 관련된 전체 정보를 삭제 합니다
+   * 전체 MemberRepository에 대한 정보를 삭제합니다
+   * 전체 memberContentInteractionRepository도 삭제합니다.
+   *
+   * @return MockDto
+   * List<Member> members;
+   * List<MemberContentInteraction> memberContentInteractions;
+   * 전부 비어있어야 정상입니다!!
+   *
+   */
+  public MockDto deleteAllMockMember() {
+    memberContentInteractionRepository.deleteAll();
+    memberRepository.deleteAll();
+
+    return MockDto.builder()
+        .members(memberRepository.findAll())
+        .memberContentInteractions(memberContentInteractionRepository.findAll())
         .build();
   }
 }
