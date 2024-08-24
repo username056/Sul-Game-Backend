@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod
+    active: dev
   jpa:
     generate-ddl: true
     hibernate:
@@ -28,18 +28,3 @@ springdoc:
   swagger-ui:
     path: /docs/swagger
 
-jwt:
-  secret-key: ${JWT_SECRET_KEY}
-  access-exp-time: ${JWT_ACCESS_EXP_TIME}
-
-cloud:
-  aws:
-    s3:
-      bucket: sul-game-media
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
-    credentials:
-      access-key: ${S3_AccessKey}
-      secret-key: ${S3_SecretKey}
