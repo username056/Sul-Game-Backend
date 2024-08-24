@@ -1,6 +1,7 @@
 package org.sejong.sulgamewiki.service;
 
 import lombok.RequiredArgsConstructor;
+import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.CreativeGame;
 import org.sejong.sulgamewiki.object.HomeDto;
 import org.sejong.sulgamewiki.object.Intro;
@@ -42,8 +43,20 @@ public class HomeService {
 
 
 
+
     /*--------------------------실시간 ㅅㄱㅇㅋ차트---------------------------*/
-    // 실시간 차트 가져오기
+    // 실시간 창작술게임 차트 가져오기
+    Slice<CreativeGame> creativeGamesByRealTimeScore = basePostRepository.findCreativeGamesByRealTimeScore(pageable);
+    List<CreativeGame> creativeGameListByRealTimeScore = creativeGamesByRealTimeScore.getContent();
+
+    // 실시간 인트로 차트 가져오기
+    Slice<Intro> introsByRealTimeScore = basePostRepository.findIntrosByRealTimeScore(pageable);
+    List<Intro> introsListByRealTimeScore = introsByRealTimeScore.getContent();
+
+    // 실시간 공식술게임 차트 가져오기
+    Slice<OfficialGame> officialGamesByRealTimeScore = basePostRepository.findOfficialGamesByRealTimeScore(pageable);
+    List<OfficialGame> officialGameListByRealTimeScore = officialGamesByRealTimeScore.getContent();
+
 
 
 
@@ -62,6 +75,10 @@ public class HomeService {
     /*--------------------------오늘 가장 핫했던 술게임---------------------------*/
     // 오늘 가장 핫했던 게임 가져오기
     //TODO: "핫"하다는 기준 세우기(게시글 score)
+    Slice<BasePost> postsSliceByDailyScore = basePostRepository.findPostsByDailyScore(pageable);
+    List<BasePost> postsListByDailyScore = postsSliceByDailyScore.getContent();
+
+
 
     // HomeDto에 담아서 반환
     return HomeDto.builder()
@@ -71,11 +88,14 @@ public class HomeService {
         //국룰술게임
         .officialGames(officialGameList)
         //실시간 ㅅㄱㅇㅋ차트
-
+        .creativeGameRealTimeChart(creativeGameListByRealTimeScore)
+        .introRealTimeChart(introsListByRealTimeScore)
+        .officialGameRealTimeChart(officialGameListByRealTimeScore)
         //인트로 자랑하기
         .introsByLikes(introsListByLikes)
         .introsByViews(introsListByViews)
         //오늘 가장 핫했던 술게임
+        .hotGamesToday(postsListByDailyScore)
         .build();
   }
 }
