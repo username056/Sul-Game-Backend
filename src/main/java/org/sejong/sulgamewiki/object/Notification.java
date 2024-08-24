@@ -8,7 +8,7 @@ import org.sejong.sulgamewiki.object.constants.NotificationType;
 @Table(name = "notifications")
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notification extends BaseTimeEntity {
 

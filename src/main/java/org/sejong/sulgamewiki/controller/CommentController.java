@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
     private final CommentService commentService;
 
-
     @PostMapping("")
     @LogMonitoringInvocation
     public ResponseEntity<CommentDto> createComment(
