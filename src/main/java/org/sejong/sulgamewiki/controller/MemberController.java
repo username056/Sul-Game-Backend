@@ -2,13 +2,12 @@ package org.sejong.sulgamewiki.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.service.MemberService;
+import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,13 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "회원 관리 API", description = "회원 관리 API 제공")
 public class MemberController {
   private final MemberService memberService;
-
-  @PostMapping("/mock")
-  @LogMonitoringInvocation
-  @Operation(summary = "모의 회원 생성", description = "모의 회원 생성")
-  public ResponseEntity<MemberDto> createMockMember(){
-    return ResponseEntity.ok(memberService.createMockMember());
-  }
 
   @PostMapping("/complete-registration")
   @LogMonitoringInvocation
