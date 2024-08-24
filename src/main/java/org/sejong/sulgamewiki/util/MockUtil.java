@@ -2,16 +2,19 @@ package org.sejong.sulgamewiki.util;
 
 import com.github.javafaker.Faker;
 import java.time.LocalDate;
-import org.sejong.sulgamewiki.object.MemberDto;
+import org.sejong.sulgamewiki.object.MockDto;
 
 public class MockUtil {
 
   /**
    * 가짜 회원에 대한 정보를 생성
    *
-   * @return MemberDto 객체 (nickname, email, birthDate 포함)
+   * @return MockDto 객체
+   * String nickname;
+   * String email;
+   * LocalDate birthDate
    */
-  public static MemberDto getMockMemberInfo() {
+  public static MockDto getMockMemberInfo() {
     Faker faker = new Faker();
 
     // 무작위 이름, 이메일, 나이 생성
@@ -20,13 +23,8 @@ public class MockUtil {
     int age = faker.number().numberBetween(14, 100); // 나이 14세 이상
     LocalDate birthDate = LocalDate.now().minusYears(age);
 
-    // 결과 출력
-    System.out.println("fullName: " + nickname);
-    System.out.println("Email: " + email);
-    System.out.println("birthDate: " + birthDate);
-
-    return MemberDto.builder()
-        .name(nickname)
+    return MockDto.builder()
+        .nickname(nickname)
         .email(email)
         .birthDate(birthDate)
         .build();
