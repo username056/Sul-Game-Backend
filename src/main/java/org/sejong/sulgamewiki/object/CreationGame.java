@@ -21,13 +21,13 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@DiscriminatorValue("CreativeGame")
-public class CreativeGame extends BasePost {
+@DiscriminatorValue("CreationGame")
+public class CreationGame extends BasePost {
 
   @Column(length = 90)
   private String introduction;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "popular_game_id")
+  @JoinColumn(name = "official_game_id")
   private OfficialGame officialGame;
 }
