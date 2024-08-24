@@ -18,6 +18,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
+import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.object.constants.Role;
 
 @Entity
@@ -51,6 +52,14 @@ public class Member extends BaseTimeEntity {
   @Builder.Default
   @Column
   private String college = "정보 없음";
+
+  @Builder.Default
+  @Column(nullable = false)
+  private Long exp = 0L;
+
+  @Builder.Default
+  @Enumerated(EnumType.STRING)
+  private ExpLevel expLevel = ExpLevel.D;
 
   @Builder.Default
   @Column(nullable = false)
