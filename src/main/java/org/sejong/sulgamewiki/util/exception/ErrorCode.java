@@ -27,6 +27,8 @@ public enum ErrorCode {
 
   INVALID_ACCOUNT_STATUS(HttpStatus.BAD_REQUEST, "회원 상태가 정상이 아닙니다."),
 
+  MOCK_MEMBER_MAPPING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "사이트에서 가짜회원정보를 가져오는도중 문제가 발생하였습니다."),
+
   // Intro
 
   // Game

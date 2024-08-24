@@ -13,7 +13,6 @@ import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.repository.ReportRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
