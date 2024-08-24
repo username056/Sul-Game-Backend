@@ -1,6 +1,7 @@
 package org.sejong.sulgamewiki.service;
 
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,15 +10,18 @@ import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberContentInteraction;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
-import org.sejong.sulgamewiki.object.constants.MemberStatus;
+import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
+import org.sejong.sulgamewiki.util.MockUtil;
 import org.sejong.sulgamewiki.util.auth.domain.CustomUserDetails;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
+import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,19 +37,27 @@ public class MemberService implements UserDetailsService {
     return new CustomUserDetails(member);
   }
 
-  public MemberDto createMember(MemberCommand memberCommand) {
-    MemberDto dto = MemberDto.builder().build();
+  @Transactional
+  @LogMonitoringInvocation
+  public MemberDto createMockMember() {
 
+    MemberDto dto = MockUtil.getMockMemberInfo();
+
+    // Mock Member 생성
     Member member = Member.builder()
-        .nickname(memberCommand.getNickName())
-        .birthDate(memberCommand.getBirthDate())
-        .college(memberCommand.getUniversity())
-        .isUniversityPublic(memberCommand.getIsUniversityVisible())
-        .isNotificationEnabled(memberCommand.getIsNotiEnabled())
+        .email(dto.getEmail()) // 임의의 이메일
+        .nickname(dto.getName())
+        .birthDate(dto.getBirthDate())
+        .college("세종대학교")
+        .isUniversityPublic(true)
+        .isNotificationEnabled(true)
         .accountStatus(AccountStatus.PENDING)
+        .lastLoginTime(LocalDateTime.now())
+        .exp(0L)
+        .expLevel(ExpLevel.D)
         .build();
 
-    MemberContentInteraction memberContentInteraction = MemberContentInteraction.builder()
+    MemberContentInteraction memberContent = MemberContentInteraction.builder()
         .member(member)
         .totalLikeCount(0)
         .totalCommentCount(0)
@@ -62,12 +74,14 @@ public class MemberService implements UserDetailsService {
         .build();
 
     Member savedMember = memberRepository.save(member);
-    MemberContentInteraction savedMemberContentInteraction = memberContentInteractionRepository.save(
-        memberContentInteraction);
+    MemberContentInteraction savedMemberContent
+        = memberContentInteractionRepository.save(memberContent);
 
-    dto.setMember(savedMember);
-    dto.setMemberContentInteraction(savedMemberContentInteraction);
-    return dto;
+    return MemberDto
+        .builder()
+        .member(savedMember)
+        .memberContentInteraction(savedMemberContent)
+        .build();
   }
 
   @Transactional

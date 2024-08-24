@@ -1,5 +1,8 @@
 package org.sejong.sulgamewiki.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
@@ -16,41 +19,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "회원 관리 API", description = "회원 관리 API 제공")
 public class MemberController {
   private final MemberService memberService;
 
-  @PostMapping// TODO: 이대로 수정하기
+  @PostMapping("/mock")
   @LogMonitoringInvocation
-  public ResponseEntity<MemberDto> createMember(
-      @RequestBody MemberCommand memberCommand) {
-
-    MemberDto memberDto
-        = memberService.createMember(memberCommand);
-    return ResponseEntity.ok(memberDto);
+  @Operation(summary = "모의 회원 생성", description = "모의 회원 생성")
+  public ResponseEntity<MemberDto> createMockMember(){
+    return ResponseEntity.ok(memberService.createMockMember());
   }
 
   @PostMapping("/complete-registration")
   @LogMonitoringInvocation
+  @Operation(summary = "회원 등록 완료", description = "소셜로그인을 이후에 나머지 회원가입 완료")
   public ResponseEntity<MemberDto> completeRegistration(
        @RequestBody MemberCommand memberCommand
   ){
     MemberDto memberDto = memberService.completeRegistration(memberCommand);
     return ResponseEntity.ok(memberDto);
   }
-
-//
-//  @GetMapping("/{id}")
-//  public ResponseEntity<CreaeteMemberResponse> getMember(
-//      @PathVariable Long id) {
-//    CreaeteMemberResponse creaeteMemberResponse
-//        = memberService.getMemberById(id);
-//    return ResponseEntity.ok(creaeteMemberResponse);
-//  }
-//
-//  @DeleteMapping("/{id}")
-//  public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
-//    memberService.deleteMember(id);
-//    return ResponseEntity.noContent().build();
-//  }
-
 }

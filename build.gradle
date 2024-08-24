@@ -63,6 +63,13 @@ dependencies {
 
 	// HttpClient
 	implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+
+	// Jsoup
+	implementation 'org.jsoup:jsoup:1.16.1'
+
+	// Selenium
+	implementation 'org.seleniumhq.selenium:selenium-java:4.13.0'
+	implementation 'io.github.bonigarcia:webdrivermanager:5.5.3'
 }
 
 tasks.named('test') {

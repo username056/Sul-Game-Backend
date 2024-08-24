@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.object;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,4 +16,8 @@ public class MemberDto {
   private Long memberId;
   private String nickName;
 
+  //mockMember
+  private String name;
+  private String email;
+  private LocalDate birthDate;
 }
