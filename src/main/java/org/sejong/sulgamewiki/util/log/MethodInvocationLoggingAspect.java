@@ -21,7 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Slf4j
 public class MethodInvocationLoggingAspect {
   private final Logger LOGGER = LoggerFactory.getLogger(MethodInvocationLoggingAspect.class);
-  @Around("@annotation(LogMethodInvocation) || @annotation(LogMonitoring)")
+  @Around("@annotation(LogMethodInvocation) || @annotation(LogMonitoringInvocation)")
   public Object logMethod(ProceedingJoinPoint joinPoint) throws Throwable {
     MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 

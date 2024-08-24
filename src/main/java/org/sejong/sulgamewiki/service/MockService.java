@@ -75,6 +75,8 @@ public class MockService {
     MemberContentInteraction savedMemberContent
         = memberContentInteractionRepository.save(memberContent);
 
+    log.info("가짜 회원 생성 : id : {} , email : {}", member.getMemberId(), member.getEmail());
+
     return MockDto
         .builder()
         .member(savedMember)
