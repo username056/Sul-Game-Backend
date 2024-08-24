@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.sejong'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 java {
 	sourceCompatibility = '17'
@@ -65,11 +65,10 @@ dependencies {
 	implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
 
 	// Faker 오늘도 숭배 해야만해....
-	// Faker 라이브러리 추가, 그리고 snakeyaml 제외
+	// Faker 의존성에서 snakeyaml 제외 (버전 충돌) snakeyaml의 2.0버전 명시적으로 추가
 	implementation('com.github.javafaker:javafaker:1.0.2') {
 		exclude module: 'snakeyaml'
 	}
-	// snakeyaml의 다른 버전 명시적으로 추가
 	implementation 'org.yaml:snakeyaml:2.0'
 }
 
