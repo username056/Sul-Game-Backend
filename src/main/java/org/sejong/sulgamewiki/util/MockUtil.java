@@ -1,44 +1,23 @@
 package org.sejong.sulgamewiki.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.javafaker.Faker;
 import java.time.LocalDate;
 import org.sejong.sulgamewiki.object.MemberDto;
-import org.sejong.sulgamewiki.util.exception.CustomException;
-import org.sejong.sulgamewiki.util.exception.ErrorCode;
-import org.springframework.web.client.RestTemplate;
 
 public class MockUtil {
 
   /**
    * 가짜 회원에 대한 정보를 생성
    *
-   * @return String nickname String email LocalDate birthDate
+   * @return MemberDto 객체 (nickname, email, birthDate 포함)
    */
   public static MemberDto getMockMemberInfo() {
-    RestTemplate restTemplate = new RestTemplate();
-    String url = "https://api.heropy.dev/v0/users";
-    String response = restTemplate.getForObject(url, String.class);
-    ObjectMapper objectMapper = new ObjectMapper();
-    JsonNode root = null;
+    Faker faker = new Faker();
 
-    try {
-      root = objectMapper.readTree(response);
-    } catch (JsonProcessingException e) {
-      throw new CustomException(ErrorCode.MOCK_MEMBER_MAPPING_ERROR);
-    }
-
-    JsonNode user = root.get("users").get(0);
-    int age = user.get("age").asInt();
-
-    // 나이 14세 이상
-    if (age < 14) {
-      age = 14;
-    }
-
-    String email = user.get("emails").get(0).asText();
-    String nickname = user.get("name").asText();
+    // 무작위 이름, 이메일, 나이 생성
+    String nickname = faker.name().fullName();
+    String email = faker.internet().emailAddress();
+    int age = faker.number().numberBetween(14, 100); // 나이 14세 이상
     LocalDate birthDate = LocalDate.now().minusYears(age);
 
     // 결과 출력
@@ -51,7 +30,5 @@ public class MockUtil {
         .email(email)
         .birthDate(birthDate)
         .build();
-
   }
 }
-
