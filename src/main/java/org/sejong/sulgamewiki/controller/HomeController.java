@@ -14,13 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/home")
 public class HomeController {
 
-  // 임시로 작성한 서비스 (실제 서비스에서 구현되어야 함)
   private final HomeService homeService;
 
   @GetMapping
   public ResponseEntity<HomeDto> getHomeData(Pageable pageable) {
     // HomeDto를 반환하는 서비스 로직 호출
-    HomeDto homeData = homeService.getHomeData(pageable);
-    return ResponseEntity.ok(homeData);
+    return ResponseEntity.ok(homeService.getHomeData(pageable));
   }
 }

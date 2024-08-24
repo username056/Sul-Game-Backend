@@ -5,22 +5,29 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.domain.Slice;
 
 @Getter
 @Setter
 @Builder
 @ToString
 public class HomeDto {
-  /*
-  최신게시물 리스트
-  국룰술게임(공식술게임) 리스트
-  실시간차트 리스트
-  인트로자랑하기 리스트
-  오늘 가장 핫했던 술게임 리스트
-   */
-  private List<BasePostDto> latestPosts;
-  private List<OfficialGameDto> officialGames;
-  private List<BasePostDto> realTimeChart;
-  private List<IntroDto> introPride;
-  private List<BasePostDto> hotGamesToday;
+  /*--------------------------최신게시물---------------------------*/
+  private List<CreativeGame> latestCreativeList;
+  private List<Intro> latestIntroList;
+
+  /*--------------------------국룰술게임---------------------------*/
+  private List<OfficialGame> officialGames;
+
+  /*--------------------------실시간 ㅅㄱㅇㅋ차트---------------------------*/
+  private List<CreativeGame> creativeGameRealTimeChart;
+  private List<Intro> introRealTimeChart;
+  private List<OfficialGame> officialGameRealTimeChart;
+
+  /*--------------------------인트로 자랑하기---------------------------*/
+  private List<Intro> introsByLikes;
+  private List<Intro> introsByViews;
+
+  /*--------------------------오늘 가장 핫했던 술게임---------------------------*/
+  private List<BasePost> hotGamesToday;
 }
