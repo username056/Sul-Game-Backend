@@ -16,4 +16,16 @@ public class MemberDto {
   private List<Member> members;
   private Long memberId;
   private String nickName;
+
+  // posts
+  List<BasePost> likedOfficialGame;
+  List<BasePost> likedCreationGame;
+  List<BasePost> likedIntros;
+
+  List<BasePost> bookmarkedOfficialGameIds;
+  List<BasePost> bookmarkedCreationGameIds;
+  List<BasePost> bookmarkedIntroIds;
+
+  // report
+  List<Report> reports;
 }

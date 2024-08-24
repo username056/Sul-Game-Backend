@@ -27,7 +27,7 @@ public class Report extends BaseTimeEntity{
   private Long reportId;
 
   @ManyToOne
-  private Member reportedBy; // 신고자
+  private Member reporter; // 신고자
 
   private SourceType sourceType; // 신고된 게시물 TODO: 이름 나중에 바꾸기
 

@@ -35,7 +35,7 @@ public class ReportService {
           .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
       Report report = Report.builder()
-          .reportedBy(member)
+          .reporter(member)
           .sourceType(command.getSourceType())
           .sourceId(command.getSourceId())
           .reportType(command.getReportType())
@@ -49,7 +49,7 @@ public class ReportService {
           .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
       Report report = Report.builder()
-          .reportedBy(member)
+          .reporter(member)
           .sourceType(command.getSourceType())
           .sourceId(command.getSourceId())
           .reportType(command.getReportType())
