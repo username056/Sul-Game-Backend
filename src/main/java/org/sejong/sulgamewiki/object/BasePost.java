@@ -63,6 +63,13 @@ public abstract class BasePost extends BaseTimeEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
 
+  @Builder.Default
+  private int realTimeScore = 0;  // 1시간마다 초기화
+
+  @Builder.Default
+  private int dailyScore = 0;  // 하루마다 초기화
+
+
   public void cancelLike(Long memberId) {
     if(this.likedMemberIds.contains(memberId)) {
       throw new CustomException(ErrorCode.NO_LIKE_TO_CANCEL);
@@ -80,5 +87,23 @@ public abstract class BasePost extends BaseTimeEntity {
     this.likedMemberIds.add(memberId);
   }
 
+  // 실시간 점수 증가
+  public void increaseRealTimeScore(int score) {
+    this.realTimeScore += score;
+  }
+
+  // 오늘의 점수 증가
+  public void increaseDailyScore(int score) {
+    this.dailyScore += score;
+  }
+
+  // 점수 초기화 로직
+  public void resetRealTimeScore() {
+    this.realTimeScore = 0;
+  }
+
+  public void resetDailyScore() {
+    this.dailyScore = 0;
+  }
 
 }
