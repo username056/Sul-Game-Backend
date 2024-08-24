@@ -33,10 +33,9 @@ public class MemberService implements UserDetailsService {
   }
 
   @Transactional
-  public MemberDto completeRegistration(MemberCommand memberCommand) {
-    MemberDto dto = MemberDto.builder().build();
-
-    Member member = memberRepository.findById(memberCommand.getMemberId())
+  public MemberDto completeRegistration(MemberCommand command) {
+    // Member 검증
+    Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
     if (member.getAccountStatus() != AccountStatus.PENDING) {
@@ -44,16 +43,28 @@ public class MemberService implements UserDetailsService {
       throw new CustomException(ErrorCode.INVALID_ACCOUNT_STATUS);
     }
 
-    member.setBirthDate(memberCommand.getBirthDate());
-    member.setCollege(memberCommand.getUniversity());
-    member.setIsUniversityPublic(memberCommand.getIsUniversityVisible());
-    member.setIsNotificationEnabled(memberCommand.getIsNotiEnabled());
+    // Member 업데이트 및 저장
+    member.setBirthDate(command.getBirthDate());
+    member.setCollege(command.getUniversity());
+    member.setIsUniversityPublic(command.getIsUniversityVisible());
+    member.setIsNotificationEnabled(command.getIsNotiEnabled());
     member.setAccountStatus(AccountStatus.ACTIVE);
 
     Member updatedMember = memberRepository.save(member);
 
-    dto.setMember(updatedMember);
-    return dto;
+    return MemberDto.builder()
+        .member(updatedMember)
+        .build();
+  }
+
+
+  public MemberDto getProfile(MemberCommand command) {
+    Member member = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    memberContentInteractionRepository.findByMember(member);
+    return MemberDto.builder()
+        .member(member)
+        .build();
   }
 
   public void deleteMember(MemberCommand command) {
