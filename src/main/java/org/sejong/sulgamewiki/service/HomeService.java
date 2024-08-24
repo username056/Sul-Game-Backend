@@ -22,7 +22,9 @@ public class HomeService {
   public HomeDto getHomeData(Pageable pageable) {
     HomeDto dto = HomeDto.builder().build();
 
-    /*--------------------------최신게시물---------------------------*/
+    /*
+    최신게시물
+   */
     // 최신 창작게시물 가져오기 (Slice 방식)
     Slice<CreativeGame> latestCreativeGamesSlice = basePostRepository.findLatestCreativeGames(
         pageable);
@@ -36,7 +38,9 @@ public class HomeService {
 
 
 
-    /*--------------------------국룰술게임---------------------------*/
+    /*
+    국룰술게임
+    */
     // 좋아요 순으로 오피셜 게임 가져오기
     Slice<OfficialGame> officialGames = basePostRepository.findOfficialGamesByLikes(
         pageable);
@@ -45,7 +49,9 @@ public class HomeService {
 
 
 
-    /*--------------------------실시간 ㅅㄱㅇㅋ차트---------------------------*/
+    /*
+    실시간 ㅅㄱㅇㅋ차트
+     */
     // 실시간 창작술게임 차트 가져오기
     Slice<CreativeGame> creativeGamesByRealTimeScore = basePostRepository.findCreativeGamesByRealTimeScore(
         pageable);
@@ -64,7 +70,9 @@ public class HomeService {
 
 
 
-    /*--------------------------인트로 자랑하기---------------------------*/
+    /*
+    인트로 자랑하기
+     */
     // 최신순으로 인트로 자랑하기 데이터 가져오기(위에 재활용)
 
     // 좋아요순으로 인트로 자랑하기 데이터 가져오기
@@ -77,7 +85,9 @@ public class HomeService {
     List<Intro> introsListByViews = introsByViews.getContent();
 
 
-    /*--------------------------오늘 가장 핫했던 술게임---------------------------*/
+    /*
+    오늘 가장 핫했던 술게임
+     */
     // 오늘 가장 핫했던 게임 가져오기
     //TODO: "핫"하다는 기준 세우기(게시글 score)
     Slice<BasePost> postsSliceByDailyScore = basePostRepository.findPostsByDailyScore(
