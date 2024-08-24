@@ -23,28 +23,22 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
   Slice<Intro> findLatestIntros(Pageable pageable);
 
 
-
   /*--------------------------국룰술게임---------------------------*/
   // 좋아요 순으로 오피셜 게임을 정렬해서 Slice로 가져오는 JPQL 쿼리
   @Query("SELECT o FROM OfficialGame o WHERE o.isDeleted = false ORDER BY o.likes DESC")
   Slice<OfficialGame> findOfficialGamesByLikes(Pageable pageable);
 
 
-
-
   /*--------------------------실시간 ㅅㄱㅇㅋ차트---------------------------*/
   // 실시간 점수순으로 창작게임을 정렬해서 Slice로 가져오는 JPQL 쿼리
-  @Query("SELECT p FROM CreativeGame p ORDER BY p.realTimeScore DESC")
+  @Query("SELECT p FROM CreativeGame p WHERE p.isDeleted = false ORDER BY p.realTimeScore DESC")
   Slice<CreativeGame> findCreativeGamesByRealTimeScore(Pageable pageable);
 
-  @Query("SELECT p FROM Intro p ORDER BY p.realTimeScore DESC")
+  @Query("SELECT p FROM Intro p WHERE p.isDeleted = false ORDER BY p.realTimeScore DESC")
   Slice<Intro> findIntrosByRealTimeScore(Pageable pageable);
 
-  @Query("SELECT p FROM OfficialGame p ORDER BY p.realTimeScore DESC")
+  @Query("SELECT p FROM OfficialGame p WHERE p.isDeleted = false ORDER BY p.realTimeScore DESC")
   Slice<OfficialGame> findOfficialGamesByRealTimeScore(Pageable pageable);
-
-
-
 
 
   /*--------------------------인트로 자랑하기---------------------------*/
@@ -57,10 +51,9 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
   Slice<Intro> findByViews(Pageable pageable);
 
 
-
   /*--------------------------오늘 가장 핫했던 술게임---------------------------*/
   //오늘의 점수를 기준으로 술게임(창작,공식)을 정렬해서 Slice로 가져오는 JPQL 쿼리(인트로 제외)
-  @Query("SELECT p FROM BasePost p WHERE TYPE(p) IN (OfficialGame, CreativeGame) ORDER BY p.dailyScore DESC")
+  @Query("SELECT p FROM BasePost p WHERE TYPE(p) IN (OfficialGame, CreativeGame) AND p.isDeleted = false ORDER BY p.dailyScore DESC")
   Slice<BasePost> findPostsByDailyScore(Pageable pageable);
 
 

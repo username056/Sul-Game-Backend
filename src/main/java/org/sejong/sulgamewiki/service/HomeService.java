@@ -20,6 +20,7 @@ public class HomeService {
   private final BasePostRepository basePostRepository;
 
   public HomeDto getHomeData(Pageable pageable) {
+    HomeDto dto = HomeDto.builder().build();
 
     /*--------------------------최신게시물---------------------------*/
     // 최신 창작게시물 가져오기 (Slice 방식)
@@ -46,15 +47,18 @@ public class HomeService {
 
     /*--------------------------실시간 ㅅㄱㅇㅋ차트---------------------------*/
     // 실시간 창작술게임 차트 가져오기
-    Slice<CreativeGame> creativeGamesByRealTimeScore = basePostRepository.findCreativeGamesByRealTimeScore(pageable);
+    Slice<CreativeGame> creativeGamesByRealTimeScore = basePostRepository.findCreativeGamesByRealTimeScore(
+        pageable);
     List<CreativeGame> creativeGameListByRealTimeScore = creativeGamesByRealTimeScore.getContent();
 
     // 실시간 인트로 차트 가져오기
-    Slice<Intro> introsByRealTimeScore = basePostRepository.findIntrosByRealTimeScore(pageable);
+    Slice<Intro> introsByRealTimeScore = basePostRepository.findIntrosByRealTimeScore(
+        pageable);
     List<Intro> introsListByRealTimeScore = introsByRealTimeScore.getContent();
 
     // 실시간 공식술게임 차트 가져오기
-    Slice<OfficialGame> officialGamesByRealTimeScore = basePostRepository.findOfficialGamesByRealTimeScore(pageable);
+    Slice<OfficialGame> officialGamesByRealTimeScore = basePostRepository.findOfficialGamesByRealTimeScore(
+        pageable);
     List<OfficialGame> officialGameListByRealTimeScore = officialGamesByRealTimeScore.getContent();
 
 
@@ -64,7 +68,8 @@ public class HomeService {
     // 최신순으로 인트로 자랑하기 데이터 가져오기(위에 재활용)
 
     // 좋아요순으로 인트로 자랑하기 데이터 가져오기
-    Slice<Intro> introsSliceByLikes = basePostRepository.findIntrosByLikes(pageable);
+    Slice<Intro> introsSliceByLikes = basePostRepository.findIntrosByLikes(
+        pageable);
     List<Intro> introsListByLikes = introsSliceByLikes.getContent();
 
     // 조회수순으로 인트로 자랑하기 데이터 가져오기
@@ -75,27 +80,30 @@ public class HomeService {
     /*--------------------------오늘 가장 핫했던 술게임---------------------------*/
     // 오늘 가장 핫했던 게임 가져오기
     //TODO: "핫"하다는 기준 세우기(게시글 score)
-    Slice<BasePost> postsSliceByDailyScore = basePostRepository.findPostsByDailyScore(pageable);
+    Slice<BasePost> postsSliceByDailyScore = basePostRepository.findPostsByDailyScore(
+        pageable);
     List<BasePost> postsListByDailyScore = postsSliceByDailyScore.getContent();
 
+    // 최신 게시물 설정
+    dto.setLatestCreativeList(latestCreativeGameList);
+    dto.setLatestIntroList(latestIntrosList);
 
+    // 국룰술게임 설정
+    dto.setOfficialGames(officialGameList);
+
+    // 실시간 ㅅㄱㅇㅋ차트 설정
+    dto.setCreativeGameRealTimeChart(creativeGameListByRealTimeScore);
+    dto.setIntroRealTimeChart(introsListByRealTimeScore);
+    dto.setOfficialGameRealTimeChart(officialGameListByRealTimeScore);
+
+    // 인트로 자랑하기 설정
+    dto.setIntrosByLikes(introsListByLikes);
+    dto.setIntrosByViews(introsListByViews);
+
+    // 오늘 가장 핫했던 술게임 설정
+    dto.setHotGamesToday(postsListByDailyScore);
 
     // HomeDto에 담아서 반환
-    return HomeDto.builder()
-        //최신게시물
-        .latestCreativeList(latestCreativeGameList)
-        .latestIntroList(latestIntrosList)
-        //국룰술게임
-        .officialGames(officialGameList)
-        //실시간 ㅅㄱㅇㅋ차트
-        .creativeGameRealTimeChart(creativeGameListByRealTimeScore)
-        .introRealTimeChart(introsListByRealTimeScore)
-        .officialGameRealTimeChart(officialGameListByRealTimeScore)
-        //인트로 자랑하기
-        .introsByLikes(introsListByLikes)
-        .introsByViews(introsListByViews)
-        //오늘 가장 핫했던 술게임
-        .hotGamesToday(postsListByDailyScore)
-        .build();
+    return dto;
   }
 }
