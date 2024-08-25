@@ -127,19 +127,19 @@ public class OfficialGameService {
     return dto;
   }
 
-  public void reportGame(Long gameId, Long memberId, ReportType reportType) {
+  public void reportGame(Long gameId, Member member, ReportType reportType) {
     OfficialGame officialGame = (OfficialGame) basePostRepository.findById(gameId)
         .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
 
     // 중복 신고 여부 확인
-    boolean isAlreadyReported = reportService.isAlreadyReported(memberId, gameId, SourceType.OFFICIAL_GAME);
+    boolean isAlreadyReported = reportService.isAlreadyReported(member, gameId, SourceType.OFFICIAL_GAME);
     if (isAlreadyReported) {
       throw new CustomException(ErrorCode.ALREADY_REPORTED);
     }
 
     // 리포트 생성
     ReportCommand command = ReportCommand.builder()
-        .memberId(memberId)
+        .memberId(member.getMemberId())
         .sourceId(gameId)
         .sourceType(SourceType.OFFICIAL_GAME)
         .reportType(reportType)

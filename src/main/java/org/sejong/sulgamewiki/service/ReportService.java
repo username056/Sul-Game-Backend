@@ -27,36 +27,23 @@ public class ReportService {
   public ReportDto createReport(ReportCommand command) {
     ReportDto dto = ReportDto.builder().build();
 
+    // 멤버 확인
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+    // 신고 대상 객체 찾기
     Object sourceObject = findSourceObject(command.getSourceId(), command.getSourceType());
 
-      Report report = Report.builder()
-          .reporter(member)
-          .sourceType(command.getSourceType())
-          .sourceId(command.getSourceId())
-          .reportType(command.getReportType())
-          .build();
+    // 리포트 생성 및 저장
+    Report report = Report.builder()
+        .reporter(member)
+        .sourceType(command.getSourceType())
+        .sourceId(command.getSourceId())
+        .reportType(command.getReportType())
+        .build();
 
-      Report savedReport = reportRepository.save(report);
-      dto.setReport(savedReport);
-
-    } else if(command.getSourceType().name().equals("COMMENT")){
-      Comment comment = commentRepository.findById(command.getSourceId())
-          .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-
-      Report report = Report.builder()
-          .reporter(member)
-          .sourceType(command.getSourceType())
-          .sourceId(command.getSourceId())
-          .reportType(command.getReportType())
-          .build();
-
-      Report savedReport = reportRepository.save(report);
-      dto.setReport(savedReport);
-    }
-
+    Report savedReport = reportRepository.save(report);
+    dto.setReport(savedReport);
 
     return dto;
   }
@@ -99,8 +86,8 @@ public class ReportService {
     }
   }
 
-  public boolean isAlreadyReported(Long memberId, Long sourceId, SourceType sourceType) {
-    return reportRepository.existsByReportedByMemberIdAndSourceIdAndSourceType(memberId, sourceId, sourceType);
+  public boolean isAlreadyReported(Member member, Long sourceId, SourceType sourceType) {
+    return reportRepository.existsByReporterAndSourceIdAndSourceType(member, sourceId, sourceType);
   }
 
 

@@ -9,9 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
-
-  boolean existsByReportedByMemberIdAndSourceIdAndSourceType(Long memberId, Long sourceId,
-      SourceType sourceType);
+  boolean existsByReporterAndSourceIdAndSourceType(Member reporter, Long sourceId, SourceType sourceType);
 
   List<Report> findByReporter(Member member);
 
