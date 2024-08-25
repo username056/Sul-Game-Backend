@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 
@@ -26,8 +27,8 @@ import org.sejong.sulgamewiki.util.exception.ErrorCode;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Builder
+@ToString(callSuper = true)
+@SuperBuilder
 public class Comment extends BaseTimeEntity {
 
     @Id

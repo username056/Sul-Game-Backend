@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/popular-game")
 @RequiredArgsConstructor
 public class OfficialGameController {
-
   private final OfficialGameService officialGameService;
 
   @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
