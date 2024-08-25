@@ -27,8 +27,9 @@ public class Report extends BaseTimeEntity{
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long reportId;
 
-  @ManyToOne  
-  private Member reportedBy; // 신고자
+
+  @ManyToOne
+  private Member reporter; // 신고자
 
   private SourceType sourceType; // 신고된 게시물 소스타입 TODO: 이름 나중에 바꾸기
 

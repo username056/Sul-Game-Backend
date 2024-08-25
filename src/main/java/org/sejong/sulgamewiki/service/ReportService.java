@@ -32,15 +32,31 @@ public class ReportService {
 
     Object sourceObject = findSourceObject(command.getSourceId(), command.getSourceType());
 
-    Report report = Report.builder()
-        .reportedBy(member)
-        .sourceType(command.getSourceType())
-        .sourceId(command.getSourceId())
-        .reportType(command.getReportType())
-        .build();
+      Report report = Report.builder()
+          .reporter(member)
+          .sourceType(command.getSourceType())
+          .sourceId(command.getSourceId())
+          .reportType(command.getReportType())
+          .build();
 
-    Report savedReport = reportRepository.save(report);
-    dto.setReport(savedReport);
+      Report savedReport = reportRepository.save(report);
+      dto.setReport(savedReport);
+
+    } else if(command.getSourceType().name().equals("COMMENT")){
+      Comment comment = commentRepository.findById(command.getSourceId())
+          .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+      Report report = Report.builder()
+          .reporter(member)
+          .sourceType(command.getSourceType())
+          .sourceId(command.getSourceId())
+          .reportType(command.getReportType())
+          .build();
+
+      Report savedReport = reportRepository.save(report);
+      dto.setReport(savedReport);
+    }
+
 
     return dto;
   }
