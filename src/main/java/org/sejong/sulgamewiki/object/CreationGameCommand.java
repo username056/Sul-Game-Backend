@@ -3,7 +3,7 @@ package org.sejong.sulgamewiki.object;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
-public class CreativeGameCommand {
+public class CreationGameCommand {
   private Long memberId;
   private Long basePostId;
   private String title;

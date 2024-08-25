@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.domain.Slice;
 
 @Getter
 @Setter
@@ -15,7 +14,7 @@ public class HomeDto {
   /*
   최신술게임
    */
-  private List<CreativeGame> latestCreativeList;
+  private List<CreationGame> latestCreativeList;
   private List<Intro> latestIntroList;
 
   /*
@@ -26,9 +25,9 @@ public class HomeDto {
   /*
   실시간 ㅅㄱㅇㅋ차트
    */
-  private List<CreativeGame> creativeGameRealTimeChart;
-  private List<Intro> introRealTimeChart;
-  private List<OfficialGame> officialGameRealTimeChart;
+  private List<CreationGame> creationGameDailyChart;
+  private List<Intro> introDailyChart;
+  private List<OfficialGame> officialGameDailyChart;
 
   /*
   인트로 자랑하기
@@ -39,5 +38,5 @@ public class HomeDto {
   /*
   오늘 가장 핫했던 술게임
    */
-  private List<BasePost> hotGamesToday;
+  private List<BasePost> weeklyHotGames;
 }

@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.object;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.ToString;
 @ToString
 public class HomeCommand {
   private List<OfficialGameCommand> officialGameList;
-//  private List<CreativeGameCommand> creativeGameList;
+  private List<CreationGameCommand> creativeGameList;
   private List<IntroCommand> introList;
+  private Pageable pageable;
 }
