@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.repository;
 
+import java.util.List;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.CreativeGame;
 import org.sejong.sulgamewiki.object.Intro;
@@ -67,4 +68,5 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
   Slice<BasePost> findPostsByWeeklyScore(Pageable pageable);
 
 
+  List<BasePost> findByBasePostIdIn(List<Long> ids);
 }
