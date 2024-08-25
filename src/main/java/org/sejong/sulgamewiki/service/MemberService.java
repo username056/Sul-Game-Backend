@@ -1,6 +1,5 @@
 package org.sejong.sulgamewiki.service;
 
-import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,7 @@ import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -67,6 +67,7 @@ public class MemberService implements UserDetailsService {
   }
 
 
+  @Transactional(readOnly = true)
   @LogMonitoringInvocation
   public MemberDto getProfile(MemberCommand command) {
     Member member = memberRepository.findById(command.getMemberId())
@@ -79,6 +80,8 @@ public class MemberService implements UserDetailsService {
         .build();
   }
 
+  // 관리자 기능
+  @Transactional(readOnly = true)
   public MemberDto getReport(MemberCommand command){
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -89,6 +92,7 @@ public class MemberService implements UserDetailsService {
   }
 
 
+  @Transactional(readOnly = true)
   public MemberDto getLikedPosts(MemberCommand command) {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -105,12 +109,13 @@ public class MemberService implements UserDetailsService {
         basePostRepository.findByBasePostIdIn(memberContent.getLikedOfficialGameIds());
 
     return MemberDto.builder()
-        .likedOfficialGame(likedOfficialGame)
-        .likedCreationGame(likedCreationGame)
+        .likedOfficialGames(likedOfficialGame)
+        .likedCreationGames(likedCreationGame)
         .likedIntros(likedIntros)
         .build();
   }
 
+  @Transactional(readOnly = true)
   public MemberDto getBookmarkedPosts(MemberCommand command) {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -127,8 +132,8 @@ public class MemberService implements UserDetailsService {
         basePostRepository.findByBasePostIdIn(memberContent.getBookmarkedOfficialGameIds());
 
     return MemberDto.builder()
-        .likedOfficialGame(bookmarkedOfficialGameIds)
-        .likedCreationGame(bookmarkedCreationGameIds)
+        .likedOfficialGames(bookmarkedOfficialGameIds)
+        .likedCreationGames(bookmarkedCreationGameIds)
         .likedIntros(bookmarkedIntroIds)
         .build();
   }
