@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "회원 관리 API", description = "회원 관리 API 제공")
+@Tag(
+    name = "회원 관리 API",
+    description = "회원 관리 API 제공"
+)
 public class MemberController {
 
   private final MemberService memberService;
@@ -30,16 +33,35 @@ public class MemberController {
   @LogMonitoringInvocation
   @Operation(
       summary = "회원 등록 완료",
-      description = "소셜로그인을 이후에 나머지 회원가입 완료\n\n"
-          + "Input:\n\n"
-          + "String nickname\n\n"
-          + "LocalDate birthDate\n\n"
-          + "String college\n\n"
-          + "Boolean isUniversityPublic\n\n"
-          + "Boolean isNotificationEnabled")
+      description = """
+    **회원 등록 완료**
+
+    소셜로그인 이후 나머지 회원가입을 완료합니다.
+
+    **입력 파라미터 값:**
+
+    - **`String nickname`**: 회원의 닉네임 (예: "서새찬")
+      _최대 20자, 특수문자 사용 불가_
+
+    - **`LocalDate birthDate`**: 회원의 생년월일 (예: "1999-10-29")  
+      _형식: YYYY-MM-DD_
+
+    - **`String college`**: 회원의 대학 이름 (예: "세종대학교")  
+      _최대 50자_
+
+    - **`Boolean isUniversityPublic`**: 대학 공개 여부 (예: "true" or "false")  
+      `기본값: true`
+
+    - **`Boolean isNotificationEnabled`**: 알림 수신 여부 (예: "true" or "false")  
+      `기본값: true`
+
+    **반환 파라미터 값:**
+
+    - **`Member member`**: 회원가입이 완료된 회원
+    """
+  )
   public ResponseEntity<MemberDto> completeRegistration(
-      @ModelAttribute MemberCommand command
-  ) {
+      @ModelAttribute MemberCommand command) {
     return ResponseEntity.ok(memberService.completeRegistration(command));
   }
 
@@ -48,11 +70,14 @@ public class MemberController {
   @Operation(
       summary = "마이페이지",
       description = "회원 마이페이지 정보 제공\n\n"
-          + "Input:\n\n"
-          + "Long memberId")
+          + "[입력 파라미터 값] : \n\n"
+          + "Long memberId\n\n"
+          + "[반환 파라미터 값] : \n\n"
+          + "Member member\n\n"
+          + "MemberContentInteraction memberContentInteraction"
+  )
   public ResponseEntity<MemberDto> getProfile(
-      @ModelAttribute MemberCommand command
-  ) {
+      @ModelAttribute MemberCommand command) {
     return ResponseEntity.ok(memberService.getProfile(command));
   }
 
@@ -61,11 +86,15 @@ public class MemberController {
   @Operation(
       summary = "좋아요한 글",
       description = "회원이 좋아요 한 글 제공\n\n"
-          + "Input:\n\n"
-          + "Long memberId")
+          + "[입력 파라미터 값] : \n\n"
+          + "Long memberId\n\n"
+          + "[반환 파라미터 값] : \n\n"
+          + "List<BasePost> likedOfficialGames\n\n"
+          + "List<BasePost> likedCreationGame\n\n"
+          + "List<BasePost> likedIntros\n\n"
+  )
   public ResponseEntity<MemberDto> getLikedPosts(
-      @ModelAttribute MemberCommand command
-  ) {
+      @ModelAttribute MemberCommand command) {
     return ResponseEntity.ok(memberService.getLikedPosts(command));
   }
 
@@ -74,11 +103,15 @@ public class MemberController {
   @Operation(
       summary = "즐겨찾기한 글",
       description = "회원이 즐겨찾기 한 글 제공\n\n"
-          + "Input:\n\n"
-          + "Long memberId")
+          + "[입력 파라미터 값] : \n\n"
+          + "Long memberId\n\n"
+          + "[반환 파라미터 값] : \n\n"
+          + "List<BasePost> bookmarkedOfficialGameIds\n\n"
+          + "List<BasePost> bookmarkedCreationGameIds\n\n"
+          + "List<BasePost> bookmarkedIntroIds\n\n"
+  )
   public ResponseEntity<MemberDto> getBookmarkedPosts(
-      @ModelAttribute MemberCommand command
-  ) {
+      @ModelAttribute MemberCommand command) {
     return ResponseEntity.ok(memberService.getBookmarkedPosts(command));
   }
 
