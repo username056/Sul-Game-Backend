@@ -14,7 +14,7 @@ public class HomeDto {
   /*
   최신술게임
    */
-  private List<CreationGame> latestCreativeList;
+  private List<CreationGame> latestCreationList;
   private List<Intro> latestIntroList;
 
   /*

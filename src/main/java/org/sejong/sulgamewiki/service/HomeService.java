@@ -97,7 +97,7 @@ public class HomeService {
     List<BasePost> postsListByDailyScore = postsSliceByDailyScore.getContent();
 
     // 최신 게시물 설정
-    dto.setLatestCreativeList(latestCreationGameList);
+    dto.setLatestCreationList(latestCreationGameList);
     dto.setLatestIntroList(latestIntrosList);
 
     // 국룰술게임 설정

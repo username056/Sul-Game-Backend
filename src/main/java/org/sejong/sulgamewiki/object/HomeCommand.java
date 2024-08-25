@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class HomeCommand {
   private List<OfficialGameCommand> officialGameList;
-  private List<CreationGameCommand> creativeGameList;
+  private List<CreationGameCommand> creationGameList;
   private List<IntroCommand> introList;
   private Pageable pageable;
 }
