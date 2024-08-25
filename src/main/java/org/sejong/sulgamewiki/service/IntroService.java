@@ -48,17 +48,20 @@ public class IntroService {
 
     Intro savedIntro = basePostRepository.save(intro);
 
-    for (MultipartFile file : command.getMultipartFiles()) {
-      String fileUrl = s3Service.uploadFile(file, SourceType.INTRO);
+    // multipartFiles 필드가 null 또는 비어있는지 확인
+    if (command.getMultipartFiles() != null && !command.getMultipartFiles().isEmpty()) {
+      for (MultipartFile file : command.getMultipartFiles()) {
+        String fileUrl = s3Service.uploadFile(file, SourceType.INTRO);
 
-      BaseMedia introMedia = BaseMedia.builder()
-          .mediaUrl(fileUrl)
-          .fileSize(file.getSize())
-          .mediaType(MediaType.getMediaType(file))
-          .basePost(savedIntro)
-          .build();
+        BaseMedia introMedia = BaseMedia.builder()
+            .mediaUrl(fileUrl)
+            .fileSize(file.getSize())
+            .mediaType(MediaType.getMediaType(file))
+            .basePost(savedIntro)
+            .build();
 
-      baseMedias.add(baseMediaRepository.save(introMedia));
+        baseMedias.add(baseMediaRepository.save(introMedia));
+      }
     }
 
     dto.setBasePost(savedIntro);

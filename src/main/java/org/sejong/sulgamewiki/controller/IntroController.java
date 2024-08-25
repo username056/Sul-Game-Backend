@@ -1,7 +1,10 @@
 package org.sejong.sulgamewiki.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.IntroCommand;
 import org.sejong.sulgamewiki.object.IntroDto;
 import org.sejong.sulgamewiki.service.IntroService;
@@ -11,11 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/intro")
 @RequiredArgsConstructor
+@Slf4j
 public class IntroController {
   private final IntroService introService;
 
@@ -23,9 +29,21 @@ public class IntroController {
   @Operation(description = "인트로 생성")
   @LogMonitoringInvocation
   public ResponseEntity<IntroDto> createIntro(
-      @ModelAttribute IntroCommand command
+      @RequestParam("memberId") Long memberId,
+      @RequestParam("title") String title,
+      @RequestParam("description") String description,
+      @RequestParam("lyrics") String lyrics,
+      @RequestParam(value = "multipartFiles", required = false) List<MultipartFile> multipartFiles  // 파일이 없어도 허용
   ) {
-    IntroDto IntroDto = introService.createIntro(command);
-    return ResponseEntity.ok(IntroDto);
+    IntroCommand command = IntroCommand.builder()
+        .memberId(memberId)
+        .title(title)
+        .description(description)
+        .lyrics(lyrics)
+        .multipartFiles(multipartFiles != null ? multipartFiles : new ArrayList<>())
+        .build();
+
+    IntroDto introDto = introService.createIntro(command);
+    return ResponseEntity.ok(introDto);
   }
 }
