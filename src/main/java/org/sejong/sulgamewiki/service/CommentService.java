@@ -1,11 +1,16 @@
 package org.sejong.sulgamewiki.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.Comment;
 import org.sejong.sulgamewiki.object.CommentCommand;
 import org.sejong.sulgamewiki.object.CommentDto;
 import org.sejong.sulgamewiki.object.Member;
+import org.sejong.sulgamewiki.object.ReportCommand;
+import org.sejong.sulgamewiki.object.constants.ReportType;
+import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.CommentRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
@@ -20,6 +25,7 @@ public class CommentService {
   private final MemberRepository memberRepository;
   private final BasePostRepository basePostRepository;
   private final CommentRepository commentRepository;
+  private final ReportService reportService;
 
   public CommentDto createComment(CommentCommand command) {
     CommentDto dto = CommentDto.builder().build();
@@ -53,7 +59,48 @@ public class CommentService {
     if (!comment.getMember().getMemberId().equals(command.getMemberId())) {
       throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
     }
-
     commentRepository.deleteById(comment.getCommentId());
   }
+
+  public CommentDto getComment(Long commentId) {
+    Comment comment = commentRepository.findById(commentId)
+        .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+    CommentDto dto = CommentDto.builder().build();
+    dto.setComment(comment);
+    return dto;
+  }
+
+  public CommentDto updateComment(Long commentId, CommentCommand command) {
+    Comment comment = commentRepository.findById(commentId)
+        .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+    if (!comment.getMember().getMemberId().equals(command.getMemberId())) {
+      throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
+    }
+
+    comment.setContent(command.getContent());
+    comment.setEdited(true);
+
+    Comment updatedComment = commentRepository.save(comment);
+
+    CommentDto dto = CommentDto.builder().build();
+    dto.setComment(updatedComment);
+    return dto;
+  }
+
+  public void reportComment(Long commentId, Long memberId, ReportType reportType) {
+    Comment comment = commentRepository.findById(commentId)
+        .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+    ReportCommand command = ReportCommand.builder()
+        .memberId(memberId)
+        .sourceId(commentId)
+        .sourceType(SourceType.COMMENT)
+        .reportType(reportType)
+        .build();
+
+    reportService.createReport(command);
+  }
+
 }
