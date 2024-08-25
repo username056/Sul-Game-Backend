@@ -14,21 +14,21 @@ public class ScoreResetService {
   private final BasePostRepository basePostRepository;
 
   // 1시간마다 실행 (cron 표현식을 사용하여 스케줄링)
-  @Scheduled(cron = "0 0 * * * *")
-  public void resetRealTimeScores() {
-    List<BasePost> posts = basePostRepository.findAll();
-    for (BasePost post : posts) {
-      post.resetRealTimeScore();
-    }
-    basePostRepository.saveAll(posts);  // 실시간 점수 초기화 후 저장
-  }
-
-  // 하루마다 실행 (매일 자정에 실행)
   @Scheduled(cron = "0 0 0 * * *")
   public void resetDailyScores() {
     List<BasePost> posts = basePostRepository.findAll();
     for (BasePost post : posts) {
       post.resetDailyScore();
+    }
+    basePostRepository.saveAll(posts);  // 실시간 점수 초기화 후 저장
+  }
+
+  // 하루마다 실행 (매일 자정에 실행)
+  @Scheduled(cron = "0 0 0 * * 0")
+  public void resetWeeklyScores() {
+    List<BasePost> posts = basePostRepository.findAll();
+    for (BasePost post : posts) {
+      post.resetWeeklyScore();
     }
     basePostRepository.saveAll(posts);  // 하루 점수 초기화 후 저장
   }
