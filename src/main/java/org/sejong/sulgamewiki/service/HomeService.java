@@ -2,7 +2,8 @@ package org.sejong.sulgamewiki.service;
 
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.BasePost;
-import org.sejong.sulgamewiki.object.CreativeGame;
+import org.sejong.sulgamewiki.object.CreationGame;
+import org.sejong.sulgamewiki.object.HomeCommand;
 import org.sejong.sulgamewiki.object.HomeDto;
 import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.OfficialGame;
@@ -19,16 +20,17 @@ public class HomeService {
 
   private final BasePostRepository basePostRepository;
 
-  public HomeDto getHomeData(Pageable pageable) {
+  public HomeDto getHomeData(HomeCommand command) {
     HomeDto dto = HomeDto.builder().build();
 
+    Pageable pageable = (Pageable) command.getPageable();
     /*
     최신게시물
    */
     // 최신 창작게시물 가져오기 (Slice 방식)
-    Slice<CreativeGame> latestCreativeGamesSlice = basePostRepository.findLatestCreativeGames(
+    Slice<CreationGame> latestCreativeGamesSlice = basePostRepository.findLatestCreativeGames(
         pageable);
-    List<CreativeGame> latestCreativeGameList = latestCreativeGamesSlice.getContent();
+    List<CreationGame> latestCreationGameList = latestCreativeGamesSlice.getContent();
 
     // 최신 인트로게시물 가져오기 (Slice 방식)
     Slice<Intro> latestIntrosSlice = basePostRepository.findLatestIntros(
@@ -53,17 +55,17 @@ public class HomeService {
     실시간 ㅅㄱㅇㅋ차트
      */
     // 실시간 창작술게임 차트 가져오기
-    Slice<CreativeGame> creativeGamesByRealTimeScore = basePostRepository.findCreativeGamesByRealTimeScore(
+    Slice<CreationGame> creativeGamesByRealTimeScore = basePostRepository.findCreativeGamesByDailyScore(
         pageable);
-    List<CreativeGame> creativeGameListByRealTimeScore = creativeGamesByRealTimeScore.getContent();
+    List<CreationGame> creationGameListByRealTimeScore = creativeGamesByRealTimeScore.getContent();
 
     // 실시간 인트로 차트 가져오기
-    Slice<Intro> introsByRealTimeScore = basePostRepository.findIntrosByRealTimeScore(
+    Slice<Intro> introsByRealTimeScore = basePostRepository.findIntrosByDailyScore(
         pageable);
     List<Intro> introsListByRealTimeScore = introsByRealTimeScore.getContent();
 
     // 실시간 공식술게임 차트 가져오기
-    Slice<OfficialGame> officialGamesByRealTimeScore = basePostRepository.findOfficialGamesByRealTimeScore(
+    Slice<OfficialGame> officialGamesByRealTimeScore = basePostRepository.findOfficialGamesByDailyScore(
         pageable);
     List<OfficialGame> officialGameListByRealTimeScore = officialGamesByRealTimeScore.getContent();
 
@@ -90,28 +92,28 @@ public class HomeService {
      */
     // 오늘 가장 핫했던 게임 가져오기
     //TODO: "핫"하다는 기준 세우기(게시글 score)
-    Slice<BasePost> postsSliceByDailyScore = basePostRepository.findPostsByDailyScore(
+    Slice<BasePost> postsSliceByDailyScore = basePostRepository.findPostsByWeeklyScore(
         pageable);
     List<BasePost> postsListByDailyScore = postsSliceByDailyScore.getContent();
 
     // 최신 게시물 설정
-    dto.setLatestCreativeList(latestCreativeGameList);
+    dto.setLatestCreativeList(latestCreationGameList);
     dto.setLatestIntroList(latestIntrosList);
 
     // 국룰술게임 설정
     dto.setOfficialGames(officialGameList);
 
     // 실시간 ㅅㄱㅇㅋ차트 설정
-    dto.setCreativeGameRealTimeChart(creativeGameListByRealTimeScore);
-    dto.setIntroRealTimeChart(introsListByRealTimeScore);
-    dto.setOfficialGameRealTimeChart(officialGameListByRealTimeScore);
+    dto.setCreationGameDailyChart(creationGameListByRealTimeScore);
+    dto.setIntroDailyChart(introsListByRealTimeScore);
+    dto.setOfficialGameDailyChart(officialGameListByRealTimeScore);
 
     // 인트로 자랑하기 설정
     dto.setIntrosByLikes(introsListByLikes);
     dto.setIntrosByViews(introsListByViews);
 
     // 오늘 가장 핫했던 술게임 설정
-    dto.setHotGamesToday(postsListByDailyScore);
+    dto.setWeeklyHotGames(postsListByDailyScore);
 
     // HomeDto에 담아서 반환
     return dto;

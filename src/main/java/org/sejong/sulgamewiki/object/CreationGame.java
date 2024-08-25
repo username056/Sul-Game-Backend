@@ -8,26 +8,26 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @ToString(callSuper = true)
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @DiscriminatorValue("CreativeGame")
-public class CreativeGame extends BasePost {
+public class CreationGame extends BasePost {
 
   @Column(length = 90)
   private String introduction;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "popular_game_id")
+  @JoinColumn(name = "official_game_id")
   private OfficialGame officialGame;
 }
