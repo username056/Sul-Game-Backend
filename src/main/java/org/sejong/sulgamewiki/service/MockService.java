@@ -1,6 +1,5 @@
 package org.sejong.sulgamewiki.service;
 
-import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,7 @@ import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.MockUtil;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -95,6 +95,7 @@ public class MockService {
    * 전부 비어있어야 정상입니다!!
    *
    */
+  @Transactional
   public MockDto deleteAllMockMember() {
     memberContentInteractionRepository.deleteAll();
     memberRepository.deleteAll();
@@ -102,6 +103,13 @@ public class MockService {
     return MockDto.builder()
         .members(memberRepository.findAll())
         .memberContentInteractions(memberContentInteractionRepository.findAll())
+        .build();
+  }
+
+  @Transactional(readOnly = true)
+  public MockDto getAllMember() {
+    return MockDto.builder()
+        .members(memberRepository.findAll())
         .build();
   }
 }
