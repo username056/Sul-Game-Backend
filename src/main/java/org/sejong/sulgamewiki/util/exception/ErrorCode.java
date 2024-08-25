@@ -51,7 +51,13 @@ public enum ErrorCode {
 
   INVALID_NOTIFICATION_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 알림 요청입니다."),
 
-  INVALID_SOURCE_TYPE(HttpStatus.NOT_FOUND, "잘못된 소스 타입입니다.");
+  INVALID_SOURCE_TYPE(HttpStatus.NOT_FOUND, "잘못된 소스 타입입니다."),
+
+  // Report
+
+  REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "신고내역이 존재하지 않습니다."),
+
+  ALREADY_REPORTED(HttpStatus.BAD_REQUEST, "이미 신고했습니다.");
 
   private final HttpStatus status;
   private final String message;
