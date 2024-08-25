@@ -60,4 +60,32 @@ public class ReportService {
     }
   }
 
+  public ReportDto getReport(Long reportId) {
+    Report report = reportRepository.findById(reportId)
+        .orElseThrow(() -> new CustomException(ErrorCode.REPORT_NOT_FOUND));
+
+    ReportDto dto = ReportDto.builder().build();
+    dto.setReport(report);
+    return dto;
+  }
+
+  public void increaseReportCount(Object sourceObject) {
+    if (sourceObject instanceof BasePost) {
+      BasePost basePost = (BasePost) sourceObject;
+      basePost.setReportedCount(basePost.getReportedCount() + 1);
+      basePostRepository.save(basePost);
+    } else if (sourceObject instanceof Comment) {
+      Comment comment = (Comment) sourceObject;
+      comment.setReportedCount(comment.getReportedCount() + 1);
+      commentRepository.save(comment);
+    } else {
+      throw new CustomException(ErrorCode.INVALID_SOURCE_TYPE);
+    }
+  }
+
+  public boolean isAlreadyReported(Long memberId, Long sourceId, SourceType sourceType) {
+    return reportRepository.existsByReportedByMemberIdAndSourceIdAndSourceType(memberId, sourceId, sourceType);
+  }
+
+
 }
