@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@DiscriminatorValue("CreativeGame")
+@DiscriminatorValue("CreationGame")
 public class CreationGame extends BasePost {
 
   @Column(length = 90)

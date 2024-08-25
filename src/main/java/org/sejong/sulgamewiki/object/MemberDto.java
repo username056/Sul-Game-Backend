@@ -11,9 +11,22 @@ import lombok.ToString;
 @Setter
 @ToString
 public class MemberDto {
+  // member
   private Member member;
   private MemberContentInteraction memberContentInteraction;
   private List<Member> members;
   private Long memberId;
   private String nickName;
+
+  // posts
+  List<BasePost> likedOfficialGames;
+  List<BasePost> likedCreationGames;
+  List<BasePost> likedIntros;
+
+  List<BasePost> bookmarkedOfficialGameIds;
+  List<BasePost> bookmarkedCreationGameIds;
+  List<BasePost> bookmarkedIntroIds;
+
+  // reports
+  List<Report> reports;
 }
