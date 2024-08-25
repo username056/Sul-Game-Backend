@@ -11,6 +11,8 @@ import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.OfficialGameCommand;
 import org.sejong.sulgamewiki.object.OfficialGameDto;
+import org.sejong.sulgamewiki.object.ReportCommand;
+import org.sejong.sulgamewiki.object.constants.ReportType;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.object.constants.MediaType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
@@ -32,6 +34,8 @@ public class OfficialGameService {
   private final BaseMediaRepository baseMediaRepository;
   private final BasePostRepository basePostRepository;
   private final S3Service s3Service;
+  private final BaseMediaService baseMediaService;
+  private final ReportService reportService;
 
   @Transactional
   public OfficialGameDto createOfficialGame(OfficialGameCommand command) {
@@ -78,5 +82,69 @@ public class OfficialGameService {
 
     dto.setBasePost(officialGame);
     return dto;
+  }
+
+  public OfficialGameDto updateOfficialGame(Long gameId, OfficialGameCommand command) {
+    OfficialGameDto dto = OfficialGameDto.builder().build();
+    List<BaseMedia> baseMedias = new ArrayList<>();
+
+    // 게임 정보 찾기
+    BasePost basePost = basePostRepository.findById(gameId)
+        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+
+    if (!(basePost instanceof OfficialGame existingOfficialGame)) {
+      throw new CustomException(ErrorCode.GAME_NOT_FOUND);
+    }
+
+    Member member = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    // 기존 게임 정보 업데이트
+    existingOfficialGame.setTitle(command.getTitle());
+    existingOfficialGame.setIntroduction(command.getIntroduction());
+    existingOfficialGame.setDescription(command.getDescription());
+
+    OfficialGame savedOfficialGame = basePostRepository.save(existingOfficialGame);
+    List<String> existingMediaUrls = baseMediaRepository.findMediaUrlsByBasePost_BasePostId(gameId);
+
+    // 새 미디어 파일 처리 및 기존 미디어와 비교 후 업데이트
+    if (command.getMultipartFiles() != null) {
+      List<String> updatedMediaUrls = baseMediaService.compareAndUpdateMedia(existingMediaUrls, command.getMultipartFiles(), SourceType.OFFICIAL_GAME);
+
+      // 기존 미디어 업데이트된 미디어로 교체
+      for (String mediaUrl : updatedMediaUrls) {
+        BaseMedia officialGameMedia = BaseMedia.builder()
+            .mediaUrl(mediaUrl)
+            .basePost(savedOfficialGame)
+            .build();
+
+        baseMedias.add(baseMediaRepository.save(officialGameMedia));
+      }
+    }
+
+    dto.setBasePost(savedOfficialGame);
+    dto.setBaseMedias(baseMedias);
+    return dto;
+  }
+
+  public void reportGame(Long gameId, Long memberId, ReportType reportType) {
+    OfficialGame officialGame = (OfficialGame) basePostRepository.findById(gameId)
+        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+
+    // 중복 신고 여부 확인
+    boolean isAlreadyReported = reportService.isAlreadyReported(memberId, gameId, SourceType.OFFICIAL_GAME);
+    if (isAlreadyReported) {
+      throw new CustomException(ErrorCode.ALREADY_REPORTED);
+    }
+
+    // 리포트 생성
+    ReportCommand command = ReportCommand.builder()
+        .memberId(memberId)
+        .sourceId(gameId)
+        .sourceType(SourceType.OFFICIAL_GAME)
+        .reportType(reportType)
+        .build();
+
+    reportService.createReport(command);
   }
 }
