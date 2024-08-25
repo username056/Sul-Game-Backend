@@ -11,4 +11,5 @@ public class CreativeGameCommand {
   private String introduction;
   private List<String> imageUrls;
   private List<MultipartFile> multipartFiles;
+  private List<OfficialGame> relatedOfficialGames;
 }
