@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,12 @@ public class IntroService {
     // multipartFiles 필드가 null 또는 비어있는지 확인
     if (command.getMultipartFiles() != null && !command.getMultipartFiles().isEmpty()) {
       for (MultipartFile file : command.getMultipartFiles()) {
-        String fileUrl = s3Service.uploadFile(file, SourceType.INTRO);
+        String fileUrl = null;
+        try {
+          fileUrl = s3Service.uploadFile(file, SourceType.INTRO);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
 
         BaseMedia introMedia = BaseMedia.builder()
             .mediaUrl(fileUrl)

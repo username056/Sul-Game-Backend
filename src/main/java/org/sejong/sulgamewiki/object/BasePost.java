@@ -42,6 +42,9 @@ public abstract class BasePost extends BaseTimeEntity {
   @Column(length = 100)
   private String title;
 
+  @Column(length = 90)
+  private String introduction;
+
   @Column(length = 500)
   private String description;
 

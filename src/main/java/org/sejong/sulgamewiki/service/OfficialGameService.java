@@ -2,11 +2,14 @@ package org.sejong.sulgamewiki.service;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePost;
+import org.sejong.sulgamewiki.object.BasePostCommand;
+import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.OfficialGameCommand;
@@ -14,7 +17,6 @@ import org.sejong.sulgamewiki.object.OfficialGameDto;
 import org.sejong.sulgamewiki.object.ReportCommand;
 import org.sejong.sulgamewiki.object.constants.ReportType;
 import org.sejong.sulgamewiki.object.constants.SourceType;
-import org.sejong.sulgamewiki.object.constants.MediaType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
@@ -37,41 +39,45 @@ public class OfficialGameService {
   private final BaseMediaService baseMediaService;
   private final ReportService reportService;
 
+  /**
+   *
+   * @param command
+   * Long memberId
+   * String introduction
+   * String title
+   * String description
+   * List<MulipartFile> mulipartfiles
+   * @return
+   */
   @Transactional
-  public OfficialGameDto createOfficialGame(OfficialGameCommand command) {
-    OfficialGameDto dto = OfficialGameDto.builder().build();
-    List<BaseMedia> baseMedias = new ArrayList<>();
+  public BasePostDto createOfficialGame(BasePostCommand command) {
 
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    OfficialGame officialGame = OfficialGame.builder()
-        .title(command.getTitle())
-        .introduction(command.getIntroduction())
-        .description(command.getDescription())
-        .likes(0)
-        .views(0)
-        .member(member)
+    OfficialGame savedOfficialGame = basePostRepository.save(
+        OfficialGame.builder()
+            .title(command.getTitle())
+            .introduction(command.getIntroduction())
+            .description(command.getDescription())
+            .likes(0)
+            .likedMemberIds(new HashSet<>())
+            .views(0)
+            .reportedCount(0)
+            .member(member)
+            .dailyScore(0)
+            .weeklyScore(0)
+            .build());
+
+    command.setSourceType(SourceType.OFFICIAL_GAME);
+    command.setBasePost(savedOfficialGame);
+
+    List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
+
+    return BasePostDto.builder()
+        .officialGame(savedOfficialGame)
+        .baseMedias(savedMedias)
         .build();
-
-    OfficialGame savedOfficialGame = basePostRepository.save(officialGame);
-
-    for( MultipartFile file : command.getMultipartFiles()) {
-      String fileUrl = s3Service.uploadFile(file, SourceType.OFFICIAL_GAME);
-
-      BaseMedia officialGameMedia = BaseMedia.builder()
-          .mediaUrl(fileUrl)
-          .fileSize(file.getSize())
-          .mediaType(MediaType.getMediaType(file))
-          .basePost(savedOfficialGame)
-          .build();
-
-      baseMedias.add(baseMediaRepository.save(officialGameMedia));
-    }
-
-    dto.setBasePost(savedOfficialGame);
-    dto.setBaseMedias(baseMedias);
-    return dto;
   }
 
   public OfficialGameDto getOfficialGame(OfficialGameCommand command) {
