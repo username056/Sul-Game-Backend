@@ -1,19 +1,15 @@
 package org.sejong.sulgamewiki.object;
 
-import java.awt.print.Pageable;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.domain.Pageable;
 
 @Builder
 @Getter
 @Setter
 @ToString
 public class HomeCommand {
-  private List<OfficialGameCommand> officialGameList;
-  private List<CreationGameCommand> creativeGameList;
-  private List<IntroCommand> introList;
   private Pageable pageable;
 }

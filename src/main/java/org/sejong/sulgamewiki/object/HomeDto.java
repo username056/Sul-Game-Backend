@@ -14,20 +14,20 @@ public class HomeDto {
   /*
   최신술게임
    */
-  private List<CreationGame> latestCreativeList;
-  private List<Intro> latestIntroList;
+  private List<CreationGame> latestCreationGames;
+  private List<Intro> latestIntros;
 
   /*
   국룰술게임
    */
-  private List<OfficialGame> officialGames;
+  private List<OfficialGame> officialGamesByLikes;
 
   /*
   실시간 ㅅㄱㅇㅋ차트
    */
-  private List<CreationGame> creationGameDailyChart;
-  private List<Intro> introDailyChart;
-  private List<OfficialGame> officialGameDailyChart;
+  private List<CreationGame> creationGamesByDailyScore;
+  private List<Intro> introsByDailyScore;
+  private List<OfficialGame> officialGamesByDailyScore;
 
   /*
   인트로 자랑하기
@@ -38,5 +38,5 @@ public class HomeDto {
   /*
   오늘 가장 핫했던 술게임
    */
-  private List<BasePost> weeklyHotGames;
+  private List<BasePost> gamesByWeeklyScore;
 }
