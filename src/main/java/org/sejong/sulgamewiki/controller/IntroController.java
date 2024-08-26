@@ -40,7 +40,7 @@ public class IntroController {
         .title(title)
         .description(description)
         .lyrics(lyrics)
-        .multipartFiles(multipartFiles != null ? multipartFiles : new ArrayList<>())
+        .multipartFiles(multipartFiles)
         .build();
 
     IntroDto introDto = introService.createIntro(command);
