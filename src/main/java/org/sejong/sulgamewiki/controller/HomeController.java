@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.HomeCommand;
 import org.sejong.sulgamewiki.object.HomeDto;
 import org.sejong.sulgamewiki.service.HomeService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,9 @@ public class HomeController {
   private final HomeService homeService;
 
   @GetMapping
-  public ResponseEntity<HomeDto> getHomeData(HomeCommand command) {
+  public ResponseEntity<HomeDto> getHomeInfo() {
+    Pageable pageable = PageRequest.of(0, 5);
     // HomeDto를 반환하는 서비스 로직 호출
-    return ResponseEntity.ok(homeService.getHomeData(command));
+    return ResponseEntity.ok(homeService.getHomeInfo(HomeCommand.builder().pageable(pageable).build()));
   }
 }
