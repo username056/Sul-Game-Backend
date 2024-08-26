@@ -19,7 +19,7 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
    */
   // 생성된 날짜를 기준으로 최신 창작게시물들을 Slice로 가져오는 JPQL 쿼리
   @Query("SELECT b FROM CreationGame b WHERE b.isDeleted = false ORDER BY b.createdDate DESC")
-  Slice<CreationGame> findLatestCreativeGames(Pageable pageable);
+  Slice<CreationGame> findLatestCreationGames(Pageable pageable);
 
   // 생성된 날짜를 기준으로 최신 인트로 게시물들을 Slice로 가져오는 JPQL 쿼리
   @Query("SELECT b FROM Intro b WHERE b.isDeleted = false ORDER BY b.createdDate DESC")
@@ -39,7 +39,7 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
    */
   // 실시간 점수순으로 창작게임을 정렬해서 Slice로 가져오는 JPQL 쿼리
   @Query("SELECT p FROM CreationGame p WHERE p.isDeleted = false ORDER BY p.dailyScore DESC")
-  Slice<CreationGame> findCreativeGamesByDailyScore(Pageable pageable);
+  Slice<CreationGame> findCreationGamesByDailyScore(Pageable pageable);
 
   @Query("SELECT p FROM Intro p WHERE p.isDeleted = false ORDER BY p.dailyScore DESC")
   Slice<Intro> findIntrosByDailyScore(Pageable pageable);
@@ -57,7 +57,7 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
 
   // 조회수 순으로 인트로를 정렬해서 Slice로 가져오는 JPQL 쿼리
   @Query("SELECT o FROM Intro o WHERE o.isDeleted = false ORDER BY o.views DESC")
-  Slice<Intro> findByViews(Pageable pageable);
+  Slice<Intro> findIntrosByViews(Pageable pageable);
 
 
   /*
@@ -65,7 +65,7 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
    */
   //금주의 점수를 기준으로 술게임(창작,공식)을 정렬해서 Slice로 가져오는 JPQL 쿼리(인트로 제외)
   @Query("SELECT p FROM BasePost p WHERE TYPE(p) IN (OfficialGame, CreationGame) AND p.isDeleted = false ORDER BY p.weeklyScore DESC")
-  Slice<BasePost> findPostsByWeeklyScore(Pageable pageable);
+  Slice<BasePost> findGamesByWeeklyScore(Pageable pageable);
 
 
   List<BasePost> findByBasePostIdIn(List<Long> ids);
