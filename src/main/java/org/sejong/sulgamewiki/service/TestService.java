@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.MemberContentInteraction;
-import org.sejong.sulgamewiki.object.MockDto;
+import org.sejong.sulgamewiki.object.TestDto;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
 import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MockService {
+public class TestService {
   private final MemberRepository memberRepository;
   private final MemberContentInteractionRepository memberContentInteractionRepository;
 
@@ -36,9 +36,9 @@ public class MockService {
    */
   @LogMonitoringInvocation
   @Transactional
-  public MockDto createMockMember() {
+  public TestDto createMockMember() {
     // API를 통해서 Mock Member 정보 가져옴
-    MockDto dto = MockUtil.getMockMemberInfo();
+    TestDto dto = MockUtil.getMockMemberInfo();
 
     // Mock Member 생성
     Member member = Member.builder()
@@ -77,7 +77,7 @@ public class MockService {
 
     log.info("가짜 회원 생성 : id : {} , email : {}", member.getMemberId(), member.getEmail());
 
-    return MockDto
+    return TestDto
         .builder()
         .member(savedMember)
         .memberContentInteraction(savedMemberContent)
@@ -96,19 +96,19 @@ public class MockService {
    *
    */
   @Transactional
-  public MockDto deleteAllMockMember() {
+  public TestDto deleteAllMockMember() {
     memberContentInteractionRepository.deleteAll();
     memberRepository.deleteAll();
 
-    return MockDto.builder()
+    return TestDto.builder()
         .members(memberRepository.findAll())
         .memberContentInteractions(memberContentInteractionRepository.findAll())
         .build();
   }
 
   @Transactional(readOnly = true)
-  public MockDto getAllMember() {
-    return MockDto.builder()
+  public TestDto getAllMember() {
+    return TestDto.builder()
         .members(memberRepository.findAll())
         .build();
   }
