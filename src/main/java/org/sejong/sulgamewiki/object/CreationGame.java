@@ -24,9 +24,6 @@ import lombok.experimental.SuperBuilder;
 @DiscriminatorValue("CreationGame")
 public class CreationGame extends BasePost {
 
-  @Column(length = 90)
-  private String introduction;
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "official_game_id")
   private OfficialGame officialGame;

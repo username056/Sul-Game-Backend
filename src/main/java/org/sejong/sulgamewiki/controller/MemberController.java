@@ -69,12 +69,20 @@ public class MemberController {
   @LogMonitoringInvocation
   @Operation(
       summary = "마이페이지",
-      description = "회원 마이페이지 정보 제공\n\n"
-          + "[입력 파라미터 값] : \n\n"
-          + "Long memberId\n\n"
-          + "[반환 파라미터 값] : \n\n"
-          + "Member member\n\n"
-          + "MemberContentInteraction memberContentInteraction"
+      description = """
+      **마이페이지**
+
+      회원의 마이페이지 정보를 제공합니다.
+
+      **입력 파라미터 값:**
+
+      - **`Long memberId`**: 회원의 고유 ID
+
+      **반환 파라미터 값:**
+
+      - **`Member member`**: 회원 정보
+      - **`MemberContentInteraction memberContentInteraction`**: 회원의 컨텐츠 상호작용 정보
+      """
   )
   public ResponseEntity<MemberDto> getProfile(
       @ModelAttribute MemberCommand command) {
@@ -85,13 +93,21 @@ public class MemberController {
   @LogMonitoringInvocation
   @Operation(
       summary = "좋아요한 글",
-      description = "회원이 좋아요 한 글 제공\n\n"
-          + "[입력 파라미터 값] : \n\n"
-          + "Long memberId\n\n"
-          + "[반환 파라미터 값] : \n\n"
-          + "List<BasePost> likedOfficialGames\n\n"
-          + "List<BasePost> likedCreationGame\n\n"
-          + "List<BasePost> likedIntros\n\n"
+      description = """
+      **좋아요한 글**
+
+      회원이 좋아요한 글을 제공합니다.
+
+      **입력 파라미터 값:**
+
+      - **`Long memberId`**: 회원의 고유 ID
+
+      **반환 파라미터 값:**
+
+      - **`List<BasePost> likedOfficialGames`**: 좋아요한 공식 게임 게시글 리스트
+      - **`List<BasePost> likedCreationGame`**: 좋아요한 창작 게임 게시글 리스트
+      - **`List<BasePost> likedIntros`**: 좋아요한 소개글 리스트
+      """
   )
   public ResponseEntity<MemberDto> getLikedPosts(
       @ModelAttribute MemberCommand command) {
@@ -102,13 +118,22 @@ public class MemberController {
   @LogMonitoringInvocation
   @Operation(
       summary = "즐겨찾기한 글",
-      description = "회원이 즐겨찾기 한 글 제공\n\n"
-          + "[입력 파라미터 값] : \n\n"
-          + "Long memberId\n\n"
-          + "[반환 파라미터 값] : \n\n"
-          + "List<BasePost> bookmarkedOfficialGameIds\n\n"
-          + "List<BasePost> bookmarkedCreationGameIds\n\n"
-          + "List<BasePost> bookmarkedIntroIds\n\n"
+      description = """
+      **즐겨찾기한 글**
+
+      회원이 즐겨찾기한 글을 제공합니다.
+
+      **입력 파라미터 값:**
+
+
+      - **`Long memberId`**: 회원의 고유 ID
+
+      **반환 파라미터 값:**
+
+      - **`List<BasePost> bookmarkedOfficialGameIds`**: 즐겨찾기한 공식 게임 게시글 리스트
+      - **`List<BasePost> bookmarkedCreationGameIds`**: 즐겨찾기한 창작 게임 게시글 리스트
+      - **`List<BasePost> bookmarkedIntroIds`**: 즐겨찾기한 소개글 리스트
+      """
   )
   public ResponseEntity<MemberDto> getBookmarkedPosts(
       @ModelAttribute MemberCommand command) {

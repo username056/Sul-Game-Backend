@@ -23,28 +23,15 @@ public class S3Service {
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
 
-  public String uploadFile(MultipartFile file, SourceType source)  {
+  public String uploadFile(MultipartFile file, SourceType source)
+      throws IOException {
     // 파일 이름 생성
     String fileName = generateFileName(file, source.name());
 
-    try {
-      amazonS3.putObject(
-          new PutObjectRequest(bucket, fileName, file.getInputStream(), null)
+    amazonS3.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), null)
               .withCannedAcl(CannedAccessControlList.PublicRead));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
 
     return amazonS3.getUrl(bucket, fileName).toString();
-  }
-
-  // List<MulipartFile>
-  public List<String> uploadFiles(List<MultipartFile> files, SourceType source) {
-    List<String> fileUrls = new ArrayList<>();
-    for (MultipartFile file : files) {
-      fileUrls.add(uploadFile(file, source));
-    }
-    return fileUrls;
   }
 
   // delete

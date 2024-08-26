@@ -1,6 +1,9 @@
 package org.sejong.sulgamewiki.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.sejong.sulgamewiki.object.BasePostCommand;
+import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.OfficialGameCommand;
 import org.sejong.sulgamewiki.object.OfficialGameDto;
 import org.sejong.sulgamewiki.service.OfficialGameService;
@@ -12,21 +15,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/popular-game")
+@RequestMapping("/api/official")
 @RequiredArgsConstructor
 public class OfficialGameController {
   private final OfficialGameService officialGameService;
 
-  @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
-  public ResponseEntity<OfficialGameDto> createOfficialGame(
-      @ModelAttribute OfficialGameCommand officialGameCommand
+  public ResponseEntity<BasePostDto> createOfficialGame(
+      @ModelAttribute BasePostCommand command
   ) {
-    OfficialGameDto officialGameDto
-        = officialGameService.createOfficialGame(officialGameCommand);
-    return ResponseEntity.ok(officialGameDto);
+    return ResponseEntity.ok(officialGameService.createOfficialGame(command));
   }
 
   @GetMapping("/{id}")

@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class MockDto {
+public class TestDto {
   //mockMember
   private Member member;
   private MemberContentInteraction memberContentInteraction;
