@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.sejong.sulgamewiki.object.constants.ReportType;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 
 @Getter
@@ -14,5 +15,5 @@ public class ReportCommand {
   private Long memberId;
   private SourceType sourceType;
   private Long sourceId;
-  private Long reportType;
+  private ReportType reportType;
 }
