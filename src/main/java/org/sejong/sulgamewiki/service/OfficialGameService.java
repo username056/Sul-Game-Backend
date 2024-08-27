@@ -25,7 +25,6 @@ import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -115,7 +114,7 @@ public class OfficialGameService {
 
     // 새 미디어 파일 처리 및 기존 미디어와 비교 후 업데이트
     if (command.getMultipartFiles() != null) {
-      List<String> updatedMediaUrls = baseMediaService.compareAndUpdateMedia(existingMediaUrls, command.getMultipartFiles(), SourceType.OFFICIAL_GAME);
+      List<String> updatedMediaUrls = baseMediaService.compareAndUpdateMedias(existingMediaUrls, command.getMultipartFiles(), SourceType.OFFICIAL_GAME);
 
       // 기존 미디어 업데이트된 미디어로 교체
       for (String mediaUrl : updatedMediaUrls) {

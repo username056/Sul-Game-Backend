@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.BaseMedia;
-import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.constants.MediaType;
 import org.sejong.sulgamewiki.object.constants.SourceType;
@@ -49,7 +48,7 @@ public class BaseMediaService {
     return baseMedias;
   }
 
-  public List<String> compareAndUpdateMedia(List<String> existingMediaUrls, List<MultipartFile> newMediaFiles, SourceType sourceType) {
+  public List<String> compareAndUpdateMedias(List<String> existingMediaUrls, List<MultipartFile> newMediaFiles, SourceType sourceType) {
     List<String> updatedMediaUrls = new ArrayList<>();
 
     // 새로 받은 파일들 업로드하고 URL 리스트에 추가
