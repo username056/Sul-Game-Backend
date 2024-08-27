@@ -10,6 +10,7 @@ import org.sejong.sulgamewiki.object.MemberContentInteraction;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.Report;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
+import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
@@ -32,6 +33,8 @@ public class MemberService implements UserDetailsService {
   private final ReportRepository reportRepository;
   private final MemberRepository memberRepository;
   private final MemberContentInteractionRepository memberContentInteractionRepository;
+  private final BaseMediaService baseMediaService;
+  private final BaseMediaRepository baseMediaRepository;
 
   @Override
   public CustomUserDetails loadUserByUsername(String stringMemberId)
@@ -138,7 +141,20 @@ public class MemberService implements UserDetailsService {
         .build();
   }
 
+  @Transactional
   public void deleteMember(MemberCommand command) {
     memberRepository.deleteById(command.getMemberId());
+  }
+
+  @Transactional
+  public MemberDto updateMemberProfileImage(MemberCommand command) {
+    Member member = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    member.setProfileUrl(
+        baseMediaService.uploadMemberProfileImage(
+            command.getMultipartFile(), member.getMemberId()));
+    return MemberDto.builder()
+        .member(member)
+        .build();
   }
 }

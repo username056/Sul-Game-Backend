@@ -74,6 +74,56 @@ public class BaseMediaService {
     return updatedMediaUrls;
   }
 
+  /**
+   * 회원 프로필 이미지를 업로드하는 메서드.
+   *
+   * 이 메서드는 MultipartFile로 받은 회원 프로필 이미지를 특정 형식의 파일 이름으로 S3에 업로드합니다.
+   * 업로드된 파일의 URL을 반환합니다.
+   *
+   * @param file 업로드할 프로필 이미지 파일
+   * @param memberId 회원의 고유 ID
+   * @return 업로드된 파일의 S3 URL
+   * @throws CustomException S3 업로드 중 문제가 발생한 경우 예외를 발생시킵니다.
+   */
+  public String uploadMemberProfileImage(MultipartFile file, Long memberId) {
+    String memberProfileImageUrl = null;
+    String memberProfileImageFileName
+        = SourceType.MEMBER.name().toLowerCase() + memberId + MediaType.getFileExtension(file.getOriginalFilename());
+    try {
+      memberProfileImageUrl = s3Service.uploadFileByCustomName(memberProfileImageFileName,file);
+    } catch (IOException e) {
+      throw new CustomException(ErrorCode.S3_UPLOAD_FILE_ERROR);
+    }
+    System.out.println("저장된 회원 프로필 파일 이름: " + memberProfileImageUrl);
+    return memberProfileImageUrl;
+  }
+
+  /**
+   * 기존 미디어 파일을 새로운 파일로 업데이트하는 메서드.
+   *
+   * 이 메서드는 주어진 MultipartFile을 사용하여 S3에 있는 기존 파일을 동일한 파일 이름으로 덮어씁니다.
+   * 업데이트된 파일의 URL을 BaseMedia 객체에 반영하고, 해당 객체를 저장소에 저장합니다.
+   *
+   * @param multipartFile 업데이트할 새로운 파일
+   * @param baseMedia 기존 미디어 파일 정보가 담긴 BaseMedia 객체
+   * @return 업데이트된 BaseMedia 객체
+   * @throws CustomException S3 업로드 중 문제가 발생한 경우 예외를 발생시킵니다.
+   */
+  public BaseMedia updateMediaByBaseMedia(MultipartFile multipartFile, BaseMedia baseMedia) {
+    // 기존 파일 URL 가져오기
+    String existingUrl = baseMedia.getMediaUrl();
+    String existFileName = existingUrl.substring(existingUrl.lastIndexOf("/") + 1);
+    // 새로운 파일을 동일한 키로 업로드하여 덮어쓰기
+    try {
+      // 기존과 같은 URL이여야 정상입니다
+      String updatedMediaUrl = s3Service.uploadFileByCustomName(existFileName, multipartFile);
+      baseMedia.setMediaUrl(updatedMediaUrl);
+      return baseMediaRepository.save(baseMedia);
+    } catch (IOException e) {
+      throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 
 
 

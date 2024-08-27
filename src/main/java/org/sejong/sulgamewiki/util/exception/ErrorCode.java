@@ -43,6 +43,8 @@ public enum ErrorCode {
   // S3
   INVALID_MEDIA_TYPE(HttpStatus.BAD_REQUEST, "지원되지 않는 MIME 타입입니다"),
 
+  S3_UPLOAD_FILE_ERROR(HttpStatus.BAD_REQUEST, "아마존 S3에서 파일을 업로드하는 도중 문제가 발생하였습니다"),
+
   // Auth
 
   // Notification

@@ -41,6 +41,25 @@ public enum MediaType {
     return MediaType.fromMimeType(file.getContentType());
   }
 
+  /**
+   * 파일 이름에서 확장자를 추출하는 메서드.
+   *
+   * @param fileName 파일 이름 (예: "example.png")
+   * @return 파일 확장자 (예: ".png"), 확장자가 없으면 빈 문자열 반환
+   */
+  public static String getFileExtension(String fileName) {
+    if (fileName == null || fileName.isEmpty()) {
+      return "";
+    }
+
+    int lastDotIndex = fileName.lastIndexOf(".");
+    if (lastDotIndex == -1) {
+      return ""; // 확장자가 없는 경우
+    }
+
+    return fileName.substring(lastDotIndex); // 확장자 반환 (예: ".png")
+  }
+
 }
 
 

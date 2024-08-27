@@ -46,6 +46,13 @@ public class S3Service {
     }
   }
 
+  public String uploadFileByCustomName(String customFileName, MultipartFile file)
+      throws IOException {
+    amazonS3.putObject(new PutObjectRequest(bucket, customFileName, file.getInputStream(), null)
+        .withCannedAcl(CannedAccessControlList.PublicRead));
+    return amazonS3.getUrl(bucket, customFileName).toString();
+  }
+
   // 파일 이름 생성 메소드
   private String generateFileName(MultipartFile file, String category) {
     if (category == null || category.isEmpty()) {
