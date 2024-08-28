@@ -13,7 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -65,5 +68,11 @@ public class MemberController implements MemberControllerDocs {
     return ResponseEntity.ok(memberService.updateMemberProfileImage(command));
   }
 
-  //TODO: member 정보 편집
+  @Override
+  @PostMapping(value = "/nickname", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  public ResponseEntity<MemberDto> changeNickname(
+      @ModelAttribute MemberCommand command) {
+    return ResponseEntity.ok(memberService.changeNickname(command));
+  }
 }

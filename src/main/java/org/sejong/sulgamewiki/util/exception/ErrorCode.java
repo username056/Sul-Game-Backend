@@ -29,6 +29,8 @@ public enum ErrorCode {
 
   MOCK_MEMBER_MAPPING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "사이트에서 가짜회원정보를 가져오는도중 문제가 발생하였습니다."),
 
+  NICKNAME_ALREADY_EXISTS(HttpStatus.INTERNAL_SERVER_ERROR, "중복된 닉네임입니다"),
+
   // Intro
 
   // Game

@@ -117,4 +117,28 @@ public interface MemberControllerDocs {
   )
   ResponseEntity<MemberDto> updateMemberProfileImage(@ModelAttribute MemberCommand command);
 
+  @Operation(
+      summary = "회원 닉네임 업데이트",
+      description = """
+        **회원 닉네임 업데이트**
+
+        회원의 프로필 닉네임을 업데이트합니다.
+
+        **입력 파라미터 값:**
+
+        - **`Long memberId`**: 회원의 고유 ID
+        - **`String nickname`**: 새로 설정할 닉네임
+
+        **반환 파라미터 값:**
+
+        - **`MemberDto member`**: 닉네임이 업데이트된 회원 정보
+
+        **예외 상황:**
+
+        - 닉네임이 이미 존재하는 경우 `CustomException`이 발생합니다.
+        """
+  )
+  ResponseEntity<MemberDto> changeNickname(@ModelAttribute MemberCommand command);
+
+
 }
