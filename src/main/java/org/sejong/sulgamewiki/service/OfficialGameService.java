@@ -4,6 +4,7 @@ package org.sejong.sulgamewiki.service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
@@ -12,20 +13,16 @@ import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
-import org.sejong.sulgamewiki.object.OfficialGameCommand;
-import org.sejong.sulgamewiki.object.OfficialGameDto;
 import org.sejong.sulgamewiki.object.ReportCommand;
 import org.sejong.sulgamewiki.object.constants.ReportType;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
-import org.sejong.sulgamewiki.util.S3Service;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +32,6 @@ public class OfficialGameService {
   private final MemberRepository memberRepository;
   private final BaseMediaRepository baseMediaRepository;
   private final BasePostRepository basePostRepository;
-  private final S3Service s3Service;
   private final BaseMediaService baseMediaService;
   private final ReportService reportService;
 
@@ -70,7 +66,7 @@ public class OfficialGameService {
             .build());
 
     command.setSourceType(SourceType.OFFICIAL_GAME);
-    command.setBasePost(savedOfficialGame);
+    command.setBasePost((savedOfficialGame));
 
     List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
 
@@ -80,8 +76,8 @@ public class OfficialGameService {
         .build();
   }
 
-  public OfficialGameDto getOfficialGame(OfficialGameCommand command) {
-    OfficialGameDto dto = OfficialGameDto.builder().build();
+  public BasePostDto getOfficialGame(BasePostCommand command) {
+    BasePostDto dto = BasePostDto.builder().build();
 
     BasePost officialGame = basePostRepository.findById(command.getBasePostId())
         .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
@@ -90,8 +86,8 @@ public class OfficialGameService {
     return dto;
   }
 
-  public OfficialGameDto updateOfficialGame(Long gameId, OfficialGameCommand command) {
-    OfficialGameDto dto = OfficialGameDto.builder().build();
+  public BasePostDto updateOfficialGame(Long gameId, BasePostCommand command) {
+    BasePostDto dto = BasePostDto.builder().build();
     List<BaseMedia> baseMedias = new ArrayList<>();
 
     // 게임 정보 찾기
@@ -115,7 +111,7 @@ public class OfficialGameService {
 
     // 새 미디어 파일 처리 및 기존 미디어와 비교 후 업데이트
     if (command.getMultipartFiles() != null) {
-      List<String> updatedMediaUrls = baseMediaService.compareAndUpdateMedia(existingMediaUrls, command.getMultipartFiles(), SourceType.OFFICIAL_GAME);
+      List<String> updatedMediaUrls = baseMediaService.compareAndUpdateMedias(existingMediaUrls, command.getMultipartFiles(), SourceType.OFFICIAL_GAME);
 
       // 기존 미디어 업데이트된 미디어로 교체
       for (String mediaUrl : updatedMediaUrls) {

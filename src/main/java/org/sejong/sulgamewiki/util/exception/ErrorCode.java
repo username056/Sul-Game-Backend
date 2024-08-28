@@ -21,6 +21,8 @@ public enum ErrorCode {
 
   POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),
 
+  MULTIPARTFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일이 존재하지 않습니다"),
+
   // Member
 
   MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다."),
@@ -28,6 +30,8 @@ public enum ErrorCode {
   INVALID_ACCOUNT_STATUS(HttpStatus.BAD_REQUEST, "회원 상태가 정상이 아닙니다."),
 
   MOCK_MEMBER_MAPPING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "사이트에서 가짜회원정보를 가져오는도중 문제가 발생하였습니다."),
+
+  NICKNAME_ALREADY_EXISTS(HttpStatus.INTERNAL_SERVER_ERROR, "중복된 닉네임입니다"),
 
   // Intro
 
@@ -42,6 +46,8 @@ public enum ErrorCode {
 
   // S3
   INVALID_MEDIA_TYPE(HttpStatus.BAD_REQUEST, "지원되지 않는 MIME 타입입니다"),
+
+  S3_UPLOAD_FILE_ERROR(HttpStatus.BAD_REQUEST, "아마존 S3에서 파일을 업로드하는 도중 문제가 발생하였습니다"),
 
   // Auth
 

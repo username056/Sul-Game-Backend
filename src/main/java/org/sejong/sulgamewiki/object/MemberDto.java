@@ -16,7 +16,7 @@ public class MemberDto {
   private MemberContentInteraction memberContentInteraction;
   private List<Member> members;
   private Long memberId;
-  private String nickName;
+  private String nickname;
 
   // posts
   List<BasePost> likedOfficialGames;
