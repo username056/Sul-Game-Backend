@@ -18,7 +18,7 @@ public class MemberServiceTest {
     LocalDate birthDate = LocalDate.now().minusYears(age);
 
     // 결과 출력
-    System.out.println("Nickname: " + nickname);
+    System.out.println("nickname: " + nickname);
     System.out.println("Email: " + email);
     System.out.println("BirthDate: " + birthDate);
   }

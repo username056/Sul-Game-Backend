@@ -1,10 +1,12 @@
 package org.sejong.sulgamewiki.object;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 @Getter
@@ -12,10 +14,11 @@ import lombok.ToString;
 @ToString
 public class MemberCommand {
   private Long memberId;
-  private String memberNickName;
-  private String nickName;
+  private String memberNickname;
+  private String nickname;
   private LocalDate birthDate;
   private String university;
   private Boolean isUniversityVisible;
   private Boolean isNotiEnabled;
+  private Optional<MultipartFile> multipartFileOptional;
 }
