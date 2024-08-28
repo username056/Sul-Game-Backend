@@ -4,6 +4,7 @@ package org.sejong.sulgamewiki.service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
@@ -18,7 +19,6 @@ import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
-import org.sejong.sulgamewiki.util.S3Service;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.springframework.stereotype.Service;
@@ -66,7 +66,7 @@ public class OfficialGameService {
             .build());
 
     command.setSourceType(SourceType.OFFICIAL_GAME);
-    command.setBasePost(savedOfficialGame);
+    command.setBasePost((savedOfficialGame));
 
     List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
 
@@ -111,7 +111,7 @@ public class OfficialGameService {
 
     // 새 미디어 파일 처리 및 기존 미디어와 비교 후 업데이트
     if (command.getMultipartFiles() != null) {
-      List<String> updatedMediaUrls = baseMediaService.compareAndUpdateMedias(existingMediaUrls, command.getMultipartFiles(), SourceType.OFFICIAL_GAME);
+      List<String> updatedMediaUrls = baseMediaService.compareAndUpdateMedias(existingMediaUrls, command.getMultipartFiles().get(), SourceType.OFFICIAL_GAME);
 
       // 기존 미디어 업데이트된 미디어로 교체
       for (String mediaUrl : updatedMediaUrls) {

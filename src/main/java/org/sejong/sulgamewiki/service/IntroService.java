@@ -3,10 +3,12 @@ package org.sejong.sulgamewiki.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePostCommand;
+import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.IntroDto;
 import org.sejong.sulgamewiki.object.Member;
@@ -28,50 +30,32 @@ public class IntroService {
 
   private final MemberRepository memberRepository;
   private final BasePostRepository basePostRepository;
-  private final BaseMediaRepository baseMediaRepository;
+  private final BaseMediaService baseMediaService;
   private final S3Service s3Service;
 
-  public IntroDto createIntro(BasePostCommand command) {
-    IntroDto dto = IntroDto.builder().build();
-    List<BaseMedia> baseMedias = new ArrayList<>();
+  public BasePostDto createIntro(BasePostCommand command) {
 
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    Intro intro = Intro.builder()
-        .title(command.getTitle())
-        .lyrics(command.getLyrics())
-        .description(command.getDescription())
-        .likes(0)
-        .views(0)
-        .member(member)
+    Intro savedIntro = basePostRepository.save(
+        Intro.builder()
+            .title(command.getTitle())
+            .introduction(command.getIntroduction())
+            .lyrics(command.getLyrics())
+            .description(command.getDescription())
+            .likes(0)
+            .views(0)
+            .member(member)
+            .build());
+
+    command.setSourceType(SourceType.INTRO);
+    command.setBasePost(savedIntro);
+    List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
+
+    return BasePostDto.builder()
+        .basePost(savedIntro)
+        .baseMedias(savedMedias)
         .build();
-
-    Intro savedIntro = basePostRepository.save(intro);
-
-    // multipartFiles 필드가 null 또는 비어있는지 확인
-    if (command.getMultipartFiles() != null && !command.getMultipartFiles().isEmpty()) {
-      for (MultipartFile file : command.getMultipartFiles()) {
-        String fileUrl = null;
-        try {
-          fileUrl = s3Service.uploadFile(file, SourceType.INTRO);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-
-        BaseMedia introMedia = BaseMedia.builder()
-            .mediaUrl(fileUrl)
-            .fileSize(file.getSize())
-            .mediaType(MediaType.getMediaType(file))
-            .basePost(savedIntro)
-            .build();
-
-        baseMedias.add(baseMediaRepository.save(introMedia));
-      }
-    }
-
-    dto.setBasePost(savedIntro);
-    dto.setBaseMedias(baseMedias);
-    return dto;
   }
 }

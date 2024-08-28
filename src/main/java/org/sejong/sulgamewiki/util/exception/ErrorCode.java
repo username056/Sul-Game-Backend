@@ -21,6 +21,8 @@ public enum ErrorCode {
 
   POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),
 
+  MULTIPARTFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일이 존재하지 않습니다"),
+
   // Member
 
   MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다."),

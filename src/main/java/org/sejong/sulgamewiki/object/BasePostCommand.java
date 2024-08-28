@@ -2,6 +2,7 @@ package org.sejong.sulgamewiki.object;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,8 +25,7 @@ public class BasePostCommand {
   private String introduction;
   private String title;
   private String description;
-  @Builder.Default
-  private List<MultipartFile> multipartFiles = new ArrayList<>();
+  private Optional<List<MultipartFile>> multipartFiles;
   private List<String> imageUrls;
 
   // intro

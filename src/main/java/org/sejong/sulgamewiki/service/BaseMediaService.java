@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.constants.MediaType;
@@ -17,18 +18,31 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BaseMediaService {
 
   private final S3Service s3Service;
   private final BaseMediaRepository baseMediaRepository;
 
-  // 새로 받은 미디어 파일 업로드 and save
+  /**
+   * 미디어 파일들을 업로드하고 저장하는 메서드.
+   *
+   * 이 메서드는 주어진 BasePostCommand 객체로부터 MultipartFile 리스트를 받아, 각각의 파일을 S3에 업로드한 후,
+   * 업로드된 파일들의 URL을 기반으로 BaseMedia 객체를 생성하여 저장소에 저장합니다.
+   *
+   * @param command 업로드할 파일들과 관련된 명령 객체
+   * @return 업로드된 BaseMedia 객체들의 리스트
+   */
   public List<BaseMedia> uploadMedias(BasePostCommand command) {
     List<BaseMedia> baseMedias = new ArrayList<>();
     List<String> uploadedFiles = new ArrayList<>();
+    if(command.getMultipartFiles().isEmpty()){
+      log.info("파일이 없습니다 : {} ", command.toString());
+      return null;
+    }
 
     // TODO
-    for( MultipartFile file : command.getMultipartFiles()) {
+    for( MultipartFile file : command.getMultipartFiles().get()) {
       String fileUrl = null;
       try {
         fileUrl = s3Service.uploadFile(file, command.getSourceType());
@@ -37,17 +51,27 @@ public class BaseMediaService {
         throw new RuntimeException(e); //TODO: change error
       }
       uploadedFiles.add(fileUrl);
-      BaseMedia baseMedia = BaseMedia.builder()
+      baseMedias.add(baseMediaRepository.save(
+          BaseMedia.builder()
           .mediaUrl(fileUrl)
           .fileSize(file.getSize())
           .mediaType(MediaType.getMediaType(file))
           .basePost(command.getBasePost())
-          .build();
-      baseMedias.add(baseMediaRepository.save(baseMedia));
+          .build()));
     }
     return baseMedias;
   }
 
+  /**
+   * 기존 미디어 URL 리스트와 새로 받은 파일들을 비교하여 업데이트하는 메서드.
+   *
+   * 이 메서드는 새로운 파일들을 업로드하고, 기존 미디어 파일 중 사용되지 않는 파일을 S3에서 삭제합니다.
+   *
+   * @param existingMediaUrls 기존 미디어 파일들의 URL 리스트
+   * @param newMediaFiles 새로 업로드할 파일들의 리스트
+   * @param sourceType 소스의 타입 (업로드 경로 결정에 사용)
+   * @return 업데이트된 미디어 URL 리스트
+   */
   public List<String> compareAndUpdateMedias(List<String> existingMediaUrls, List<MultipartFile> newMediaFiles, SourceType sourceType) {
     List<String> updatedMediaUrls = new ArrayList<>();
 
