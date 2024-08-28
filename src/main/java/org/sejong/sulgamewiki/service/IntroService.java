@@ -6,8 +6,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
+import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.Intro;
-import org.sejong.sulgamewiki.object.IntroCommand;
 import org.sejong.sulgamewiki.object.IntroDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.constants.SourceType;
@@ -31,7 +31,7 @@ public class IntroService {
   private final BaseMediaRepository baseMediaRepository;
   private final S3Service s3Service;
 
-  public IntroDto createIntro(IntroCommand command) {
+  public IntroDto createIntro(BasePostCommand command) {
     IntroDto dto = IntroDto.builder().build();
     List<BaseMedia> baseMedias = new ArrayList<>();
 

@@ -1,17 +1,15 @@
 package org.sejong.sulgamewiki.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.sejong.sulgamewiki.object.IntroCommand;
+import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.IntroDto;
 import org.sejong.sulgamewiki.service.IntroService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +33,7 @@ public class IntroController {
       @RequestParam("lyrics") String lyrics,
       @RequestParam(value = "multipartFiles", required = false) List<MultipartFile> multipartFiles  // 파일이 없어도 허용
   ) {
-    IntroCommand command = IntroCommand.builder()
+    BasePostCommand command = BasePostCommand.builder()
         .memberId(memberId)
         .title(title)
         .description(description)

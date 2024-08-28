@@ -12,8 +12,6 @@ import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
-import org.sejong.sulgamewiki.object.OfficialGameCommand;
-import org.sejong.sulgamewiki.object.OfficialGameDto;
 import org.sejong.sulgamewiki.object.ReportCommand;
 import org.sejong.sulgamewiki.object.constants.ReportType;
 import org.sejong.sulgamewiki.object.constants.SourceType;
@@ -34,7 +32,6 @@ public class OfficialGameService {
   private final MemberRepository memberRepository;
   private final BaseMediaRepository baseMediaRepository;
   private final BasePostRepository basePostRepository;
-  private final S3Service s3Service;
   private final BaseMediaService baseMediaService;
   private final ReportService reportService;
 
@@ -79,8 +76,8 @@ public class OfficialGameService {
         .build();
   }
 
-  public OfficialGameDto getOfficialGame(OfficialGameCommand command) {
-    OfficialGameDto dto = OfficialGameDto.builder().build();
+  public BasePostDto getOfficialGame(BasePostCommand command) {
+    BasePostDto dto = BasePostDto.builder().build();
 
     BasePost officialGame = basePostRepository.findById(command.getBasePostId())
         .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
@@ -89,8 +86,8 @@ public class OfficialGameService {
     return dto;
   }
 
-  public OfficialGameDto updateOfficialGame(Long gameId, OfficialGameCommand command) {
-    OfficialGameDto dto = OfficialGameDto.builder().build();
+  public BasePostDto updateOfficialGame(Long gameId, BasePostCommand command) {
+    BasePostDto dto = BasePostDto.builder().build();
     List<BaseMedia> baseMedias = new ArrayList<>();
 
     // 게임 정보 찾기
