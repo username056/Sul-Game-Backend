@@ -16,6 +16,8 @@ public interface IntroControllerDocs {
         새로운 인트로를 생성합니다.
 
         **입력 파라미터 값:**
+        
+        - **`Long memberId`**: 회원 ID 
 
         - **`String title`**: 인트로의 제목  
           _최대 100자_
