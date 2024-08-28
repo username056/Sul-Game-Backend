@@ -25,7 +25,7 @@ public class BasePostCommand {
   private String introduction;
   private String title;
   private String description;
-  private Optional<List<MultipartFile>> multipartFiles;
+  private List<MultipartFile> multipartFiles;
   private List<String> imageUrls;
 
   // intro

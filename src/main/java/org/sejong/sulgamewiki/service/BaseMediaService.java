@@ -36,13 +36,14 @@ public class BaseMediaService {
   public List<BaseMedia> uploadMedias(BasePostCommand command) {
     List<BaseMedia> baseMedias = new ArrayList<>();
     List<String> uploadedFiles = new ArrayList<>();
-    if(command.getMultipartFiles().isEmpty()){
-      log.info("파일이 없습니다 : {} ", command.toString());
+
+    if(command.getMultipartFiles()==null){
+      log.info("파일이 없습니다 BasePostId : {} ", command.getBasePostId());
       return null;
     }
 
     // TODO
-    for( MultipartFile file : command.getMultipartFiles().get()) {
+    for( MultipartFile file : command.getMultipartFiles()) {
       String fileUrl = null;
       try {
         fileUrl = s3Service.uploadFile(file, command.getSourceType());
