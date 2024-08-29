@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.CommentCommand;
 import org.sejong.sulgamewiki.object.CommentDto;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/comment")
 @RequiredArgsConstructor
+@Tag(
+    name = "댓글 관리 API",
+    description = "댓글 관리 API 제공"
+)
 public class CommentController {
     private final CommentService commentService;
 

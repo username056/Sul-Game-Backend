@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.sejong.sulgamewiki.service.NotificationService;
 import org.sejong.sulgamewiki.object.Notification;
@@ -13,6 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
+@Tag(
+    name = "알림 관리 API",
+    description = "알림 관리 API 제공"
+)
 public class NotificationController {
     @Autowired
     private NotificationService notificationService;
