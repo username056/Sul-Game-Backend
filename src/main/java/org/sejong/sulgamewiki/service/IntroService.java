@@ -47,9 +47,10 @@ public class IntroService {
             .likes(0)
             .views(0)
             .member(member)
+            .sourceType(SourceType.INTRO)
             .build());
 
-    command.setSourceType(SourceType.INTRO);
+    command.setSourceType(savedIntro.getSourceType());
     command.setBasePost(savedIntro);
     List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
 

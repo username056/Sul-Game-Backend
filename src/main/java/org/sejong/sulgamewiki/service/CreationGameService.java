@@ -47,9 +47,10 @@ public class CreationGameService {
             .dailyScore(0)
             .weeklyScore(0)
             .officialGame(basePostRepository.findByBasePostId(command.getRelatedOfficialGameId()))
+            .sourceType(SourceType.CREATION_GAME)
             .build());
 
-    command.setSourceType(SourceType.CREATION_GAME);
+    command.setSourceType(savedCreationGame.getSourceType());
     command.setBasePost((savedCreationGame));
 
     List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
