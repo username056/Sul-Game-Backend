@@ -28,6 +28,9 @@ public class BasePostCommand {
   private List<MultipartFile> multipartFiles;
   private List<String> imageUrls;
 
+  // creation
+  private Long relatedOfficialGameId;
+
   // intro
   private String lyrics;
   private IntroType introtype;
