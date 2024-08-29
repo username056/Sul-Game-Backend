@@ -62,8 +62,8 @@ public class CommentService {
     commentRepository.deleteById(comment.getCommentId());
   }
 
-  public CommentDto getComment(Long commentId) {
-    Comment comment = commentRepository.findById(commentId)
+  public CommentDto getComment(CommentCommand command) {
+    Comment comment = commentRepository.findById(command.getCommentId())
         .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
     CommentDto dto = CommentDto.builder().build();
@@ -71,10 +71,11 @@ public class CommentService {
     return dto;
   }
 
-  public CommentDto updateComment(Long commentId, CommentCommand command) {
-    Comment comment = commentRepository.findById(commentId)
+  public CommentDto updateComment(CommentCommand command) {
+    Comment comment = commentRepository.findById(command.getCommentId())
         .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
+    // 댓글 작성자가 요청한 사용자인지 확인
     if (!comment.getMember().getMemberId().equals(command.getMemberId())) {
       throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
     }
