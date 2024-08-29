@@ -4,7 +4,6 @@ package org.sejong.sulgamewiki.service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
@@ -14,7 +13,7 @@ import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.ReportCommand;
-import org.sejong.sulgamewiki.object.constants.ReportType;
+import org.sejong.sulgamewiki.object.ReportDto;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
@@ -25,15 +24,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
-public class OfficialGameService {
+public class OfficialGameService extends BasePostService {
 
   private final MemberRepository memberRepository;
   private final BaseMediaRepository baseMediaRepository;
   private final BasePostRepository basePostRepository;
   private final BaseMediaService baseMediaService;
   private final ReportService reportService;
+
+  public OfficialGameService(MemberRepository memberRepository,
+      BasePostRepository basePostRepository, ReportService reportService,
+      BaseMediaRepository baseMediaRepository, BaseMediaService baseMediaService) {
+    super(memberRepository, basePostRepository, reportService);
+    this.memberRepository = memberRepository;
+    this.baseMediaRepository = baseMediaRepository;
+    this.basePostRepository = basePostRepository;
+    this.baseMediaService = baseMediaService;
+    this.reportService = reportService;
+  }
+
 
   /**
    *
@@ -129,24 +139,41 @@ public class OfficialGameService {
     return dto;
   }
 
-  public void reportGame(Long gameId, Member member, ReportType reportType) {
-    OfficialGame officialGame = (OfficialGame) basePostRepository.findById(gameId)
-        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
 
-    // 중복 신고 여부 확인
-    boolean isAlreadyReported = reportService.isAlreadyReported(member, gameId, SourceType.OFFICIAL_GAME);
-    if (isAlreadyReported) {
-      throw new CustomException(ErrorCode.ALREADY_REPORTED);
-    }
-
-    // 리포트 생성
-    ReportCommand command = ReportCommand.builder()
+  @Override
+  protected ReportCommand createReportCommand(ReportCommand reportCommand, BasePost basePost, Member member) {
+    return ReportCommand.builder()
         .memberId(member.getMemberId())
-        .sourceId(gameId)
-        .sourceType(SourceType.OFFICIAL_GAME)
-        .reportType(reportType)
+        .sourceId(basePost.getBasePostId())
+        .sourceType(reportCommand.getSourceType())
+        .reportType(reportCommand.getReportType())
         .build();
-
-    reportService.createReport(command);
   }
+
+
+//  public ReportDto reportGame(ReportCommand reportCommand) {
+//    OfficialGame officialGame = (OfficialGame) basePostRepository.findById(reportCommand.getSourceId())
+//        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+//
+//    Member member = memberRepository.findById(reportCommand.getMemberId())
+//        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+//
+//    // 중복 신고 여부 확인
+//    boolean isAlreadyReported = reportService.isAlreadyReported(
+//        member, reportCommand.getSourceId(), SourceType.OFFICIAL_GAME);
+//    if (isAlreadyReported) {
+//      throw new CustomException(ErrorCode.ALREADY_REPORTED);
+//    }
+//
+//    // 리포트 생성
+//    ReportCommand command = ReportCommand.builder()
+//        .memberId(member.getMemberId())
+//        .sourceId(officialGame.getBasePostId())
+//        .sourceType(SourceType.OFFICIAL_GAME)
+//        .reportType(reportCommand.getReportType())
+//        .build();
+//
+//    reportService.createReport(command);
+//    return null;
+//  }
 }

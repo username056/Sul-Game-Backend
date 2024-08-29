@@ -3,6 +3,8 @@ package org.sejong.sulgamewiki.controller;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.object.ReportCommand;
+import org.sejong.sulgamewiki.object.ReportDto;
 import org.sejong.sulgamewiki.service.OfficialGameService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
@@ -32,6 +34,14 @@ public class OfficialGameController {
   public ResponseEntity<BasePostDto> getPopularGame(
       @ModelAttribute BasePostCommand command) {
     BasePostDto dto = officialGameService.getOfficialGame(command);
+    return ResponseEntity.ok(dto);
+  }
+
+  @GetMapping("/report")
+  @LogMonitoringInvocation
+  public ResponseEntity<ReportDto> reportGame(
+      @ModelAttribute ReportCommand command) {
+    ReportDto dto = officialGameService.reportGame(command);
     return ResponseEntity.ok(dto);
   }
 }
