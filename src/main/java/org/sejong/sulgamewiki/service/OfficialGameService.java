@@ -4,7 +4,6 @@ package org.sejong.sulgamewiki.service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
@@ -111,7 +110,7 @@ public class OfficialGameService {
 
     // 새 미디어 파일 처리 및 기존 미디어와 비교 후 업데이트
     if (command.getMultipartFiles() != null) {
-      List<String> updatedMediaUrls = baseMediaService.compareAndUpdateMedias(existingMediaUrls, command.getMultipartFiles(), SourceType.OFFICIAL_GAME);
+      List<String> updatedMediaUrls = baseMediaService.updateMedias(command);
 
       // 기존 미디어 업데이트된 미디어로 교체
       for (String mediaUrl : updatedMediaUrls) {

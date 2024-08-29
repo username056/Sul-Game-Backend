@@ -68,31 +68,31 @@ public class BaseMediaService {
    *
    * 이 메서드는 새로운 파일들을 업로드하고, 기존 미디어 파일 중 사용되지 않는 파일을 S3에서 삭제합니다.
    *
-   * @param existingMediaUrls 기존 미디어 파일들의 URL 리스트
-   * @param newMediaFiles 새로 업로드할 파일들의 리스트
-   * @param sourceType 소스의 타입 (업로드 경로 결정에 사용)
+   * @param command 업로드할 파일들과 관련된 명령 객체
    * @return 업데이트된 미디어 URL 리스트
    */
-  public List<String> compareAndUpdateMedias(List<String> existingMediaUrls, List<MultipartFile> newMediaFiles, SourceType sourceType) {
+  public List<String> updateMedias(BasePostCommand command) {
     List<String> updatedMediaUrls = new ArrayList<>();
 
-    // 새로 받은 파일들 업로드하고 URL 리스트에 추가
-    for (MultipartFile file : newMediaFiles) {
-//      String fileUrl = uploadMedias(file, sourceType);
-//      updatedMediaUrls.add(fileUrl);
-    }
-
     // 기존 미디어와 비교하여 삭제할 미디어 처리
-    for (String existingUrl : existingMediaUrls) {
-      if (!updatedMediaUrls.contains(existingUrl)) {
+    for (String existingUrl : baseMediaRepository.findMediaUrlsByBasePost_BasePostId(
+        command.getBasePostId())) {
+      // 기존에 있던 이미지url이 업데이트 파라미터에 없으면? -> 삭제된거임
+      if (!command.getImageUrls().contains(existingUrl)) {
         try {
           s3Service.deleteFile(existingUrl); // S3에서 미디어 파일 삭제
         } catch (IOException e) {
           throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-      } else {
-        // 기존 미디어는 그대로 유지, 추가하지 않음
-        updatedMediaUrls.add(existingUrl);
+      }
+    }
+
+    // 새로 들어온 multipart파일 업로드
+    for(MultipartFile newFile : command.getMultipartFiles()) {
+      try {
+        updatedMediaUrls.add(s3Service.uploadFile(newFile, command.getSourceType()));
+      } catch (IOException e) {
+        throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
       }
     }
 
