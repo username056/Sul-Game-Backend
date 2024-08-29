@@ -36,12 +36,5 @@ public class OfficialGameController {
     BasePostDto dto = officialGameService.getOfficialGame(command);
     return ResponseEntity.ok(dto);
   }
-
-  @GetMapping("/report")
-  @LogMonitoringInvocation
-  public ResponseEntity<ReportDto> reportGame(
-      @ModelAttribute ReportCommand command) {
-    ReportDto dto = officialGameService.reportGame(command);
-    return ResponseEntity.ok(dto);
-  }
+  
 }
