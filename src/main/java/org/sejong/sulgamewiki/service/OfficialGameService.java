@@ -25,7 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-public class OfficialGameService extends BasePostService {
+@RequiredArgsConstructor
+public class OfficialGameService {
 
   private final MemberRepository memberRepository;
   private final BaseMediaRepository baseMediaRepository;
@@ -33,16 +34,16 @@ public class OfficialGameService extends BasePostService {
   private final BaseMediaService baseMediaService;
   private final ReportService reportService;
 
-  public OfficialGameService(MemberRepository memberRepository,
-      BasePostRepository basePostRepository, ReportService reportService,
-      BaseMediaRepository baseMediaRepository, BaseMediaService baseMediaService) {
-    super(memberRepository, basePostRepository, reportService);
-    this.memberRepository = memberRepository;
-    this.baseMediaRepository = baseMediaRepository;
-    this.basePostRepository = basePostRepository;
-    this.baseMediaService = baseMediaService;
-    this.reportService = reportService;
-  }
+//  public OfficialGameService(MemberRepository memberRepository,
+//      BasePostRepository basePostRepository, ReportService reportService,
+//      BaseMediaRepository baseMediaRepository, BaseMediaService baseMediaService) {
+//    super(memberRepository, basePostRepository, reportService);
+//    this.memberRepository = memberRepository;
+//    this.baseMediaRepository = baseMediaRepository;
+//    this.basePostRepository = basePostRepository;
+//    this.baseMediaService = baseMediaService;
+//    this.reportService = reportService;
+//  }
 
 
   /**
@@ -73,9 +74,10 @@ public class OfficialGameService extends BasePostService {
             .member(member)
             .dailyScore(0)
             .weeklyScore(0)
+            .sourceType(SourceType.OFFICIAL_GAME)
             .build());
 
-    command.setSourceType(SourceType.OFFICIAL_GAME);
+    command.setSourceType(savedOfficialGame.getSourceType());
     command.setBasePost((savedOfficialGame));
 
     List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
@@ -138,18 +140,6 @@ public class OfficialGameService extends BasePostService {
     dto.setBaseMedias(baseMedias);
     return dto;
   }
-
-
-  @Override
-  protected ReportCommand createReportCommand(ReportCommand reportCommand, BasePost basePost, Member member) {
-    return ReportCommand.builder()
-        .memberId(member.getMemberId())
-        .sourceId(basePost.getBasePostId())
-        .sourceType(reportCommand.getSourceType())
-        .reportType(reportCommand.getReportType())
-        .build();
-  }
-
 
 //  public ReportDto reportGame(ReportCommand reportCommand) {
 //    OfficialGame officialGame = (OfficialGame) basePostRepository.findById(reportCommand.getSourceId())
