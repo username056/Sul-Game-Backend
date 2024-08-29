@@ -21,4 +21,7 @@ public class TestDto {
   private LocalDate birthDate;
   private List<Member> members;
   private List<MemberContentInteraction> memberContentInteractions;
+
+  //mock Post
+  private List<BasePost> basePosts;
 }
