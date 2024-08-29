@@ -2,6 +2,7 @@ package org.sejong.sulgamewiki.object;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,9 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("OfficialGame")
 public class OfficialGame extends BasePost {
+
+  private String introLyrics;
+
+  @OneToOne
+  private BaseMedia introBaseMedia;
 }
