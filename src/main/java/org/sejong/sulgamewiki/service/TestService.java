@@ -2,13 +2,22 @@ package org.sejong.sulgamewiki.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.sejong.sulgamewiki.object.BasePost;
+import org.sejong.sulgamewiki.object.CreationGame;
+import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.MemberContentInteraction;
+import org.sejong.sulgamewiki.object.OfficialGame;
+import org.sejong.sulgamewiki.object.TestCommand;
 import org.sejong.sulgamewiki.object.TestDto;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
 import org.sejong.sulgamewiki.object.constants.ExpLevel;
+import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.MockUtil;
@@ -22,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TestService {
   private final MemberRepository memberRepository;
   private final MemberContentInteractionRepository memberContentInteractionRepository;
+  private final BasePostRepository basePostRepository;
 
   /**
    * 설명: 새로운 Mock Member를 생성 DB저장
@@ -110,6 +120,75 @@ public class TestService {
   public TestDto getAllMember() {
     return TestDto.builder()
         .members(memberRepository.findAll())
+        .build();
+  }
+
+  @Transactional
+  public TestDto createMockPosts(TestCommand command) {
+    List<Long> allMemberIds = memberRepository.findAllMemberIds();
+    Random random = new Random();
+
+    List<BasePost> createdPosts = new ArrayList<>();
+
+    // Intro 포스트 생성
+    for (int i = 0; i < command.getEachPostCreateCount(); i++) {
+      Long randomMemberId = allMemberIds.get(random.nextInt(allMemberIds.size()));
+      Intro intro = Intro.builder()
+          .title("Intro Title " + UUID.randomUUID().toString().substring(0, 8))
+          .introduction("Intro Introduction " + UUID.randomUUID().toString().substring(0, 8))
+          .description("Intro Description " + UUID.randomUUID().toString().substring(0, 8))
+          .lyrics("Intro Lyrics " + random.nextInt(100))
+          .likes(random.nextInt(100))  // 좋아요 수를 0부터 100 사이에서 랜덤하게 설정
+          .views(random.nextInt(1000)) // 조회수를 0부터 1000 사이에서 랜덤하게 설정
+          .reportedCount(random.nextInt(10)) // 신고 횟수를 0부터 10 사이에서 랜덤하게 설정
+          .dailyScore(random.nextInt(50)) // 일일 점수를 0부터 50 사이에서 랜덤하게 설정
+          .weeklyScore(random.nextInt(100)) // 주간 점수를 0부터 100 사이에서 랜덤하게 설정
+          .member(memberRepository.findById(randomMemberId).orElseThrow())
+          .build();
+
+      createdPosts.add(basePostRepository.save(intro));
+    }
+
+    // CreationGame 포스트 생성
+    for (int i = 0; i < command.getEachPostCreateCount(); i++) {
+      Long randomMemberId = allMemberIds.get(random.nextInt(allMemberIds.size()));
+      CreationGame creationGame = CreationGame.builder()
+          .title("CreationGame Title " + UUID.randomUUID().toString().substring(0, 8))
+          .introduction("CreationGame Introduction " + UUID.randomUUID().toString().substring(0, 8))
+          .description("CreationGame Description " + UUID.randomUUID().toString().substring(0, 8))
+          .likes(random.nextInt(100))  // 좋아요 수를 0부터 100 사이에서 랜덤하게 설정
+          .views(random.nextInt(1000)) // 조회수를 0부터 1000 사이에서 랜덤하게 설정
+          .reportedCount(random.nextInt(10)) // 신고 횟수를 0부터 10 사이에서 랜덤하게 설정
+          .dailyScore(random.nextInt(50)) // 일일 점수를 0부터 50 사이에서 랜덤하게 설정
+          .weeklyScore(random.nextInt(100)) // 주간 점수를 0부터 100 사이에서 랜덤하게 설정
+          .member(memberRepository.findById(randomMemberId).orElseThrow())
+          .build();
+
+      createdPosts.add(basePostRepository.save(creationGame));
+    }
+
+    // OfficialGame 포스트 생성
+    for (int i = 0; i < command.getEachPostCreateCount(); i++) {
+      Long randomMemberId = allMemberIds.get(random.nextInt(allMemberIds.size()));
+      OfficialGame officialGame = OfficialGame.builder()
+          .title("OfficialGame Title " + UUID.randomUUID().toString().substring(0, 8))
+          .introduction("OfficialGame Introduction " + UUID.randomUUID().toString().substring(0, 8))
+          .description("OfficialGame Description " + UUID.randomUUID().toString().substring(0, 8))
+          .likes(random.nextInt(100))  // 좋아요 수를 0부터 100 사이에서 랜덤하게 설정
+          .views(random.nextInt(1000)) // 조회수를 0부터 1000 사이에서 랜덤하게 설정
+          .reportedCount(random.nextInt(10)) // 신고 횟수를 0부터 10 사이에서 랜덤하게 설정
+          .dailyScore(random.nextInt(50)) // 일일 점수를 0부터 50 사이에서 랜덤하게 설정
+          .weeklyScore(random.nextInt(100)) // 주간 점수를 0부터 100 사이에서 랜덤하게 설정
+          .member(memberRepository.findById(randomMemberId).orElseThrow())
+          .build();
+
+      createdPosts.add(basePostRepository.save(officialGame));
+    }
+
+    log.info("총 {}개의 포스트가 생성되었습니다.", createdPosts.size());
+
+    return TestDto.builder()
+        .basePosts(createdPosts)
         .build();
   }
 }
