@@ -32,6 +32,5 @@ public class CreationGame extends BasePost {
 
   private String introLyrics;
 
-  @OneToOne
-  private BaseMedia introBaseMedia;
+
 }

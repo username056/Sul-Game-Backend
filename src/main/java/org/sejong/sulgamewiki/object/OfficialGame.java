@@ -21,6 +21,4 @@ public class OfficialGame extends BasePost {
 
   private String introLyrics;
 
-  @OneToOne
-  private BaseMedia introBaseMedia;
 }
