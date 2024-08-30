@@ -2,6 +2,7 @@ package org.sejong.sulgamewiki.util;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,11 @@ public class S3Service {
     // 파일 이름 생성
     String fileName = generateFileName(file, source.name());
 
-    amazonS3.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), null)
+    // Content-Type 설정을 위한 ObjectMetadata 생성
+    ObjectMetadata metadata = new ObjectMetadata();
+    metadata.setContentType(file.getContentType());  // MultipartFile에서 Content-Type을 가져옴
+
+    amazonS3.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), metadata)
               .withCannedAcl(CannedAccessControlList.PublicRead));
 
     return amazonS3.getUrl(bucket, fileName).toString();
