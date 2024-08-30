@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.object.ReportCommand;
+import org.sejong.sulgamewiki.object.ReportDto;
 import org.sejong.sulgamewiki.service.OfficialGameService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
@@ -39,4 +41,5 @@ public class OfficialGameController implements OfficialGameControllerDocs{
     BasePostDto dto = officialGameService.getOfficialGame(command);
     return ResponseEntity.ok(dto);
   }
+  
 }

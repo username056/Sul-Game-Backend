@@ -14,4 +14,5 @@ public class BasePostDto {
   private BasePost basePost;
   private List<BaseMedia> baseMedias;
   private OfficialGame officialGame;
+  private CreationGame creationGame;
 }

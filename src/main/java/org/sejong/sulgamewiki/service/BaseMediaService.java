@@ -46,7 +46,7 @@ public class BaseMediaService {
     for( MultipartFile file : command.getMultipartFiles()) {
       String fileUrl = null;
       try {
-        fileUrl = s3Service.uploadFile(file, command.getSourceType());
+        fileUrl = s3Service.uploadFile(file, command.getBasePost().getSourceType());
       } catch (IOException e) {
         //TODO: delete uploaded file in S3 -> uploadedFiles
         throw new RuntimeException(e); //TODO: change error
