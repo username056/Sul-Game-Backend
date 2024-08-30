@@ -34,18 +34,6 @@ public class OfficialGameService {
   private final BaseMediaService baseMediaService;
   private final ReportService reportService;
 
-//  public OfficialGameService(MemberRepository memberRepository,
-//      BasePostRepository basePostRepository, ReportService reportService,
-//      BaseMediaRepository baseMediaRepository, BaseMediaService baseMediaService) {
-//    super(memberRepository, basePostRepository, reportService);
-//    this.memberRepository = memberRepository;
-//    this.baseMediaRepository = baseMediaRepository;
-//    this.basePostRepository = basePostRepository;
-//    this.baseMediaService = baseMediaService;
-//    this.reportService = reportService;
-//  }
-
-
   /**
    *
    * @param command
@@ -77,7 +65,6 @@ public class OfficialGameService {
             .sourceType(SourceType.OFFICIAL_GAME)
             .build());
 
-    command.setSourceType(savedOfficialGame.getSourceType());
     command.setBasePost((savedOfficialGame));
 
     List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);

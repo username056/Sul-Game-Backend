@@ -50,7 +50,6 @@ public class IntroService {
             .sourceType(SourceType.INTRO)
             .build());
 
-    command.setSourceType(savedIntro.getSourceType());
     command.setBasePost(savedIntro);
     List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
 
