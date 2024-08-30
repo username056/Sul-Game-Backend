@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +24,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.object.constants.SourceType;
+import org.sejong.sulgamewiki.object.constants.Tag;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 
@@ -72,6 +75,21 @@ public abstract class BasePost extends BaseTimeEntity {
   private int weeklyScore = 0;  // 매주 일요일마다 초기화
 
   private SourceType sourceType;
+
+  @ElementCollection
+  @Enumerated(EnumType.STRING)
+  @Builder.Default
+  private Set<Tag> tags = new HashSet<>();
+
+  // TODO: 썸네일 정해지면 ENUM타입 생성하기
+  // 썸네일 아이콘 선택 필드
+  @Column(length = 255)
+  private String thumbnailIcon;
+
+  // 내 정보 공개 여부 필드
+  @Builder.Default
+  private boolean isPrivate = true; // 기본값은 비공개
+
 
   public void cancelLike(Long memberId) {
     if(this.likedMemberIds.contains(memberId)) {
