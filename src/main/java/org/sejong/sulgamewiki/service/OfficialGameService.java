@@ -109,19 +109,14 @@ public class OfficialGameService {
     List<String> existingMediaUrls = baseMediaRepository.findMediaUrlsByBasePost_BasePostId(gameId);
 
     // 새 미디어 파일 처리 및 기존 미디어와 비교 후 업데이트
-    if (command.getMultipartFiles() != null) {
-      List<String> updatedMediaUrls = baseMediaService.updateMedias(command);
+    if (command.getMultipartFiles() != null && !command.getMultipartFiles().isEmpty()) {
+      // BaseMediaService의 updateMedias 메서드가 List<BaseMedia>를 반환하도록 가정
+      List<BaseMedia> updatedMediaEntities = baseMediaService.updateMedias(command);
 
-      // 기존 미디어 업데이트된 미디어로 교체
-      for (String mediaUrl : updatedMediaUrls) {
-        BaseMedia officialGameMedia = BaseMedia.builder()
-            .mediaUrl(mediaUrl)
-            .basePost(savedOfficialGame)
-            .build();
-
-        baseMedias.add(baseMediaRepository.save(officialGameMedia));
-      }
+      // 업데이트된 미디어 엔티티 리스트를 그대로 저장
+      baseMedias.addAll(updatedMediaEntities);
     }
+
 
     dto.setBasePost(savedOfficialGame);
     dto.setBaseMedias(baseMedias);
