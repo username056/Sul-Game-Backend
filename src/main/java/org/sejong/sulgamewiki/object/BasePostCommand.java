@@ -1,14 +1,15 @@
 package org.sejong.sulgamewiki.object;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.sejong.sulgamewiki.object.constants.IntroType;
 import org.sejong.sulgamewiki.object.constants.SourceType;
+import org.sejong.sulgamewiki.object.constants.Tag;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
@@ -20,6 +21,9 @@ public class BasePostCommand {
   private Long memberId;
   private SourceType sourceType;
   private BasePost basePost;
+  // TODO: 오류 해결하기
+//  private Boolean isPrivate = false; // Boolean으로 변경하여 null 허용, 기본값 설정
+  private Set<Tag> tags;
 
   // official, creation
   private String introduction;
@@ -33,5 +37,7 @@ public class BasePostCommand {
 
   // intro
   private String lyrics;
-  private IntroType introtype;
+  private IntroType introType;
+  // TODO: 오류 해결하기
+//  private List<MultipartFile> introMultipartFiles;
 }
