@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 
@@ -70,6 +71,7 @@ public abstract class BasePost extends BaseTimeEntity {
   @Builder.Default
   private int weeklyScore = 0;  // 매주 일요일마다 초기화
 
+  private SourceType sourceType;
 
   public void cancelLike(Long memberId) {
     if(this.likedMemberIds.contains(memberId)) {

@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.HomeCommand;
 import org.sejong.sulgamewiki.object.HomeDto;
@@ -14,6 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/home")
+@Tag(
+    name = "메인 페이지 관리 API",
+    description = "메인 페이지 관리 API 제공"
+)
 public class HomeController {
 
   private final HomeService homeService;

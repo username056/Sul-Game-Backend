@@ -69,4 +69,6 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
 
 
   List<BasePost> findByBasePostIdIn(List<Long> ids);
+
+  BasePost findByBasePostId(Long relatedOfficialGameId);
 }

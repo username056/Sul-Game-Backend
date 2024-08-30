@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(
-    name = "Intro 관리 API",
+    name = "인트로 관리 API",
     description = "인트로 관리 API 제공"
 )
 public class IntroController implements IntroControllerDocs{
