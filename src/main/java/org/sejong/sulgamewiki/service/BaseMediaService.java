@@ -2,6 +2,7 @@ package org.sejong.sulgamewiki.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,38 +67,55 @@ public class BaseMediaService {
   /**
    * 기존 미디어 URL 리스트와 새로 받은 파일들을 비교하여 업데이트하는 메서드.
    *
-   * 이 메서드는 새로운 파일들을 업로드하고, 기존 미디어 파일 중 사용되지 않는 파일을 S3에서 삭제합니다.
+   * 이 메서드는 새로운 파일들을 업로드하고, 기존 미디어 파일 중 사용되지 않는 파일을 S3에서 삭제한 후,
+   * BaseMedia 엔티티들을 반환합니다.
    *
    * @param command 업로드할 파일들과 관련된 명령 객체
-   * @return 업데이트된 미디어 URL 리스트
+   * @return 업데이트된 BaseMedia 엔티티 리스트
    */
-  public List<String> updateMedias(BasePostCommand command) {
-    List<String> updatedMediaUrls = new ArrayList<>();
+  public List<BaseMedia> updateMedias(BasePostCommand command) {
+    List<BaseMedia> updatedMediaEntities = new ArrayList<>();
+    List<String> existingUrls = baseMediaRepository.findMediaUrlsByBasePost_BasePostId(command.getBasePostId());
+
+    // command.getImageUrls()의 결과를 한 번만 가져와서 사용
+    List<String> imageUrls = command.getImageUrls();
 
     // 기존 미디어와 비교하여 삭제할 미디어 처리
-    for (String existingUrl : baseMediaRepository.findMediaUrlsByBasePost_BasePostId(
-        command.getBasePostId())) {
-      // 기존에 있던 이미지url이 업데이트 파라미터에 없으면? -> 삭제된거임
-      if (!command.getImageUrls().contains(existingUrl)) {
+    Iterator<String> iterator = existingUrls.iterator();
+    while (iterator.hasNext()) {
+      String existingUrl = iterator.next();
+      if (!imageUrls.contains(existingUrl)) {  // 기존에 있던 이미지 URL이 업데이트 파라미터(imageUrls)에 없으면 -> 삭제 대상
         try {
           s3Service.deleteFile(existingUrl); // S3에서 미디어 파일 삭제
+          iterator.remove(); // 안전하게 리스트에서 해당 URL 제거
         } catch (IOException e) {
           throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
       }
     }
 
-    // 새로 들어온 multipart파일 업로드
-    for(MultipartFile newFile : command.getMultipartFiles()) {
+    // 새로 들어온 multipart 파일 업로드 및 BaseMedia 엔티티 생성
+    for (MultipartFile newFile : command.getMultipartFiles()) {
       try {
-        updatedMediaUrls.add(s3Service.uploadFile(newFile, command.getSourceType()));
+        String fileUrl = s3Service.uploadFile(newFile, command.getSourceType());
+        BaseMedia newMedia = BaseMedia.builder()
+            .mediaUrl(fileUrl)
+            .fileSize(newFile.getSize())
+            .mediaType(MediaType.getMediaType(newFile))
+            .basePost(command.getBasePost())
+            .build();
+        updatedMediaEntities.add(baseMediaRepository.save(newMedia));
       } catch (IOException e) {
         throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
       }
     }
 
-    return updatedMediaUrls;
+    // 기존 미디어 엔티티도 반환 리스트에 추가
+    updatedMediaEntities.addAll(baseMediaRepository.findByBasePost_BasePostId(command.getBasePostId()));
+
+    return updatedMediaEntities;
   }
+
 
   /**
    * 회원 프로필 이미지를 업로드하는 메서드.
@@ -149,7 +167,22 @@ public class BaseMediaService {
     }
   }
 
+  public void deleteMedia(BaseMedia baseMedia) {
+    // S3에서 파일 삭제
+    try {
+      s3Service.deleteFile(baseMedia.getMediaUrl());
+    } catch (IOException e) {
+      throw new CustomException(ErrorCode.S3_DELETE_FILE_ERROR);
+    }
 
+    // 데이터베이스에서 BaseMedia 삭제
+    baseMediaRepository.delete(baseMedia);
+  }
 
+  public void deleteMedias(List<BaseMedia> baseMediaList) {
+    for (BaseMedia baseMedia : baseMediaList) {
+      deleteMedia(baseMedia); // 개별 삭제 메서드 호출
+    }
+  }
 
 }
