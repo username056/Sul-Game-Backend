@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
@@ -18,7 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/official")
 @RequiredArgsConstructor
-public class OfficialGameController {
+@Tag(
+    name = "국룰 게임 관리 API",
+    description = "국룰 게임 관리 API 제공"
+)
+public class OfficialGameController implements OfficialGameControllerDocs{
   private final OfficialGameService officialGameService;
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
