@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReportController {
   private final ReportService reportService;
 
-  @PostMapping("")
-  public ResponseEntity<ReportDto> createReport(
-      @RequestBody ReportCommand reportCommand) {
-    ReportDto dto = reportService.createReport(reportCommand);
-    return ResponseEntity.ok(dto);
-  }
+//  @PostMapping("")
+//  public ResponseEntity<ReportDto> createReport(
+//      @RequestBody ReportCommand reportCommand) {
+//    ReportDto dto = reportService.createReport(reportCommand);
+//    return ResponseEntity.ok(dto);
+//  }
 }
