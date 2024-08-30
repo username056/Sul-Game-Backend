@@ -9,6 +9,7 @@ import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.CreationGame;
 import org.sejong.sulgamewiki.object.Member;
+import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
@@ -34,6 +35,9 @@ public class CreationGameService {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+    OfficialGame officialGame = (OfficialGame) basePostRepository.findById(command.getRelatedOfficialGameId())
+        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+
     CreationGame savedCreationGame = basePostRepository.save(
         CreationGame.builder()
             .title(command.getTitle())
@@ -46,18 +50,18 @@ public class CreationGameService {
             .member(member)
             .dailyScore(0)
             .weeklyScore(0)
-            .officialGame(basePostRepository.findByBasePostId(command.getRelatedOfficialGameId()))
+            .officialGame(officialGame)
             .sourceType(SourceType.CREATION_GAME)
             .build());
 
     command.setSourceType(savedCreationGame.getSourceType());
     command.setBasePost((savedCreationGame));
 
-    List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
+    List<BaseMedia> savedCreationMedias = baseMediaService.uploadMedias(command);
 
     return BasePostDto.builder()
         .creationGame(savedCreationGame)
-        .baseMedias(savedMedias)
+        .baseMedias(savedCreationMedias)
         .build();
   }
 }
