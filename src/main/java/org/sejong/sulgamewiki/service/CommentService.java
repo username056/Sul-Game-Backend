@@ -28,7 +28,6 @@ public class CommentService {
   private final ReportService reportService;
 
   public CommentDto createComment(CommentCommand command) {
-    CommentDto dto = CommentDto.builder().build();
 
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -47,8 +46,9 @@ public class CommentService {
 
     Comment savedComment = commentRepository.save(comment);
 
-    dto.setComment(savedComment);
-    return dto;
+    return CommentDto.builder()
+        .comment(savedComment)
+        .build();
   }
 
   public void deleteComment(CommentCommand command) {
@@ -57,7 +57,7 @@ public class CommentService {
 
     // 댓글 작성자가 요청한 사용자인지 확인
     if (!comment.getMember().getMemberId().equals(command.getMemberId())) {
-      throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
+      throw new CustomException(ErrorCode.COMMENT_NOT_OWNED_BY_USER);
     }
     commentRepository.deleteById(comment.getCommentId());
   }
@@ -66,9 +66,9 @@ public class CommentService {
     Comment comment = commentRepository.findById(command.getCommentId())
         .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-    CommentDto dto = CommentDto.builder().build();
-    dto.setComment(comment);
-    return dto;
+    return CommentDto.builder()
+        .comment(comment)
+        .build();
   }
 
   public CommentDto updateComment(CommentCommand command) {
@@ -77,7 +77,7 @@ public class CommentService {
 
     // 댓글 작성자가 요청한 사용자인지 확인
     if (!comment.getMember().getMemberId().equals(command.getMemberId())) {
-      throw new CustomException(ErrorCode.COMMENT_ACCESS_DENIED);
+      throw new CustomException(ErrorCode.COMMENT_NOT_OWNED_BY_USER);
     }
 
     comment.setContent(command.getContent());
@@ -85,9 +85,9 @@ public class CommentService {
 
     Comment updatedComment = commentRepository.save(comment);
 
-    CommentDto dto = CommentDto.builder().build();
-    dto.setComment(updatedComment);
-    return dto;
+    return CommentDto.builder()
+        .comment(updatedComment)
+        .build();
   }
 
   public void reportComment(Long commentId, Long memberId, ReportType reportType) {
@@ -101,7 +101,7 @@ public class CommentService {
         .reportType(reportType)
         .build();
 
-    reportService.createReport(command);
+    reportService.reportComment(command);
   }
 
 }
