@@ -42,7 +42,7 @@ public enum ErrorCode {
   // Comment
   COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글이 존재하지 않습니다."),
 
-  COMMENT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "댓글의 작성자가 아닙니다."),
+  COMMENT_NOT_OWNED_BY_USER(HttpStatus.FORBIDDEN, "댓글의 작성자가 아닙니다."),
 
   // S3
   INVALID_MEDIA_TYPE(HttpStatus.BAD_REQUEST, "지원되지 않는 MIME 타입입니다"),
@@ -63,7 +63,7 @@ public enum ErrorCode {
 
   REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "신고내역이 존재하지 않습니다."),
 
-  ALREADY_REPORTED(HttpStatus.BAD_REQUEST, "이미 신고했습니다.");
+  MEMBER_ALREADY_REPORTED (HttpStatus.BAD_REQUEST, "이미 신고했습니다.");
 
   private final HttpStatus status;
   private final String message;
