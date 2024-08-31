@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
+// TODO: 명세 주석 다 바꾸기
+
 public interface IntroControllerDocs {
 
   @Operation(
@@ -34,27 +36,19 @@ public interface IntroControllerDocs {
 
         - **`List<MultipartFile> multipartFiles`**: 인트로와 함께 업로드할 미디어 파일들  
           _선택 사항_
-
+        
+        - **`Object<Icon>`**: 인트로에 대한 아이콘 
+         _선택 사항_
+         
+        - **`List<String> tags`**: 인트로에 대한 태그  
+         _선택 사항_
+         
         **반환 파라미터 값:**
 
         - **`BasePostDto basePost`**: 생성된 인트로와 관련된 정보
         """
   )
   ResponseEntity<BasePostDto> createIntro(@ModelAttribute BasePostCommand command);
-
-  @Operation(
-      summary = "인트로 전체 조회",
-      description = """
-        **인트로 전체 조회**
-
-        모든 인트로 게시글을 조회합니다.
-
-        **반환 파라미터 값:**
-
-        - **`List<BasePostDto> basePosts`**: 모든 인트로 게시글의 리스트
-        """
-  )
-  ResponseEntity<List<BasePostDto>> getAllIntros();
 
   @Operation(
       summary = "인트로 조회",
@@ -72,7 +66,7 @@ public interface IntroControllerDocs {
         - **`BasePostDto basePost`**: 조회된 인트로와 관련된 정보
         """
   )
-  ResponseEntity<BasePostDto> getIntro(@PathVariable Long basePostId);
+  ResponseEntity<BasePostDto> getIntro(@ModelAttribute BasePostCommand command);
 
   @Operation(
       summary = "인트로 수정",
@@ -96,6 +90,12 @@ public interface IntroControllerDocs {
 
         - **`List<MultipartFile> multipartFiles`**: 인트로와 함께 업로드할 새로운 미디어 파일들  
           _선택 사항_
+        
+        - **`Object<Icon>`**: 인트로에 대한 아이콘 
+         _선택 사항_
+           
+        - **`List<String> tags`**: 인트로에 대한 태그  
+         _선택 사항_
 
         **반환 파라미터 값:**
 
@@ -110,6 +110,7 @@ public interface IntroControllerDocs {
         **인트로 삭제**
 
         특정 인트로를 소프트 삭제합니다. 삭제된 인트로는 더 이상 활성 상태로 조회되지 않지만, 데이터베이스에서는 제거되지 않습니다.
+        단, 미디어 파일은 실제로 삭제됩니다.
 
         **입력 파라미터 값:**
 
@@ -120,6 +121,6 @@ public interface IntroControllerDocs {
         - 없음
         """
   )
-  ResponseEntity<Void> deleteIntro(@PathVariable Long basePostId);
+  ResponseEntity<Void> deleteIntro(@ModelAttribute BasePostCommand command);
 
 }
