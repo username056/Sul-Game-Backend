@@ -15,9 +15,9 @@ public interface BaseMediaRepository extends JpaRepository<BaseMedia, Long> {
   @Query("SELECT entity FROM BaseMedia entity WHERE entity.basePost.basePostId = :basePostId AND entity.isDeleted = false")
   List<BaseMedia> findAllByBasePost_BasePostId(Long basePostId);
 
-  @Query("SELECT entity FROM BaseMedia entity WHERE entity.basePost.basePostId = :basePostId AND entity.isDeleted = false")
+  @Query("SELECT entity FROM BaseMedia entity WHERE entity.mediaUrl = :mediaUrl AND entity.isDeleted = false")
   BaseMedia findByMediaUrl(String mediaUrl);
 
-  @Query("SELECT entity FROM BaseMedia entity WHERE entity.mediaUrl = :mediaUrl AND entity.isDeleted = false")
+  @Query("SELECT entity FROM BaseMedia entity WHERE entity.basePost.basePostId = :basePostId AND entity.isDeleted = false")
   List<BaseMedia> findByBasePost_BasePostId(Long basePostId);
 }
