@@ -1,15 +1,15 @@
 package org.sejong.sulgamewiki.object;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.sejong.sulgamewiki.object.constants.IntroTag;
 import org.sejong.sulgamewiki.object.constants.IntroType;
 import org.sejong.sulgamewiki.object.constants.SourceType;
-import org.sejong.sulgamewiki.object.constants.Tag;
+import org.sejong.sulgamewiki.object.constants.GameTag;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
@@ -22,22 +22,23 @@ public class BasePostCommand {
   private SourceType sourceType;
   private BasePost basePost;
   // TODO: 오류 해결하기
-//  private Boolean isPrivate = false; // Boolean으로 변경하여 null 허용, 기본값 설정
-  private Set<Tag> tags;
+  private Boolean isPrivate = false;
 
   // official, creation
   private String introduction;
   private String title;
   private String description;
-  private List<MultipartFile> multipartFiles;
+  private List<MultipartFile> gameMultipartFiles;
   private List<String> imageUrls;
+  private Set<GameTag> gameTags;
 
-  // creation
+  // creation, intro
   private Long relatedOfficialGameId;
 
   // intro
   private String lyrics;
   private IntroType introType;
+  private Set<IntroTag> introTags;
   // TODO: 오류 해결하기
-//  private List<MultipartFile> introMultipartFiles;
+  private List<MultipartFile> introMultipartFiles;
 }

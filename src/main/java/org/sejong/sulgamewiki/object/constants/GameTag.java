@@ -1,6 +1,6 @@
 package org.sejong.sulgamewiki.object.constants;
 
-public enum Tag {
+public enum GameTag {
   이성과하기좋아요,
   빨리취해요,
   움직여야해요,

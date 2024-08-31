@@ -24,7 +24,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.object.constants.SourceType;
-import org.sejong.sulgamewiki.object.constants.Tag;
+import org.sejong.sulgamewiki.object.constants.GameTag;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 
@@ -75,11 +75,6 @@ public abstract class BasePost extends BaseTimeEntity {
   private int weeklyScore = 0;  // 매주 일요일마다 초기화
 
   private SourceType sourceType;
-
-  @ElementCollection
-  @Enumerated(EnumType.STRING)
-  @Builder.Default
-  private Set<Tag> tags = new HashSet<>();
 
   // TODO: 썸네일 정해지면 ENUM타입 생성하기
   // 썸네일 아이콘 선택 필드
