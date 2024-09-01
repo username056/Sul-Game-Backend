@@ -3,9 +3,9 @@ package org.sejong.sulgamewiki.util.config;
 import java.util.Arrays;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.util.auth.service.CustomOAuth2UserService;
+import org.sejong.sulgamewiki.util.auth.CustomOAuth2UserService;
 import org.sejong.sulgamewiki.util.JwtUtil;
-import org.sejong.sulgamewiki.util.auth.handler.OAuth2SuccessHandler;
+import org.sejong.sulgamewiki.util.auth.OAuth2MemberSuccessHandler;
 import org.sejong.sulgamewiki.util.TokenAuthenticationFilter;
 import org.sejong.sulgamewiki.service.MemberService;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +31,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
   private final JwtUtil jwtUtil;
-  private final OAuth2SuccessHandler oAuth2SuccessHandler;
+  private final OAuth2MemberSuccessHandler oAuth2MemberSuccessHandler;
   private final CustomOAuth2UserService customOAuth2UserService;
 
   private static final String[] AUTH_WHITELIST = {
@@ -42,6 +42,7 @@ public class WebSecurityConfig {
       "/login/**",
       "/signup",
       "/docs/**", // Swagger
+      "/favicon.ico",
       "/v3/api-docs/**", // Swagger
       "/login/oauth2/code/google", // OAuth 리디렉션 URI
       "/api/members/complete-registration"
@@ -75,18 +76,15 @@ public class WebSecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
-                .userInfoEndpoint(userInfo -> userInfo
-                    .userService(customOAuth2UserService)
-                )
-                .successHandler(oAuth2SuccessHandler)
+                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                .successHandler(oAuth2MemberSuccessHandler)
             )
             .logout(logout -> logout
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(new TokenAuthenticationFilter(jwtUtil),
-                UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new TokenAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
             .build();
   }
 

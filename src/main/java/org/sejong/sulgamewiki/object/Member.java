@@ -80,5 +80,11 @@ public class Member extends BaseTimeEntity {
   private Boolean infoPopupVisible = true;
 
   @Column(nullable = false)
-  private LocalDateTime lastLoginTime;
+  private LocalDateTime lastLoginTime = LocalDateTime.now();
+
+  public Member update(String name, String profileImageUrl) {
+    this.nickname = name;
+    this.profileUrl = profileImageUrl;
+    return this;
+  }
 }

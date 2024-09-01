@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 @ToString
 public class MemberCommand {
   private Long memberId;
-  private String memberNickname;
   private String nickname;
   private LocalDate birthDate;
   private String university;

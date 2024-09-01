@@ -41,5 +41,5 @@ cloud:
     stack:
       auto: false
     credentials:
-      access-key: ${S3_AccessKey}
-      secret-key: ${S3_SecretKey}
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}

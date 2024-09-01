@@ -15,7 +15,7 @@ import java.util.Set;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.sejong.sulgamewiki.util.auth.domain.CustomUserDetails;
+import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
 import org.sejong.sulgamewiki.service.MemberService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
