@@ -12,20 +12,20 @@ import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class OAuth2MemberSuccessHandler extends
-    SimpleUrlAuthenticationSuccessHandler {
+public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
   private final JwtUtil jwtUtil;
   private final MemberRepository memberRepository;
 
   @Override
-  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+      throws IOException, ServletException {
+
     OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
     String email = oAuth2User.getAttribute("email");
 
