@@ -12,8 +12,6 @@ import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
-import org.sejong.sulgamewiki.object.ReportCommand;
-import org.sejong.sulgamewiki.object.ReportDto;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
@@ -106,10 +104,10 @@ public class OfficialGameService {
     existingOfficialGame.setDescription(command.getDescription());
 
     OfficialGame savedOfficialGame = basePostRepository.save(existingOfficialGame);
-    List<String> existingMediaUrls = baseMediaRepository.findMediaUrlsByBasePost_BasePostId(gameId);
+    List<String> existingMediaUrls = baseMediaRepository.findMediaUrlsByBasePostId(gameId);
 
     // 새 미디어 파일 처리 및 기존 미디어와 비교 후 업데이트
-    if (command.getMultipartFiles() != null && !command.getMultipartFiles().isEmpty()) {
+    if (command.getGameMultipartFiles() != null && !command.getGameMultipartFiles().isEmpty()) {
       // BaseMediaService의 updateMedias 메서드가 List<BaseMedia>를 반환하도록 가정
       List<BaseMedia> updatedMediaEntities = baseMediaService.updateMedias(command);
 

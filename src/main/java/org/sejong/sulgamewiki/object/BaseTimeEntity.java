@@ -41,4 +41,8 @@ public abstract class BaseTimeEntity {
   public void markAsNotDeleted() {
     isDeleted = false;
   }
+
+  public void markAsUpdated() {isUpdated = true;}
+
+  public void markAsNotUpdated() {isUpdated = false;}
 }

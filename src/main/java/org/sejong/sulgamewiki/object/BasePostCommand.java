@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.object;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import lombok.Builder;
@@ -21,14 +22,14 @@ public class BasePostCommand {
   private Long memberId;
   private SourceType sourceType;
   private BasePost basePost;
-  // TODO: 오류 해결하기
-  private Boolean isPrivate = false;
+  private String thumbnailIcon;
 
   // official, creation
   private String introduction;
   private String title;
   private String description;
-  private List<MultipartFile> gameMultipartFiles;
+  @Builder.Default
+  private List<MultipartFile> gameMultipartFiles = new ArrayList<>();
   private List<String> imageUrls;
   private Set<GameTag> gameTags;
 
@@ -40,5 +41,6 @@ public class BasePostCommand {
   private IntroType introType;
   private Set<IntroTag> introTags;
   // TODO: 오류 해결하기
-  private List<MultipartFile> introMultipartFiles;
+  @Builder.Default
+  private List<MultipartFile> introMultipartFiles = new ArrayList<>();
 }

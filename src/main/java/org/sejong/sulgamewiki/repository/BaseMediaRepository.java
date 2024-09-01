@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface BaseMediaRepository extends JpaRepository<BaseMedia, Long> {
 
   @Query("SELECT entity.mediaUrl FROM BaseMedia entity WHERE entity.basePost.basePostId = :basePostId AND entity.isDeleted = false")
-  List<String> findMediaUrlsByBasePost_BasePostId(Long basePostId);
+  List<String> findMediaUrlsByBasePostId(Long basePostId);
 
   @Query("SELECT entity FROM BaseMedia entity WHERE entity.basePost.basePostId = :basePostId AND entity.isDeleted = false")
   List<BaseMedia> findAllByBasePost_BasePostId(Long basePostId);

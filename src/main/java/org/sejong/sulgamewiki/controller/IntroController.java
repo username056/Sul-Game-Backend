@@ -40,7 +40,7 @@ public class IntroController implements IntroControllerDocs{
   }
 
   // TODO: URL 정석 지피티한테 물어보자
-  @PostMapping("/details")
+  @GetMapping("/details")
   public ResponseEntity<BasePostDto> getIntro(@ModelAttribute BasePostCommand command) {
     return ResponseEntity.ok(introService.getIntro(command));
   }
