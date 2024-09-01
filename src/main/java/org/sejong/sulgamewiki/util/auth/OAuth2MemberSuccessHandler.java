@@ -1,10 +1,13 @@
 package org.sejong.sulgamewiki.util.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.sejong.sulgamewiki.object.AuthDto;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
 import org.sejong.sulgamewiki.object.constants.Role;
 import org.sejong.sulgamewiki.util.JwtUtil;
@@ -17,49 +20,52 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
   private final JwtUtil jwtUtil;
   private final MemberRepository memberRepository;
+  private final ObjectMapper objectMapper;
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
       throws IOException, ServletException {
-
     OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
     String email = oAuth2User.getAttribute("email");
+    log.info("소셜 로그인 성공 : {}",email);
 
     Member member = memberRepository.findByEmail(email)
-        .orElseGet(() -> createPendingMember(oAuth2User));
+        .orElseGet(() -> {
+          String newEmail = oAuth2User.getAttribute("email");
+          Member newMember = Member.builder()
+              .email(newEmail)
+              .nickname(oAuth2User.getAttribute("name"))
+              .profileUrl(oAuth2User.getAttribute("picture"))
+              .role(Role.ROLE_USER)
+              .accountStatus(AccountStatus.PENDING)
+              .build();
+          return memberRepository.save(newMember);
+        });
 
-    if (member.getAccountStatus() == AccountStatus.PENDING) {
-      handlePendingMember(response, member);
-    } else {
-      handleExistingMember(response, member);
-    }
-  }
-
-  private Member createPendingMember(OAuth2User oAuth2User) {
-    String email = oAuth2User.getAttribute("email");
-    Member newMember = Member.builder()
-        .email(email)
-        .nickname(oAuth2User.getAttribute("name"))
-        .profileUrl(oAuth2User.getAttribute("picture"))
-        .role(Role.ROLE_USER)
-        .accountStatus(AccountStatus.PENDING)
-        .build();
-    return memberRepository.save(newMember);
-  }
-
-  private void handlePendingMember(HttpServletResponse response, Member member) throws IOException {
-    response.setContentType("application/json;charset=UTF-8");
-    response.getWriter().write("{\"status\":\"PENDING\",\"memberId\":\"" + member.getMemberId() + "\"}");
-  }
-
-  private void handleExistingMember(HttpServletResponse response, Member member) throws IOException {
+    // JWT 생성
     CustomUserDetails userDetails = new CustomUserDetails(member);
     String accessToken = jwtUtil.createAccessToken(userDetails);
+    String refreshToken = jwtUtil.createRefreshToken(userDetails);
+
+    log.info("AccessToken 생성됨: {}", accessToken);
+    log.info("RefreshToken 생성됨 : {}", refreshToken);
+
+    // accessToken을 헤더에 추가
+    response.setHeader("Authorization", "Bearer " + accessToken);
+
+    // 응답 데이터 (refreshToken은 Body에 추가)
+    AuthDto dto =  AuthDto.builder()
+        .loginAccountStatus(member.getAccountStatus())
+        .refreshToken(refreshToken)
+        .build();
+
+    // JSON 응답
     response.setContentType("application/json;charset=UTF-8");
-    response.getWriter().write("{\"token\":\"" + accessToken + "\"}");
+    response.getWriter().write(objectMapper.writeValueAsString(dto));
   }
 }

@@ -33,12 +33,19 @@ public class JwtUtil {
   @Value("${jwt.access-exp-time}")
   private Long accessTokenExpTime;
 
+  @Value("${jwt.refresh-exp-time}")
+  private Long refreshTokenExpTime;
+
   private final String ROLE ="role";
 
   private final MemberService memberService;
 
   public String createAccessToken(CustomUserDetails customUserDetails){
     return createToken(customUserDetails, accessTokenExpTime);
+  }
+
+  public String createRefreshToken(CustomUserDetails customUserDetails){
+    return createToken(customUserDetails, refreshTokenExpTime);
   }
 
   private String createToken(CustomUserDetails customUserDetails, Long expiredAt) {

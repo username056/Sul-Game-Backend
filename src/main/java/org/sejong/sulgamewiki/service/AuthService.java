@@ -33,7 +33,6 @@ public class AuthService {
         .queryParam("scope", scope)
         .build()
         .toUriString();
-
     return AuthDto.builder()
         .googleRedirectUrl(redirectUrl)
         .build();
