@@ -1,6 +1,7 @@
 package org.sejong.sulgamewiki.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.CreationGame;
@@ -71,15 +72,10 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
   @Query("SELECT entity FROM BasePost entity WHERE entity.basePostId IN :ids AND entity.isDeleted = false")
   List<BasePost> findByBasePostIdIn(List<Long> ids);
 
-  @Query("SELECT entity FROM BasePost entity WHERE entity.basePostId = :relatedOfficialGameId AND entity.isDeleted = false")
-  BasePost findByBasePostId(Long relatedOfficialGameId);
+  @Query("SELECT entity FROM BasePost entity WHERE entity.basePostId = :basePostId AND entity.isDeleted = false")
+  Optional<BasePost> findByBasePostId(Long basePostId);
 
   @Query("SELECT entity FROM BaseMedia entity WHERE entity.basePost.basePostId = :basePostId AND entity.basePost.isDeleted = false")
   List<BaseMedia> findMediasByBasePostId(Long basePostId);
-
-  @Query("SELECT entity FROM Intro entity WHERE entity.basePostId = :basePostId AND entity.isDeleted = false")
-  List<Intro> findIntrosByBasePostId(Long basePostId);
-
-  @Query("SELECT entity FROM Intro entity WHERE entity.isDeleted = false")
-  List<Intro> findAllIntros();
+  
 }
