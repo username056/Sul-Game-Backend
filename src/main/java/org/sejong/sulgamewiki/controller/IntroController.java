@@ -39,13 +39,11 @@ public class IntroController implements IntroControllerDocs{
     return ResponseEntity.ok(introService.createIntro(command));
   }
 
-  // TODO: URL 정석 지피티한테 물어보자
   @GetMapping("/details")
   public ResponseEntity<BasePostDto> getIntro(@ModelAttribute BasePostCommand command) {
     return ResponseEntity.ok(introService.getIntro(command));
   }
 
-  // TODO: URL 정석 지피티한테 물어보자. (이게 맞다네)
   @PutMapping(name = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<BasePostDto> updateIntro(@ModelAttribute BasePostCommand command) {
     return ResponseEntity.ok(introService.updateIntro(command));
