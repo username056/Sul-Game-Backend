@@ -7,16 +7,19 @@ import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.service.CommentService;
 import org.sejong.sulgamewiki.service.MemberService;
+import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 @Slf4j
@@ -24,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
     name = "회원 관리 API",
     description = "회원 관리 API 제공"
 )
-public class MemberController implements MemberControllerDocs {
+public class MemberController {
 
   private final MemberService memberService;
   private final CommentService commentService;
@@ -32,14 +35,18 @@ public class MemberController implements MemberControllerDocs {
   @PostMapping(value = "/complete-registration" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> completeRegistration(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberService.completeRegistration(command));
   }
 
-  @GetMapping("/profile")
+  @PostMapping(value = "/profile",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> getProfile(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails, //String memberId
       @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberService.getProfile(command));
   }
 
@@ -57,7 +64,6 @@ public class MemberController implements MemberControllerDocs {
     return ResponseEntity.ok(memberService.getBookmarkedPosts(command));
   }
 
-  @Override
   @PostMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> updateMemberProfileImage(
@@ -65,7 +71,6 @@ public class MemberController implements MemberControllerDocs {
     return ResponseEntity.ok(memberService.updateMemberProfileImage(command));
   }
 
-  @Override
   @PostMapping(value = "/nickname", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> changeNickname(
