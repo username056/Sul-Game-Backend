@@ -71,8 +71,6 @@ public class Member extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private AccountStatus accountStatus = AccountStatus.PENDING;
 
-  private String providerId; // OAuth : 외부 인증 provider 고유 ID
-
   @Builder.Default
   @Column(nullable = false)
   private Boolean isNotificationEnabled = true;
