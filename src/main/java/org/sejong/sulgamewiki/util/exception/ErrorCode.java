@@ -63,7 +63,9 @@ public enum ErrorCode {
 
   REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "신고내역이 존재하지 않습니다."),
 
-  MEMBER_ALREADY_REPORTED (HttpStatus.BAD_REQUEST, "이미 신고했습니다.");
+  MEMBER_ALREADY_REPORTED (HttpStatus.BAD_REQUEST, "이미 신고했습니다."),
+
+  S3_DELETE_FILE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일삭제를 실패했습니다.");
 
   private final HttpStatus status;
   private final String message;

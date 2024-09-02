@@ -3,6 +3,7 @@ package org.sejong.sulgamewiki.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePostCommand;
@@ -11,8 +12,12 @@ import org.sejong.sulgamewiki.service.IntroService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,5 +37,21 @@ public class IntroController implements IntroControllerDocs{
   public ResponseEntity<BasePostDto> createIntro(
       @ModelAttribute BasePostCommand command) {
     return ResponseEntity.ok(introService.createIntro(command));
+  }
+
+  @GetMapping("/details")
+  public ResponseEntity<BasePostDto> getIntro(@ModelAttribute BasePostCommand command) {
+    return ResponseEntity.ok(introService.getIntro(command));
+  }
+
+  @PutMapping(name = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<BasePostDto> updateIntro(@ModelAttribute BasePostCommand command) {
+    return ResponseEntity.ok(introService.updateIntro(command));
+  }
+
+  @DeleteMapping("/")
+  public ResponseEntity<Void> deleteIntro(@ModelAttribute BasePostCommand command) {
+    introService.deleteIntro(command);
+    return ResponseEntity.noContent().build();
   }
 }

@@ -31,6 +31,9 @@ public abstract class BaseTimeEntity {
   @Builder.Default
   private Boolean isDeleted = false;
 
+  @Builder.Default
+  private Boolean isUpdated = false;
+
   public void markAsDeleted() {
     isDeleted = true;
   }
@@ -38,4 +41,8 @@ public abstract class BaseTimeEntity {
   public void markAsNotDeleted() {
     isDeleted = false;
   }
+
+  public void markAsUpdated() {isUpdated = true;}
+
+  public void markAsNotUpdated() {isUpdated = false;}
 }
