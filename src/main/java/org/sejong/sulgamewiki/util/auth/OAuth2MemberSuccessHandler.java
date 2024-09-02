@@ -37,22 +37,15 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
     String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
     String email = null;
-    String nickname = null;
-    String picture = null;
 
     if ("google".equals(registrationId)) {
       email = oAuth2User.getAttribute("email");
-      nickname = oAuth2User.getAttribute("name");
-      picture = oAuth2User.getAttribute("picture");
     } else if ("kakao".equals(registrationId)) {
       Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttribute("kakao_account");
       email = (String) kakaoAccount.get("email");
-      Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
-      nickname = (String) profile.get("nickname");
-      picture = (String) profile.get("profile_image_url");
     }
 
-    log.info("소셜 로그인 성공 : {}",email);
+    log.info("소셜 로그인 성공: 이메일 = {}, 제공자 = {}", email, registrationId);
 
     Member member = memberRepository.findByEmail(email)
         .orElseGet(() -> {

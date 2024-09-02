@@ -50,9 +50,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
               .nickname(attributes.getName())
               .profileUrl(attributes.getProfileImageUrl())
               .accountStatus(AccountStatus.PENDING)
+              .provider(attributes.getProvider())
+              .lastLoginTime(LocalDateTime.now())
               .role(Role.ROLE_USER)  // 기본 역할 : ROLE_USER
               .build();
-          log.info("신규 회원 생성됨 : memberId : {} , memberEmail : {}", newMember.getMemberId(), newMember.getEmail());
+          log.info("신규 회원 생성됨: 이메일 = {}, 제공자 = {}", newMember.getEmail(), attributes.getProvider());
           return memberRepository.save(newMember);
         });
   }
