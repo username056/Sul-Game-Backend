@@ -65,15 +65,5 @@ public class OAuthAttributes {
         .attributes(response)
         .build();
   }
-
-  public Member toEntity() {
-    return Member.builder()
-        .email(email)
-        .nickname(name)
-        .profileUrl(profileImageUrl)
-        .accountStatus(AccountStatus.PENDING)
-        .role(Role.ROLE_USER)
-        .build();
-  }
 }
 

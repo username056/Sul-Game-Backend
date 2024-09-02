@@ -73,6 +73,14 @@ public class Member extends BaseTimeEntity {
 
   @Builder.Default
   @Column(nullable = false)
+  private Boolean isNicknameModified = false;
+
+  @Builder.Default
+  @Column(nullable = false)
+  private Boolean isProfileImageModified = false;
+
+  @Builder.Default
+  @Column(nullable = false)
   private Boolean isNotificationEnabled = true;
 
   @Builder.Default
@@ -82,9 +90,15 @@ public class Member extends BaseTimeEntity {
   @Column(nullable = false)
   private LocalDateTime lastLoginTime = LocalDateTime.now();
 
-  public Member update(String name, String profileImageUrl) {
-    this.nickname = name;
-    this.profileUrl = profileImageUrl;
-    return this;
+  public void setNickname(String name) {
+    if (!isNicknameModified) {
+      this.nickname = name;
+    }
+  }
+
+  public void setProfileUrl(String profileImageUrl) {
+    if (!isProfileImageModified) {
+      this.profileUrl = profileImageUrl;
+    }
   }
 }
