@@ -75,8 +75,10 @@ public class MemberService implements UserDetailsService {
   public MemberDto getProfile(MemberCommand command) {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
     MemberContentInteraction memberContent
         = memberContentInteractionRepository.findByMember(member);
+
     return MemberDto.builder()
         .member(member)
         .memberContentInteraction(memberContent)
