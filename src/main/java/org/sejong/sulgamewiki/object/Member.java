@@ -71,6 +71,9 @@ public class Member extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private AccountStatus accountStatus = AccountStatus.PENDING;
 
+  @Column(nullable = false)
+  private String provider; // 로그인 제공자 (google, kakao, naver)
+
   @Builder.Default
   @Column(nullable = false)
   private Boolean isNicknameModified = false;

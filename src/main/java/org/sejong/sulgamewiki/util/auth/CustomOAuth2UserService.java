@@ -41,6 +41,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
           entity.setNickname(attributes.getName());
           entity.setProfileUrl(attributes.getProfileImageUrl());
           entity.setLastLoginTime(LocalDateTime.now());
+          entity.setProvider(attributes.getProvider());
           return memberRepository.save(entity);
         })
         .orElseGet(() -> {

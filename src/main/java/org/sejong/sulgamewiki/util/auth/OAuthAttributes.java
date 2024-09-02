@@ -3,25 +3,16 @@ package org.sejong.sulgamewiki.util.auth;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
-import org.sejong.sulgamewiki.object.Member;
-import org.sejong.sulgamewiki.object.constants.AccountStatus;
-import org.sejong.sulgamewiki.object.constants.Role;
 
 @Getter
+@Builder
 public class OAuthAttributes {
 
   private final Map<String, Object> attributes;
   private final String name;
   private final String email;
   private final String profileImageUrl;
-
-  @Builder
-  public OAuthAttributes(Map<String, Object> attributes, String name, String email, String profileImageUrl) {
-    this.attributes = attributes;
-    this.name = name;
-    this.email = email;
-    this.profileImageUrl = profileImageUrl;
-  }
+  private final String provider;
 
   public static OAuthAttributes of(String registrationId, Map<String, Object> attributes) {
     if ("kakao".equals(registrationId)) {
@@ -40,6 +31,7 @@ public class OAuthAttributes {
         .email((String) attributes.get("email"))
         .profileImageUrl((String) attributes.get("picture"))
         .attributes(attributes)
+        .provider("google")
         .build();
   }
 
@@ -52,6 +44,7 @@ public class OAuthAttributes {
         .email((String) kakaoAccount.get("email"))
         .profileImageUrl((String) profile.get("profile_image_url"))
         .attributes(attributes)
+        .provider("kakao")
         .build();
   }
 
@@ -63,6 +56,7 @@ public class OAuthAttributes {
         .email((String) response.get("email"))
         .profileImageUrl((String) response.get("profile_image"))
         .attributes(response)
+        .provider("naver")  // provider 값 설정
         .build();
   }
 }
