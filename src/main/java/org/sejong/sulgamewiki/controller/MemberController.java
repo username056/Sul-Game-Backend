@@ -11,10 +11,7 @@ import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +39,7 @@ public class MemberController {
     return ResponseEntity.ok(memberService.completeRegistration(command));
   }
 
-  @PostMapping(value = "/profile",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> getProfile(
       @AuthenticationPrincipal CustomUserDetails customUserDetails, //String memberId
@@ -51,31 +48,39 @@ public class MemberController {
     return ResponseEntity.ok(memberService.getProfile(command));
   }
 
-  @GetMapping("/liked-posts")
+  @PostMapping(value = "/liked-posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> getLikedPosts(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberService.getLikedPosts(command));
   }
 
-  @GetMapping("/bookmarked-posts")
+  @PostMapping(value = "/bookmarked-posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> getBookmarkedPosts(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberService.getBookmarkedPosts(command));
   }
 
   @PostMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> updateMemberProfileImage(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberService.updateMemberProfileImage(command));
   }
 
   @PostMapping(value = "/nickname", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> changeNickname(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberService.changeNickname(command));
   }
 }
