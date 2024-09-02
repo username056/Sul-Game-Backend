@@ -5,8 +5,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
@@ -18,68 +20,58 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
   private final JwtUtil jwtUtil;
   private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-  // Security와 JWT 인증 생략하는 URI
   private static final String[] WHITELIST = {
-      "/", // 기본화면
-      "/api/**", //FIXME: 일시적으로 전체 API 주소 허용 (삭제해야함)
-      "/api/signup", // 회원가입
-      "/api/login", // 로그인
+      "/",
+      "/api/signup",
+      "/api/login",
       "/login/**",
       "/signup",
-      "/docs/**", // Swagger
-      "/v3/api-docs/**", // Swagger
-      "/login/oauth2/code/google", // OAuth 리디렉션 URI
+      "/docs/**",
+      "/v3/api-docs/**",
+      "/login/oauth2/code/google",
       "/api/members/complete-registration"
   };
 
-
   @Override
   protected void doFilterInternal(HttpServletRequest request,
-      HttpServletResponse response, FilterChain filterChain)
+      HttpServletResponse response,
+      FilterChain filterChain)
       throws ServletException, IOException {
 
     String URI = request.getRequestURI();
-    String authorizationHeader = request.getHeader("Authorization");
 
-//    // WHITELIST URL 인 경우 -> JWT Token Validation 하지않는다.
-//    if (Arrays.stream(WHITELIST)
-//        .anyMatch(whiteListUri -> antPathMatcher.match(whiteListUri, URI))) {
-//      log.info("WHILELIST 주소로 토큰검사 안함");
-//      // Token 검사 생략
-//      filterChain.doFilter(request, response);
-//      return;
-//    }
-
-    // 토큰 비검사 uri
-    for (String antMatchURI : WHITELIST) {
-      if (URI.startsWith(antMatchURI)) {
-        filterChain.doFilter(request, response);
-        return;
-      }
+    // WHITELIST URL인 경우 JWT 토큰 검증을 생략
+    if (isWhitelistedPath(URI)) {
+      filterChain.doFilter(request, response);
+      return;
     }
 
-    // 이외 주소 Token 검사
-    String token = getAccessToken(authorizationHeader);
+    String token = getAccessToken(request);
 
-    if (token != null && !token.isEmpty() && jwtUtil.validateToken(token)) { //토큰이 없거나 비어있는 경우
-      log.info("Token 검사로직 실행");
+    if (token != null && jwtUtil.validateToken(token)) {
       Authentication authentication = jwtUtil.getAuthentication(token);
-      log.info("doFilterInternal() token : "+ token);
-      log.info("doFilterInternal() authentication : "+ authentication.toString());
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+      if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.info("Set Authentication to security context for '{}', uri: {}", ((CustomUserDetails) authentication.getPrincipal()).getUsername(), URI);
+      } else {
+        log.warn("Authentication object is null or not instance of CustomUserDetails");
+      }
     } else {
-      log.info("유효한 JWT 토큰이 없습니다.");
+      log.info("No valid JWT token found, uri: {}", URI);
     }
 
     filterChain.doFilter(request, response);
   }
 
-  private String getAccessToken(String authorizationHeader) {
-    if (authorizationHeader != null && authorizationHeader.startsWith(
-        "Bearer ")) {
-      return authorizationHeader.substring("Bearer ".length());
+  private boolean isWhitelistedPath(String uri) {
+    return Arrays.stream(WHITELIST).anyMatch(path -> antPathMatcher.match(path, uri));
+  }
+
+  private String getAccessToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+      return bearerToken.substring(7);
     }
     return null;
   }
 }
-

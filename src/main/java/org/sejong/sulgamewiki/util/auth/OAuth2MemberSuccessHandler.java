@@ -9,15 +9,14 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.AuthDto;
-import org.sejong.sulgamewiki.object.constants.AccountStatus;
-import org.sejong.sulgamewiki.object.constants.Role;
-import org.sejong.sulgamewiki.util.JwtUtil;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.repository.MemberRepository;
+import org.sejong.sulgamewiki.util.JwtUtil;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -57,13 +56,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
 
     // 소셜 로그인 제공자에 따라 이메일을 추출
-    String email = null;
-    if ("google".equals(registrationId)) {
-      email = oAuth2User.getAttribute("email");
-    } else if ("kakao".equals(registrationId)) {
-      Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttribute("kakao_account");
-      email = (String) kakaoAccount.get("email");
-    }
+    String email = extractEmailFromOAuth2User(oAuth2User, registrationId);
 
     log.info("소셜 로그인 성공: 이메일 = {}, 제공자 = {}", email, registrationId);
 
@@ -79,11 +72,14 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     log.info("AccessToken 생성됨: {}", accessToken);
     log.info("RefreshToken 생성됨 : {}", refreshToken);
 
+    // SecurityContextHolder에 CustomUserDetails 설정
+    SecurityContextHolder.getContext().setAuthentication(new OAuth2AuthenticationToken(userDetails, authentication.getAuthorities(), registrationId));
+
     // accessToken을 헤더에 추가
     response.setHeader("Authorization", "Bearer " + accessToken);
 
     // 응답 데이터 (refreshToken은 Body에 추가)
-    AuthDto dto =  AuthDto.builder()
+    AuthDto dto = AuthDto.builder()
         .loginAccountStatus(member.getAccountStatus())
         .refreshToken(refreshToken)
         .build();
@@ -92,4 +88,15 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     response.setContentType("application/json;charset=UTF-8");
     response.getWriter().write(objectMapper.writeValueAsString(dto));
   }
+
+  private String extractEmailFromOAuth2User(OAuth2User oAuth2User, String registrationId) {
+    if ("google".equals(registrationId)) {
+      return oAuth2User.getAttribute("email");
+    } else if ("kakao".equals(registrationId)) {
+      Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
+      return (String) kakaoAccount.get("email");
+    }
+    throw new CustomException(ErrorCode.INVALID_REGISTRATION_ID);
+  }
+
 }
