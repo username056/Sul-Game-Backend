@@ -37,17 +37,11 @@ public class WebSecurityConfig {
 
   private static final String[] AUTH_WHITELIST = {
       "/", // 기본화면
-      "/api/**", //FIXME: 일시적으로 전체 API 주소 허용 (삭제해야함)
-      "/api/signup", // 회원가입
-      "/api/login", // 로그인
-      "/login/**",
-      "/signup",
       "/docs/**", // Swagger
-      "/favicon.ico",
+      "/favicon.ico", // 앱아이콘
       "/v3/api-docs/**", // Swagger
-      "/login/oauth2/code/**", // OAuth 리디렉션 URI
-      "/oauth2/authorization/**", // OAuth URI
-      "/api/members/complete-registration"
+      "/login/oauth2/code/**", // OAuth
+      "/oauth2/authorization/**" // OAuth
   };
 
   private static final String[] ALLOWED_ORIGINS = {
@@ -75,6 +69,10 @@ public class WebSecurityConfig {
                 .requestMatchers(AUTH_WHITELIST).permitAll()
                 .requestMatchers(HttpMethod.POST, "/complete-registration").hasAuthority("ROLE_USER")
                 .requestMatchers(HttpMethod.POST, "/profile").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/liked-posts").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/bookmarked-posts").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/profile-image").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/nickname").hasRole("USER")
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
