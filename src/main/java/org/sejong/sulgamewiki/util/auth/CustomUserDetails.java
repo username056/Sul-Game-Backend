@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.util.auth.domain;
+package org.sejong.sulgamewiki.util.auth;
 
 import java.util.Collection;
 import java.util.Collections;

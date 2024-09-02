@@ -15,7 +15,7 @@ import java.util.Set;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.sejong.sulgamewiki.util.auth.domain.CustomUserDetails;
+import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
 import org.sejong.sulgamewiki.service.MemberService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,12 +33,19 @@ public class JwtUtil {
   @Value("${jwt.access-exp-time}")
   private Long accessTokenExpTime;
 
+  @Value("${jwt.refresh-exp-time}")
+  private Long refreshTokenExpTime;
+
   private final String ROLE ="role";
 
   private final MemberService memberService;
 
   public String createAccessToken(CustomUserDetails customUserDetails){
     return createToken(customUserDetails, accessTokenExpTime);
+  }
+
+  public String createRefreshToken(CustomUserDetails customUserDetails){
+    return createToken(customUserDetails, refreshTokenExpTime);
   }
 
   private String createToken(CustomUserDetails customUserDetails, Long expiredAt) {

@@ -31,6 +31,7 @@ springdoc:
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-exp-time: ${JWT_ACCESS_EXP_TIME}
+  refresh-exp-time: ${JWT_REFRESH_EXP_TIME}
 
 cloud:
   aws:
@@ -41,5 +42,5 @@ cloud:
     stack:
       auto: false
     credentials:
-      access-key: ${S3_AccessKey}
-      secret-key: ${S3_SecretKey}
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
