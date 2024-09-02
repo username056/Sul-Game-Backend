@@ -26,8 +26,6 @@ import org.sejong.sulgamewiki.object.constants.GameTag;
 @DiscriminatorValue("OfficialGame")
 public class OfficialGame extends BasePost {
 
-  private String introLyrics;
-
   // 공식 술게임의 태그
   @ElementCollection
   @Enumerated(EnumType.STRING)
