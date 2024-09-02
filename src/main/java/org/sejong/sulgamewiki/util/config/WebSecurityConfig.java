@@ -44,7 +44,8 @@ public class WebSecurityConfig {
       "/docs/**", // Swagger
       "/favicon.ico",
       "/v3/api-docs/**", // Swagger
-      "/login/oauth2/code/google", // OAuth 리디렉션 URI
+      "/login/oauth2/code/**", // OAuth 리디렉션 URI
+      "/oauth2/authorization/**", // OAuth URI
       "/api/members/complete-registration"
   };
 

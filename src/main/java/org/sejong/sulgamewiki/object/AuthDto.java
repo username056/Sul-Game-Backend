@@ -11,7 +11,7 @@ import org.sejong.sulgamewiki.object.constants.AccountStatus;
 @Builder
 @ToString
 public class AuthDto {
-  String googleRedirectUrl;
+  String redirectUrl;
   AccountStatus loginAccountStatus;
   String accessToken;
   String refreshToken;

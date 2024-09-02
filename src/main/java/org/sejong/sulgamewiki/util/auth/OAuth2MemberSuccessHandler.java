@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.AuthDto;
@@ -13,7 +14,9 @@ import org.sejong.sulgamewiki.object.constants.Role;
 import org.sejong.sulgamewiki.util.JwtUtil;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.repository.MemberRepository;
+import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -28,10 +31,27 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
   private final ObjectMapper objectMapper;
 
   @Override
+  @LogMonitoringInvocation
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
       throws IOException, ServletException {
     OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-    String email = oAuth2User.getAttribute("email");
+    String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
+    String email = null;
+    String nickname = null;
+    String picture = null;
+
+    if ("google".equals(registrationId)) {
+      email = oAuth2User.getAttribute("email");
+      nickname = oAuth2User.getAttribute("name");
+      picture = oAuth2User.getAttribute("picture");
+    } else if ("kakao".equals(registrationId)) {
+      Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttribute("kakao_account");
+      email = (String) kakaoAccount.get("email");
+      Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+      nickname = (String) profile.get("nickname");
+      picture = (String) profile.get("profile_image_url");
+    }
+
     log.info("소셜 로그인 성공 : {}",email);
 
     Member member = memberRepository.findByEmail(email)
