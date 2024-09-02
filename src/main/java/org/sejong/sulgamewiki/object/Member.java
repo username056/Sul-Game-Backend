@@ -71,6 +71,17 @@ public class Member extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private AccountStatus accountStatus = AccountStatus.PENDING;
 
+  @Column(nullable = false)
+  private String provider; // 로그인 제공자 (google, kakao, naver)
+
+  @Builder.Default
+  @Column(nullable = false)
+  private Boolean isNicknameModified = false;
+
+  @Builder.Default
+  @Column(nullable = false)
+  private Boolean isProfileImageModified = false;
+
   @Builder.Default
   @Column(nullable = false)
   private Boolean isNotificationEnabled = true;
@@ -80,5 +91,17 @@ public class Member extends BaseTimeEntity {
   private Boolean infoPopupVisible = true;
 
   @Column(nullable = false)
-  private LocalDateTime lastLoginTime;
+  private LocalDateTime lastLoginTime = LocalDateTime.now();
+
+  public void setNickname(String name) {
+    if (!isNicknameModified) {
+      this.nickname = name;
+    }
+  }
+
+  public void setProfileUrl(String profileImageUrl) {
+    if (!isProfileImageModified) {
+      this.profileUrl = profileImageUrl;
+    }
+  }
 }

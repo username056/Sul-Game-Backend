@@ -10,16 +10,13 @@ import org.sejong.sulgamewiki.service.MemberService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 @Slf4j
@@ -32,7 +29,7 @@ public class MemberController implements MemberControllerDocs {
   private final MemberService memberService;
   private final CommentService commentService;
 
-  @PostMapping("/complete-registration")
+  @PostMapping(value = "/complete-registration" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> completeRegistration(
       @ModelAttribute MemberCommand command) {
