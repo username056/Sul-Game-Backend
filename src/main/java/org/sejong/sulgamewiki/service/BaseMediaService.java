@@ -53,8 +53,7 @@ public class BaseMediaService {
           fileUrl = s3Service.uploadFile(file,
               command.getBasePost().getSourceType());
         } catch (IOException e) {
-          //TODO: delete uploaded file in S3 -> uploadedFiles
-          throw new RuntimeException(e); //TODO: change error
+          throw new CustomException(ErrorCode.S3_UPLOAD_FILE_ERROR); //TODO: change error
         }
         uploadedFiles.add(fileUrl);
         baseMedias.add(baseMediaRepository.save(
@@ -72,8 +71,7 @@ public class BaseMediaService {
           fileUrl = s3Service.uploadFile(file,
               command.getBasePost().getSourceType());
         } catch (IOException e) {
-          //TODO: delete uploaded file in S3 -> uploadedFiles
-          throw new RuntimeException(e); //TODO: change error
+          throw new CustomException(ErrorCode.S3_UPLOAD_FILE_ERROR); //TODO: change error
         }
         uploadedFiles.add(fileUrl);
         baseMedias.add(baseMediaRepository.save(
