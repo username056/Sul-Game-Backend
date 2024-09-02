@@ -12,9 +12,8 @@ import org.sejong.sulgamewiki.object.constants.AccountStatus;
 @Builder
 @ToString
 public class AuthDto {
-  String redirectUrl;
+  // 로그인 성공 응답 데이터
   AccountStatus loginAccountStatus;
-  String accessToken;
   String refreshToken;
 
   // OAuthAttributes
@@ -24,4 +23,5 @@ public class AuthDto {
   private final String profileImageUrl;
   private final String provider;
 
+  private Member member;
 }

@@ -12,8 +12,20 @@ import org.sejong.sulgamewiki.util.exception.ErrorCode;
 @Getter
 @Builder
 @Slf4j
-public class OAuthAttributes {
+public class OAuth2AttributeConverter {
 
+  /**
+   * 주어진 소셜 로그인 제공자에 따라 사용자 정보를 AuthDto로 변환합니다.
+   *
+   * 이 메서드는 등록된 소셜 로그인 제공자 (Google, Kakao, Naver)에 따라
+   * 각각의 제공자로부터 전달된 사용자 속성을 처리하여,
+   * 공통의 AuthDto 객체로 변환합니다. 지원되지 않는 제공자인 경우,
+   * CustomException을 발생시킵니다.
+   *
+   * @param command AuthCommand 객체로, 소셜 로그인 제공자의 ID와 사용자 속성을 포함합니다.
+   * @return AuthDto 객체로 변환된 사용자 정보를 반환합니다.
+   * @throws CustomException 지원되지 않는 소셜 로그인 제공자인 경우 예외가 발생합니다.
+   */
   public static AuthDto of(AuthCommand command) {
     if ("kakao".equals(command.getRegistrationId())) {
       return ofKakao(command);
