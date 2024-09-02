@@ -3,30 +3,32 @@ package org.sejong.sulgamewiki.util.auth;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.sejong.sulgamewiki.object.AuthCommand;
+import org.sejong.sulgamewiki.object.AuthDto;
+import org.sejong.sulgamewiki.util.exception.CustomException;
+import org.sejong.sulgamewiki.util.exception.ErrorCode;
 
 @Getter
 @Builder
+@Slf4j
 public class OAuthAttributes {
 
-  private final Map<String, Object> attributes;
-  private final String name;
-  private final String email;
-  private final String profileImageUrl;
-  private final String provider;
-
-  public static OAuthAttributes of(String registrationId, Map<String, Object> attributes) {
-    if ("kakao".equals(registrationId)) {
-      return ofKakao(attributes);
-    } else if ("google".equals(registrationId)) {
-      return ofGoogle(attributes);
-    } else if ("naver".equals(registrationId)) {
-      return ofNaver(attributes);
+  public static AuthDto of(AuthCommand command) {
+    if ("kakao".equals(command.getRegistrationId())) {
+      return ofKakao(command);
+    } else if ("google".equals(command.getRegistrationId())) {
+      return ofGoogle(command);
+    } else if ("naver".equals(command.getRegistrationId())) {
+      return ofNaver(command);
     }
-    return null;
+    log.error("소셜 로그인 제공자를 알수 없습니다 : registrationId = {}", command);
+    throw new CustomException(ErrorCode.INVALID_REGISTRATION_ID);
   }
 
-  private static OAuthAttributes ofGoogle(Map<String, Object> attributes) {
-    return OAuthAttributes.builder()
+  private static AuthDto ofGoogle(AuthCommand command) {
+    Map<String, Object> attributes = command.getAttributes();
+    return AuthDto.builder()
         .name((String) attributes.get("name"))
         .email((String) attributes.get("email"))
         .profileImageUrl((String) attributes.get("picture"))
@@ -35,11 +37,12 @@ public class OAuthAttributes {
         .build();
   }
 
-  private static OAuthAttributes ofKakao(Map<String, Object> attributes) {
+  private static AuthDto ofKakao(AuthCommand command) {
+    Map<String, Object> attributes = command.getAttributes();
     Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
     Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
-    return OAuthAttributes.builder()
+    return AuthDto.builder()
         .name((String) profile.get("nickname"))
         .email((String) kakaoAccount.get("email"))
         .profileImageUrl((String) profile.get("profile_image_url"))
@@ -48,15 +51,16 @@ public class OAuthAttributes {
         .build();
   }
 
-  private static OAuthAttributes ofNaver(Map<String, Object> attributes) {
+  private static AuthDto ofNaver(AuthCommand command) {
+    Map<String, Object> attributes = command.getAttributes();
     Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
-    return OAuthAttributes.builder()
+    return AuthDto.builder()
         .name((String) response.get("nickname"))
         .email((String) response.get("email"))
         .profileImageUrl((String) response.get("profile_image"))
         .attributes(response)
-        .provider("naver")  // provider 값 설정
+        .provider("naver")
         .build();
   }
 }

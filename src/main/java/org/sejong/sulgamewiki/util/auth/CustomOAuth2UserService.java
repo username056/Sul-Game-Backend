@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.sejong.sulgamewiki.object.AuthCommand;
+import org.sejong.sulgamewiki.object.AuthDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
 import org.sejong.sulgamewiki.object.constants.Role;
@@ -25,36 +27,36 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
     OAuth2User oAuth2User = super.loadUser(userRequest);
 
-    String registrationId = userRequest.getClientRegistration().getRegistrationId();
-    Map<String, Object> attributes = oAuth2User.getAttributes();
+    AuthDto dto = OAuthAttributes.of(
+        AuthCommand.builder()
+            .registrationId(userRequest.getClientRegistration().getRegistrationId())
+            .attributes(oAuth2User.getAttributes())
+            .build()
+    );
 
-    OAuthAttributes oAuthAttributes = OAuthAttributes.of(registrationId, attributes);
-
-    Member member = saveOrUpdate(oAuthAttributes);
-
-    return new CustomUserDetails(member, attributes);
+    return new CustomUserDetails(saveOrUpdate(dto), dto.getAttributes());
   }
 
-  private Member saveOrUpdate(OAuthAttributes attributes) {
-    return memberRepository.findByEmail(attributes.getEmail())
+  private Member saveOrUpdate(AuthDto dto) {
+    return memberRepository.findByEmail(dto.getEmail())
         .map(entity -> {
-          entity.setNickname(attributes.getName());
-          entity.setProfileUrl(attributes.getProfileImageUrl());
+          entity.setNickname(dto.getName());
+          entity.setProfileUrl(dto.getProfileImageUrl());
           entity.setLastLoginTime(LocalDateTime.now());
-          entity.setProvider(attributes.getProvider());
+          entity.setProvider(dto.getProvider());
           return memberRepository.save(entity);
         })
         .orElseGet(() -> {
           Member newMember = Member.builder()
-              .email(attributes.getEmail())
-              .nickname(attributes.getName())
-              .profileUrl(attributes.getProfileImageUrl())
+              .email(dto.getEmail())
+              .nickname(dto.getName())
+              .profileUrl(dto.getProfileImageUrl())
               .accountStatus(AccountStatus.PENDING)
-              .provider(attributes.getProvider())
+              .provider(dto.getProvider())
               .lastLoginTime(LocalDateTime.now())
               .role(Role.ROLE_USER)  // 기본 역할 : ROLE_USER
               .build();
-          log.info("신규 회원 생성됨: 이메일 = {}, 제공자 = {}", newMember.getEmail(), attributes.getProvider());
+          log.info("신규 회원 생성됨: 이메일 = {}, 제공자 = {}", newMember.getEmail(), dto.getProvider());
           return memberRepository.save(newMember);
         });
   }

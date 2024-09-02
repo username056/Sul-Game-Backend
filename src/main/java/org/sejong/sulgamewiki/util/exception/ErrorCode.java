@@ -51,6 +51,8 @@ public enum ErrorCode {
 
   // Auth
 
+  INVALID_REGISTRATION_ID(HttpStatus.BAD_REQUEST, "소셜 로그인 제공자를 알수 없습니다"),
+
   // Notification
 
   NOTIFICATION_NOT_FOUND( HttpStatus.NOT_FOUND, "알림이 존재하지 않습니다."),
