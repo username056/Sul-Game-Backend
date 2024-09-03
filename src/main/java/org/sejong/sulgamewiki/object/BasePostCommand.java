@@ -23,7 +23,6 @@ public class BasePostCommand {
   private SourceType sourceType;
   private BasePost basePost;
   private String thumbnailIcon;
-  private Boolean creatorInfoIsPrivate;
 
   // official, creation
   private String introduction;
@@ -41,7 +40,7 @@ public class BasePostCommand {
   private String lyrics;
   private IntroType introType;
   private Set<IntroTag> introTags;
+  // TODO: 오류 해결하기
   @Builder.Default
   private List<MultipartFile> introMultipartFiles = new ArrayList<>();
-
 }

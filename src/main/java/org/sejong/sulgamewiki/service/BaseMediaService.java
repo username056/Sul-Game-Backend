@@ -111,7 +111,7 @@ public class BaseMediaService {
     }
 
     // 새로 들어온 multipart 파일 업로드 및 BaseMedia 엔티티 생성
-    List<MultipartFile> newFiles = command.getBasePost().getSourceType().equals(SourceType.INTRO)
+    List<MultipartFile> newFiles = command.getSourceType().equals(SourceType.INTRO)
         ? command.getIntroMultipartFiles()
         : command.getGameMultipartFiles();
 
