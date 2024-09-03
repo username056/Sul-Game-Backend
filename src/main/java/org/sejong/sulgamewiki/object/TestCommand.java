@@ -12,5 +12,5 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TestCommand {
   private Integer eachPostCreateCount;
-
+  private String email;
 }

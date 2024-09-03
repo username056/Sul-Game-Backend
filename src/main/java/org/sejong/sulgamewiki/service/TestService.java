@@ -3,6 +3,7 @@ package org.sejong.sulgamewiki.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.MockUtil;
+import org.sejong.sulgamewiki.util.exception.CustomException;
+import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,13 +109,22 @@ public class TestService {
    *
    */
   @Transactional
-  public TestDto deleteAllMockMember() {
-    memberContentInteractionRepository.deleteAll();
-    memberRepository.deleteAll();
+  public TestDto deleteMockMemberByEmail(TestCommand command) {
+    Member member = memberRepository.findByEmail(command.getEmail())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    MemberContentInteraction memberContentInteraction
+        = memberContentInteractionRepository.findByMember(member);
+
+    Long targetDeleteMemberId = member.getMemberId();
+    Long targetDeleteMemberInteractionId = memberContentInteraction.getId();
+
+    memberContentInteractionRepository.deleteById(targetDeleteMemberInteractionId);
+    memberRepository.deleteById(targetDeleteMemberId);
 
     return TestDto.builder()
-        .members(memberRepository.findAll())
-        .memberContentInteractions(memberContentInteractionRepository.findAll())
+        .deletedMemberId(targetDeleteMemberId)
+        .deletedMemberContentInteractionId(targetDeleteMemberInteractionId)
         .build();
   }
 

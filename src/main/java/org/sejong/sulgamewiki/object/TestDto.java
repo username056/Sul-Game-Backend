@@ -16,6 +16,10 @@ public class TestDto {
   private Member member;
   private MemberContentInteraction memberContentInteraction;
 
+  // 삭제된 객체
+  private Long deletedMemberId;
+  private Long deletedMemberContentInteractionId;
+
   private String nickname;
   private String email;
   private LocalDate birthDate;

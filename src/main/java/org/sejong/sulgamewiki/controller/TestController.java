@@ -8,6 +8,7 @@ import org.sejong.sulgamewiki.object.TestCommand;
 import org.sejong.sulgamewiki.object.TestDto;
 import org.sejong.sulgamewiki.service.TestService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -55,15 +55,16 @@ public class TestController {
     return ResponseEntity.ok(testService.getAllMember());
   }
 
-  @DeleteMapping("/member")
+  @PostMapping(value = "/member/delete", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   @Operation(
-      summary = "[주의] 모의 회원 전체삭제",
-      description = "[주의] 모의 회원 전체 삭제\n\n"
-          + "DB에서 전체 회원과 회원관련 내용을 삭제합니다\n\n"
+      summary = "[주의] 지정한 이메일의 회원 삭제",
+      description = "[주의] 지정한 이메일의 회원 삭제\n\n"
+          + "DB에서 지정한 회원을 삭제합니다\n\n"
           + "사용에 주의해주세요!!")
-  public ResponseEntity<TestDto> deleteAllMockMember() {
-    return ResponseEntity.ok(testService.deleteAllMockMember());
+  public ResponseEntity<TestDto> deleteMockMemberByEmail(
+      @ModelAttribute TestCommand command) {
+    return ResponseEntity.ok(testService.deleteMockMemberByEmail(command));
   }
 
   @PostMapping("/post")
