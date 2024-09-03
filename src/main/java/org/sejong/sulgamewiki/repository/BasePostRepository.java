@@ -81,4 +81,7 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
   @Query("SELECT entity FROM Intro entity WHERE entity.basePostId = :basePostId AND entity.isDeleted = false")
   Optional<Intro> findIntroByBasePostId(Long basePostId);
 
+  @Query("SELECT entity FROM OfficialGame entity WHERE entity.basePostId = :basePostId AND entity.isDeleted = false")
+  OfficialGame findOfficialGameByBasePostId(Long basePostId);
+
 }
