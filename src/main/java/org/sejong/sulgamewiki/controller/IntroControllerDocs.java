@@ -17,6 +17,8 @@ public interface IntroControllerDocs {
   @Operation(
       summary = "인트로 생성",
       description = """
+          **토큰 필요**
+          
           **인트로 생성**
 
           새로운 인트로를 생성합니다.
@@ -25,8 +27,6 @@ public interface IntroControllerDocs {
                   
           - **`String introType`**: 인트로 종류(opening, gathering)
                   
-          - **`Long memberId`**: 회원 ID 
-
           - **`String title`**: 인트로의 제목  
             _최대 100자_
 
@@ -75,6 +75,8 @@ public interface IntroControllerDocs {
   @Operation(
       summary = "인트로 수정",
       description = """
+          **토큰 필요**
+          
           **인트로 수정**
 
           기존 인트로의 내용을 수정합니다.
@@ -113,6 +115,8 @@ public interface IntroControllerDocs {
   @Operation(
       summary = "인트로 삭제",
       description = """
+          **토큰 필요**
+          
           **인트로 삭제**
 
           특정 인트로를 소프트 삭제합니다. 삭제된 인트로는 더 이상 활성 상태로 조회되지 않지만, 데이터베이스에서는 제거되지 않습니다.

@@ -34,6 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class IntroController implements IntroControllerDocs{
   private final IntroService introService;
 
+  @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
   public ResponseEntity<BasePostDto> createIntro(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command) {
