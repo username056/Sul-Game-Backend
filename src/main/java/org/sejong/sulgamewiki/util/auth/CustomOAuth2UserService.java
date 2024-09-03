@@ -1,13 +1,17 @@
 package org.sejong.sulgamewiki.util.auth;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.AuthCommand;
 import org.sejong.sulgamewiki.object.AuthDto;
 import org.sejong.sulgamewiki.object.Member;
+import org.sejong.sulgamewiki.object.MemberContentInteraction;
+import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
 import org.sejong.sulgamewiki.object.constants.Role;
+import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +33,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
     UserDetailsService {
 
   private final MemberRepository memberRepository;
+  private final MemberContentInteractionRepository memberContentInteractionRepository;
 
   /**
    * OAuth2 사용자 정보를 로드합니다.
@@ -50,7 +55,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
             .attributes(oAuth2User.getAttributes())
             .build()
     );
-    return new CustomUserDetails(saveOrUpdate(dto), dto.getAttributes());
+    return new CustomUserDetails(saveOrUpdate(dto).getMember(), dto.getAttributes());
   }
 
   /**
@@ -63,14 +68,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
    * @param dto OAuth2 인증으로부터 얻은 사용자 정보를 포함한 AuthDto 객체입니다.
    * @return 업데이트되거나 새로 생성된 회원 객체를 반환합니다.
    */
-  private Member saveOrUpdate(AuthDto dto) {
+  private AuthDto saveOrUpdate(AuthDto dto) {
     return memberRepository.findByEmail(dto.getEmail())
         .map(entity -> {
           entity.setNickname(dto.getName());
           entity.setProfileUrl(dto.getProfileImageUrl());
           entity.setLastLoginTime(LocalDateTime.now());
           entity.setProvider(dto.getProvider());
-          return memberRepository.save(entity);
+          dto.setMember(memberRepository.save(entity));
+          return dto;
         })
         .orElseGet(() -> {
           Member newMember = Member.builder()
@@ -82,8 +88,27 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
               .lastLoginTime(LocalDateTime.now())
               .role(Role.ROLE_USER)  // 기본 역할 : ROLE_USER
               .build();
+          dto.setMember(memberRepository.save(newMember));
           log.info("신규 회원 생성됨: 이메일 = {}, 제공자 = {}", newMember.getEmail(), dto.getProvider());
-          return memberRepository.save(newMember);
+
+          MemberContentInteraction newMemberContentInteraction = MemberContentInteraction.builder()
+              .member(newMember)
+              .totalLikeCount(0)
+              .totalPostCount(0)
+              .totalCommentCount(0)
+              .totalCommentLikeCount(0)
+              .totalPostLikeCount(0)
+              .totalMediaCount(0)
+              .likedOfficialGameIds(new ArrayList<>())
+              .likedCreationGameIds(new ArrayList<>())
+              .likedIntroIds(new ArrayList<>())
+              .bookmarkedOfficialGameIds(new ArrayList<>())
+              .bookmarkedIntroIds(new ArrayList<>())
+              .build();
+          dto.setMemberContentInteraction(memberContentInteractionRepository.save(newMemberContentInteraction));
+          log.info("신규 MemberContentInteraction 생성됨: id = {}, 회원ID = {}", newMemberContentInteraction.getId(), newMemberContentInteraction.getMember().getMemberId());
+
+          return dto;
         });
   }
 
