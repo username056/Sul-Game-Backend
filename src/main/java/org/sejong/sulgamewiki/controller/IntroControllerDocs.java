@@ -5,8 +5,6 @@ import java.util.List;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -50,7 +48,7 @@ public interface IntroControllerDocs {
         - **`BasePostDto basePost`**: 생성된 인트로와 관련된 정보
         """
   )
-  ResponseEntity<BasePostDto> createIntro(@AuthenticationPrincipal UserDetails userDetails,@ModelAttribute BasePostCommand command);
+  ResponseEntity<BasePostDto> createIntro(@ModelAttribute BasePostCommand command);
 
   @Operation(
       summary = "인트로 조회",
@@ -104,7 +102,7 @@ public interface IntroControllerDocs {
         - **`BasePostDto basePost`**: 수정된 인트로와 관련된 정보
         """
   )
-  ResponseEntity<BasePostDto> updateIntro(@AuthenticationPrincipal UserDetails userDetails,@ModelAttribute BasePostCommand command);
+  ResponseEntity<BasePostDto> updateIntro(@ModelAttribute BasePostCommand command);
 
   @Operation(
       summary = "인트로 삭제",
@@ -123,6 +121,6 @@ public interface IntroControllerDocs {
         - 없음
         """
   )
-  ResponseEntity<Void> deleteIntro(@AuthenticationPrincipal UserDetails userDetails, @ModelAttribute BasePostCommand command);
+  ResponseEntity<Void> deleteIntro(@ModelAttribute BasePostCommand command);
 
 }
