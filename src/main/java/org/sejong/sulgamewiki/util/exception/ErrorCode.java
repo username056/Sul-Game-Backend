@@ -35,6 +35,8 @@ public enum ErrorCode {
 
   // Intro
 
+  UNAUTHORIZED_ACTION(HttpStatus.UNAUTHORIZED, "접근권한이 없습니다."),
+
   // Game
 
   GAME_NOT_FOUND(HttpStatus.NOT_FOUND, "게임이 존재하지 않습니다."),
