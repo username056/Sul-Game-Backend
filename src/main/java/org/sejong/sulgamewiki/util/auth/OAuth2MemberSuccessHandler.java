@@ -82,6 +82,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     AuthDto dto = AuthDto.builder()
         .loginAccountStatus(member.getAccountStatus())
         .refreshToken(refreshToken)
+        .nickname(member.getNickname())
         .build();
 
     // JSON 응답

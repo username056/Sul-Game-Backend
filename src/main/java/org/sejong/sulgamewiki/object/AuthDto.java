@@ -15,6 +15,7 @@ public class AuthDto {
   // 로그인 성공 응답 데이터
   AccountStatus loginAccountStatus;
   String refreshToken;
+  String nickname;
 
   // OAuthAttributes
   private final Map<String, Object> attributes;
