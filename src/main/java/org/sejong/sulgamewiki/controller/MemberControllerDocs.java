@@ -3,7 +3,9 @@ package org.sejong.sulgamewiki.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
+import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 public interface MemberControllerDocs {
@@ -13,7 +15,10 @@ public interface MemberControllerDocs {
       description = """
         **회원 등록 완료**
 
-        소셜로그인 이후 나머지 회원가입을 완료합니다.
+        소셜로그인 이후 나머지 회원가입을 완료합니다. 이 API는 사용자가 소셜 로그인 후 추가 정보를 제공하여 회원가입을 완료할 수 있게 합니다.
+
+        **JWT 토큰 필요:**
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
 
@@ -23,71 +28,86 @@ public interface MemberControllerDocs {
         - **`LocalDate birthDate`**: 회원의 생년월일 (예: "1999-10-29")  
           _형식: YYYY-MM-DD_
 
-        - **`String college`**: 회원의 대학 이름 (예: "세종대학교")  
+        - **`String university`**: 회원의 대학 이름 (예: "세종대학교")  
           _최대 50자_
 
-        - **`Boolean isUniversityPublic`**: 대학 공개 여부 (예: "true" or "false")  
+        - **`Boolean isUniversityVisible`**: 대학 공개 여부 (예: "true" or "false")  
           `기본값: true`
 
-        - **`Boolean isNotificationEnabled`**: 알림 수신 여부 (예: "true" or "false")  
+        - **`Boolean isNotiEnabled`**: 알림 수신 여부 (예: "true" or "false")  
           `기본값: true`
 
         **반환 파라미터 값:**
 
-        - **`Member member`**: 회원가입이 완료된 회원
+        - **`MemberDto member`**: 회원가입이 완료된 회원 정보
         """
   )
-  ResponseEntity<MemberDto> completeRegistration(@ModelAttribute MemberCommand command);
+  ResponseEntity<MemberDto> completeRegistration(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
 
   @Operation(
       summary = "마이페이지",
       description = """
         **마이페이지**
 
-        회원의 마이페이지 정보를 제공합니다.
+        회원의 마이페이지 정보를 제공합니다. 이 API는 사용자의 프로필과 관련된 데이터를 조회할 수 있습니다.
+
+        **JWT 토큰 필요:**
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
 
-        - **`Long memberId`**: 회원의 고유 ID
-
+        - **`필요없음`**
+        
         **반환 파라미터 값:**
 
-        - **`Member member`**: 회원 정보
-        - **`MemberContentInteraction memberContentInteraction`**: 회원의 컨텐츠 상호작용 정보
+        - **`MemberDto member`**: 회원 정보
+        - **`MemberContentInteraction memberContentInteraction`**: 회원의 콘텐츠 상호작용 정보
         """
   )
-  ResponseEntity<MemberDto> getProfile(@ModelAttribute MemberCommand command);
+  ResponseEntity<MemberDto> getProfile(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
 
   @Operation(
       summary = "좋아요한 글",
       description = """
         **좋아요한 글**
 
-        회원이 좋아요한 글을 제공합니다.
+        회원이 좋아요한 글을 제공합니다. 이 API는 사용자가 좋아요한 모든 게시글을 조회합니다.
+
+        **JWT 토큰 필요:**
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
 
-        - **`Long memberId`**: 회원의 고유 ID
+        - **`필요없음`**
 
         **반환 파라미터 값:**
 
         - **`List<BasePost> likedOfficialGames`**: 좋아요한 공식 게임 게시글 리스트
-        - **`List<BasePost> likedCreationGame`**: 좋아요한 창작 게임 게시글 리스트
+        - **`List<BasePost> likedCreationGames`**: 좋아요한 창작 게임 게시글 리스트
         - **`List<BasePost> likedIntros`**: 좋아요한 소개글 리스트
         """
   )
-  ResponseEntity<MemberDto> getLikedPosts(@ModelAttribute MemberCommand command);
+  ResponseEntity<MemberDto> getLikedPosts(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
 
   @Operation(
       summary = "즐겨찾기한 글",
       description = """
         **즐겨찾기한 글**
 
-        회원이 즐겨찾기한 글을 제공합니다.
+        회원이 즐겨찾기한 글을 제공합니다. 이 API는 사용자가 즐겨찾기한 모든 게시글을 조회합니다.
+
+        **JWT 토큰 필요:**
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
 
-        - **`Long memberId`**: 회원의 고유 ID
+        - **`필요없음`**
 
         **반환 파라미터 값:**
 
@@ -96,37 +116,45 @@ public interface MemberControllerDocs {
         - **`List<BasePost> bookmarkedIntroIds`**: 즐겨찾기한 소개글 리스트
         """
   )
-  ResponseEntity<MemberDto> getBookmarkedPosts(@ModelAttribute MemberCommand command);
+  ResponseEntity<MemberDto> getBookmarkedPosts(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
 
   @Operation(
       summary = "회원 프로필 이미지 업데이트",
       description = """
         **회원 프로필 이미지 업데이트**
 
-        회원의 프로필 이미지를 업데이트합니다.
+        회원의 프로필 이미지를 업데이트합니다. 이 API는 사용자가 프로필 이미지를 업로드 및 변경할 수 있게 합니다.
+
+        **JWT 토큰 필요:**
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
 
-        - **`Long memberId`**: 회원의 고유 ID
         - **`MultipartFile multipartFile`**: 업로드할 프로필 이미지 파일
 
         **반환 파라미터 값:**
 
-        - **`Member member`**: 업데이트된 프로필 이미지를 포함한 회원 정보
+        - **`MemberDto member`**: 업데이트된 프로필 이미지를 포함한 회원 정보
         """
   )
-  ResponseEntity<MemberDto> updateMemberProfileImage(@ModelAttribute MemberCommand command);
+  ResponseEntity<MemberDto> updateMemberProfileImage(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
 
   @Operation(
       summary = "회원 닉네임 업데이트",
       description = """
         **회원 닉네임 업데이트**
 
-        회원의 프로필 닉네임을 업데이트합니다.
+        회원의 프로필 닉네임을 업데이트합니다. 이 API는 사용자가 닉네임을 변경할 수 있게 합니다.
+
+        **JWT 토큰 필요:**
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
 
-        - **`Long memberId`**: 회원의 고유 ID
         - **`String nickname`**: 새로 설정할 닉네임
 
         **반환 파라미터 값:**
@@ -138,7 +166,7 @@ public interface MemberControllerDocs {
         - 닉네임이 이미 존재하는 경우 `CustomException`이 발생합니다.
         """
   )
-  ResponseEntity<MemberDto> changeNickname(@ModelAttribute MemberCommand command);
-
-
+  ResponseEntity<MemberDto> changeNickname(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
 }
