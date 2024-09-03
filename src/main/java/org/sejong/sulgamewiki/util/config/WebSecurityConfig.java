@@ -73,7 +73,6 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/bookmarked-posts").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/profile-image").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/nickname").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/api/intro").hasRole("USER")
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
