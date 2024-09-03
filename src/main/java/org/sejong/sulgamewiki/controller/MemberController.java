@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
     name = "회원 관리 API",
     description = "회원 관리 API 제공"
 )
-public class MemberController {
+public class MemberController implements MemberControllerDocs{
 
   private final MemberService memberService;
   private final CommentService commentService;
