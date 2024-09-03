@@ -12,6 +12,7 @@ import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.Member;
+import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
@@ -36,6 +37,13 @@ public class IntroService {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+    OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
+        command.getRelatedOfficialGameId());
+
+    if (officialGame == null) {
+      throw new CustomException(ErrorCode.GAME_NOT_FOUND); // 예외를 발생시킴
+    }
+
     Intro savedIntro = basePostRepository.save(
         Intro.builder()
             .title(command.getTitle())
@@ -45,8 +53,7 @@ public class IntroService {
             .introTags(command.getIntroTags())
             .introType(command.getIntroType())
             .creatorInfoIsPrivate(command.getCreatorInfoIsPrivate())
-            .officialGame(basePostRepository.findOfficialGameByBasePostId(
-                command.getRelatedOfficialGameId()))
+            .officialGame(officialGame)
             .likes(0)
             .views(0)
             .member(member)
@@ -93,6 +100,13 @@ public class IntroService {
       throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);
     }
 
+    OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
+        command.getRelatedOfficialGameId());
+
+    if (officialGame == null) {
+      throw new CustomException(ErrorCode.GAME_NOT_FOUND); // 예외를 발생시킴
+    }
+
     // 게시글의 제목, 가사, 설명 등을 업데이트
     existingIntro.setTitle(command.getTitle());
     existingIntro.setLyrics(command.getLyrics());
@@ -101,8 +115,7 @@ public class IntroService {
     existingIntro.setThumbnailIcon(command.getThumbnailIcon());
     existingIntro.setIntroTags(command.getIntroTags());
     existingIntro.setCreatorInfoIsPrivate(command.getCreatorInfoIsPrivate());
-    existingIntro.setOfficialGame(basePostRepository.findOfficialGameByBasePostId(
-        command.getRelatedOfficialGameId()));
+    existingIntro.setOfficialGame(officialGame);
 
     // 업데이트 표시
     existingIntro.markAsUpdated();
