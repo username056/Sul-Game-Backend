@@ -1,6 +1,5 @@
 package org.sejong.sulgamewiki.util.auth;
 
-
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +9,8 @@ import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
 import org.sejong.sulgamewiki.object.constants.Role;
 import org.sejong.sulgamewiki.repository.MemberRepository;
-import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -25,7 +25,9 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
+    UserDetailsService {
+
   private final MemberRepository memberRepository;
 
   /**
@@ -83,5 +85,27 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
           log.info("신규 회원 생성됨: 이메일 = {}, 제공자 = {}", newMember.getEmail(), dto.getProvider());
           return memberRepository.save(newMember);
         });
+  }
+
+  /**
+   * 사용자 이름(여기서는 memberId)을 기반으로 사용자를 로드합니다.
+   *
+   * @param username 사용자 이름(여기서는 memberId의 String 값)
+   * @return CustomUserDetails 객체를 반환합니다.
+   * @throws UsernameNotFoundException 사용자를 찾을 수 없는 경우 예외를 발생시킵니다.
+   */
+  @Override
+  public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    Long memberId;
+    try {
+      memberId = Long.parseLong(username);  // memberId는 Long 타입으로 변환됩니다.
+    } catch (NumberFormatException e) {
+      throw new UsernameNotFoundException("Invalid memberId format: " + username);
+    }
+
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
+
+    return new CustomUserDetails(member);
   }
 }

@@ -35,7 +35,7 @@ public class Intro extends BasePost {
   @Column(length = 200)
   private String lyrics;
 
-  private IntroType type;
+  private IntroType introType;
 
   // 인트로의 태그
   @ElementCollection

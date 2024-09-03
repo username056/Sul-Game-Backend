@@ -4,8 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +22,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.object.constants.SourceType;
-import org.sejong.sulgamewiki.object.constants.GameTag;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 
@@ -83,7 +80,7 @@ public abstract class BasePost extends BaseTimeEntity {
 
   // 내 정보 공개 여부 필드
   @Builder.Default
-  private boolean isPrivate = true; // 기본값은 비공개
+  private boolean creatorInfoIsPrivate = true; // 기본값은 비공개
 
 
   public void cancelLike(Long memberId) {
