@@ -23,7 +23,7 @@ public class BasePostCommand {
   private SourceType sourceType;
   private BasePost basePost;
   private String thumbnailIcon;
-  private Boolean isPrivate;
+  private Boolean creatorInfoIsPrivate;
 
   // official, creation
   private String introduction;

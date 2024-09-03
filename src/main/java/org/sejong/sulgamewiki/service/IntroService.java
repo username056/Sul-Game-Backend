@@ -1,13 +1,9 @@
 package org.sejong.sulgamewiki.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
-import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Intro;
@@ -18,7 +14,6 @@ import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +39,8 @@ public class IntroService {
             .description(command.getDescription())
             .thumbnailIcon(command.getThumbnailIcon())
             .introTags(command.getIntroTags())
-            .type(command.getIntroType())
-            .isPrivate(command.getIsPrivate())
+            .introType(command.getIntroType())
+            .creatorInfoIsPrivate(command.getCreatorInfoIsPrivate())
             .officialGame(basePostRepository.findOfficialGameByBasePostId(
                 command.getRelatedOfficialGameId()))
             .likes(0)
@@ -99,10 +94,10 @@ public class IntroService {
     existingIntro.setTitle(command.getTitle());
     existingIntro.setLyrics(command.getLyrics());
     existingIntro.setDescription(command.getDescription());
-    existingIntro.setType(command.getIntroType());
+    existingIntro.setIntroType(command.getIntroType());
     existingIntro.setThumbnailIcon(command.getThumbnailIcon());
     existingIntro.setIntroTags(command.getIntroTags());
-    existingIntro.setPrivate(command.getIsPrivate());
+    existingIntro.setCreatorInfoIsPrivate(command.getCreatorInfoIsPrivate());
     existingIntro.setOfficialGame(basePostRepository.findOfficialGameByBasePostId(
         command.getRelatedOfficialGameId()));
 
