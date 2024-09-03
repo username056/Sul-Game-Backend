@@ -12,6 +12,8 @@ import org.sejong.sulgamewiki.service.IntroService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,7 +37,9 @@ public class IntroController implements IntroControllerDocs{
   @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<BasePostDto> createIntro(
+      @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command) {
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
     return ResponseEntity.ok(introService.createIntro(command));
   }
 
@@ -45,12 +49,17 @@ public class IntroController implements IntroControllerDocs{
   }
 
   @PutMapping(name = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<BasePostDto> updateIntro(@ModelAttribute BasePostCommand command) {
+  public ResponseEntity<BasePostDto> updateIntro(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute BasePostCommand command) {
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
     return ResponseEntity.ok(introService.updateIntro(command));
   }
 
-  @DeleteMapping("/")
-  public ResponseEntity<Void> deleteIntro(@ModelAttribute BasePostCommand command) {
+  @DeleteMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<Void> deleteIntro(@AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute BasePostCommand command) {
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
     introService.deleteIntro(command);
     return ResponseEntity.noContent().build();
   }
