@@ -53,7 +53,7 @@ public class Member extends BaseTimeEntity {
 
   @Builder.Default
   @Column
-  private String college = "정보 없음";
+  private String university = "정보 없음";
 
   @Builder.Default
   @Column(nullable = false)

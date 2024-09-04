@@ -1,6 +1,7 @@
 package org.sejong.sulgamewiki.service;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePost;
@@ -57,9 +58,8 @@ public class MemberService implements UserDetailsService {
 
     // Member 업데이트 및 저장
     member.setBirthDate(command.getBirthDate());
-    member.setCollege(command.getUniversity());
-    member.setIsUniversityPublic(command.getIsUniversityVisible());
-//    member.setIsNotificationEnabled(command.getIsNotiEnabled());
+    member.setUniversity(command.getUniversity());
+    member.setNickname(command.getNickname());
     member.setAccountStatus(AccountStatus.ACTIVE);
 
     Member updatedMember = memberRepository.save(member);
@@ -154,7 +154,7 @@ public class MemberService implements UserDetailsService {
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
     member.setProfileUrl(
         baseMediaService.uploadMemberProfileImage(
-            command.getMultipartFileOptional().get(), member.getMemberId()));
+            command.getMultipartFile(), member.getMemberId()));
     return MemberDto.builder()
         .member(member)
         .build();
@@ -199,6 +199,17 @@ public class MemberService implements UserDetailsService {
 
     return MemberDto.builder()
         .member(savedMember)
+        .build();
+  }
+
+  @Transactional(readOnly = true)
+  public MemberDto isDuplicationNickname(MemberCommand command) {
+    Member loginedMember = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    Optional<Member> checkingMember = memberRepository.findByNickname(command.getNickname());
+    return MemberDto.builder()
+        .isExistingNickname(checkingMember.isPresent())
         .build();
   }
 }

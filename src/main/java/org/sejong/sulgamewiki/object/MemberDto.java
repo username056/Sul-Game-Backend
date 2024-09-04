@@ -17,16 +17,17 @@ public class MemberDto {
   private List<Member> members;
   private Long memberId;
   private String nickname;
+  private Boolean isExistingNickname;
 
   // posts
-  List<BasePost> likedOfficialGames;
-  List<BasePost> likedCreationGames;
-  List<BasePost> likedIntros;
+  private List<BasePost> likedOfficialGames;
+  private List<BasePost> likedCreationGames;
+  private List<BasePost> likedIntros;
 
-  List<BasePost> bookmarkedOfficialGameIds;
-  List<BasePost> bookmarkedCreationGameIds;
-  List<BasePost> bookmarkedIntroIds;
+  private List<BasePost> bookmarkedOfficialGameIds;
+  private List<BasePost> bookmarkedCreationGameIds;
+  private List<BasePost> bookmarkedIntroIds;
 
   // reports
-  List<Report> reports;
+  private List<Report> reports;
 }
