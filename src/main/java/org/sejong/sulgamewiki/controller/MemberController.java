@@ -98,4 +98,14 @@ public class MemberController implements MemberControllerDocs{
     command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberService.changeNotificationSetting(command));
   }
+
+  @PostMapping(value = "/check-nickname", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
+  @LogMonitoringInvocation
+  public ResponseEntity<MemberDto> checkDuplicateNickname(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
+    return ResponseEntity.ok(memberService.isDuplicationNickname(command));
+  }
 }
