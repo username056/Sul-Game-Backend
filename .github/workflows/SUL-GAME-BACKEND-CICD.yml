@@ -1,9 +1,10 @@
-name: BACKEND CI CD
+name: SUL-GAME-BACKEND-CICD
 
 on:
   push:
     branches:
       - main
+      - test
   workflow_dispatch:
 
 jobs:
@@ -40,7 +41,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sul-game-back-container:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sul-game-back-container:${{ github.ref_name }}
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/sul-game-back-container:cache
           cache-to: type=inline
 
@@ -58,10 +59,19 @@ jobs:
           script: |
             export PATH=$PATH:/usr/local/bin
             export PW=${{ secrets.SERVER_PASSWORD }}
-            echo $PW | sudo -S docker pull ${{ secrets.DOCKERHUB_USERNAME }}/sul-game-back-container:latest
-            echo $PW | sudo -S docker stop sul-game-back || true
-            echo $PW | sudo -S docker rm sul-game-back || true
-            echo $PW | sudo -S docker run -d -p 8085:8080 --name sul-game-back \
+            BRANCH=${{ github.ref_name }}
+            PORT=8080
+            CONTAINER_NAME="sul-game-back"
+            if [ "$BRANCH" == "test" ]; then
+              CONTAINER_NAME="sul-game-back-test"
+              PORT=8085
+            elif [ "$BRANCH" == "main" ]; then
+              PORT=8086
+            fi
+            echo $PW | sudo -S docker pull ${{ secrets.DOCKERHUB_USERNAME }}/sul-game-back-container:${BRANCH}
+            echo $PW | sudo -S docker stop $CONTAINER_NAME || true
+            echo $PW | sudo -S docker rm $CONTAINER_NAME || true
+            echo $PW | sudo -S docker run -d -p ${PORT}:8080 --name $CONTAINER_NAME \
               -e TZ=Asia/Seoul \
               -v /etc/localtime:/etc/localtime:ro \
               -e DB_HOST=${{ secrets.DB_HOST }} \
@@ -77,4 +87,4 @@ jobs:
               -e JWT_REFRESH_EXP_TIME=${{ secrets.JWT_REFRESH_EXP_TIME }} \
               -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
               -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-              ${{ secrets.DOCKERHUB_USERNAME }}/sul-game-back-container:latest
+              ${{ secrets.DOCKERHUB_USERNAME }}/sul-game-back-container:${BRANCH}

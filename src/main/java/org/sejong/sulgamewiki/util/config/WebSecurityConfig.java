@@ -39,6 +39,7 @@ public class WebSecurityConfig {
       "/", // 기본화면
       "/docs/**", // Swagger
       "/favicon.ico", // 앱아이콘
+      "/api/test/**", // 테스트 API
       "/v3/api-docs/**", // Swagger
       "/login/oauth2/code/**", // OAuth
       "/oauth2/authorization/**" // OAuth
