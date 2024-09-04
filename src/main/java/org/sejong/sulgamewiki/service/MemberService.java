@@ -59,7 +59,7 @@ public class MemberService implements UserDetailsService {
     member.setBirthDate(command.getBirthDate());
     member.setCollege(command.getUniversity());
     member.setIsUniversityPublic(command.getIsUniversityVisible());
-    member.setIsNotificationEnabled(command.getIsNotiEnabled());
+//    member.setIsNotificationEnabled(command.getIsNotiEnabled());
     member.setAccountStatus(AccountStatus.ACTIVE);
 
     Member updatedMember = memberRepository.save(member);
@@ -172,6 +172,7 @@ public class MemberService implements UserDetailsService {
    * @return 새로운 닉네임으로 업데이트된 회원 정보를 포함한 MemberDto 객체를 반환합니다.
    * @throws CustomException 회원을 찾을 수 없거나 닉네임이 이미 존재하는 경우 예외가 발생합니다.
    */
+  @Transactional
   public MemberDto changeNickname(MemberCommand command) {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -181,6 +182,19 @@ public class MemberService implements UserDetailsService {
     }
 
     member.setNickname(command.getNickname());
+    Member savedMember = memberRepository.save(member);
+
+    return MemberDto.builder()
+        .member(savedMember)
+        .build();
+  }
+
+  @Transactional
+  public MemberDto changeNotificationSetting(MemberCommand command) {
+    Member member = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    member.setIsNotificationEnabled(command.getIsNotificationEnabled());
     Member savedMember = memberRepository.save(member);
 
     return MemberDto.builder()

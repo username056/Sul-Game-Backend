@@ -18,28 +18,26 @@ public interface MemberControllerDocs {
         소셜로그인 이후 나머지 회원가입을 완료합니다. 이 API는 사용자가 소셜 로그인 후 추가 정보를 제공하여 회원가입을 완료할 수 있게 합니다.
 
         **JWT 토큰 필요:**
+        
         이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
 
         - **`String nickname`**: 회원의 닉네임 (예: "서새찬")
-          _최대 20자, 특수문자 사용 불가_
+          _최대 20자_ 
 
         - **`LocalDate birthDate`**: 회원의 생년월일 (예: "1999-10-29")  
           _형식: YYYY-MM-DD_
 
         - **`String university`**: 회원의 대학 이름 (예: "세종대학교")  
           _최대 50자_
-
+          
         - **`Boolean isUniversityVisible`**: 대학 공개 여부 (예: "true" or "false")  
-          `기본값: true`
-
-        - **`Boolean isNotiEnabled`**: 알림 수신 여부 (예: "true" or "false")  
           `기본값: true`
 
         **반환 파라미터 값:**
 
-        - **`MemberDto member`**: 회원가입이 완료된 회원 정보
+        - **`Member member`**: 회원가입이 완료된 회원 정보
         """
   )
   ResponseEntity<MemberDto> completeRegistration(
@@ -54,6 +52,7 @@ public interface MemberControllerDocs {
         회원의 마이페이지 정보를 제공합니다. 이 API는 사용자의 프로필과 관련된 데이터를 조회할 수 있습니다.
 
         **JWT 토큰 필요:**
+        
         이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
@@ -62,7 +61,7 @@ public interface MemberControllerDocs {
         
         **반환 파라미터 값:**
 
-        - **`MemberDto member`**: 회원 정보
+        - **`Member member`**: 회원 정보
         - **`MemberContentInteraction memberContentInteraction`**: 회원의 콘텐츠 상호작용 정보
         """
   )
@@ -78,6 +77,7 @@ public interface MemberControllerDocs {
         회원이 좋아요한 글을 제공합니다. 이 API는 사용자가 좋아요한 모든 게시글을 조회합니다.
 
         **JWT 토큰 필요:**
+        
         이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
@@ -103,6 +103,7 @@ public interface MemberControllerDocs {
         회원이 즐겨찾기한 글을 제공합니다. 이 API는 사용자가 즐겨찾기한 모든 게시글을 조회합니다.
 
         **JWT 토큰 필요:**
+        
         이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
@@ -128,6 +129,7 @@ public interface MemberControllerDocs {
         회원의 프로필 이미지를 업데이트합니다. 이 API는 사용자가 프로필 이미지를 업로드 및 변경할 수 있게 합니다.
 
         **JWT 토큰 필요:**
+        
         이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
         **입력 파라미터 값:**
@@ -136,7 +138,7 @@ public interface MemberControllerDocs {
 
         **반환 파라미터 값:**
 
-        - **`MemberDto member`**: 업데이트된 프로필 이미지를 포함한 회원 정보
+        - **`Member member`**: 업데이트된 프로필 이미지를 포함한 회원 정보
         """
   )
   ResponseEntity<MemberDto> updateMemberProfileImage(
@@ -159,7 +161,7 @@ public interface MemberControllerDocs {
 
         **반환 파라미터 값:**
 
-        - **`MemberDto member`**: 닉네임이 업데이트된 회원 정보
+        - **`Member member`**: 닉네임이 업데이트된 회원 정보
 
         **예외 상황:**
 
@@ -167,6 +169,31 @@ public interface MemberControllerDocs {
         """
   )
   ResponseEntity<MemberDto> changeNickname(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
+
+  @Operation(
+      summary = "알림 수신 설정 변경",
+      description = """
+        **알림 수신 설정 변경**
+
+        회원의 알림 수신 설정을 변경합니다. 이 API를 통해 사용자는 알림 수신 여부를 활성화하거나 비활성화할 수 있습니다.
+
+        **JWT 토큰 필요:**
+        
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
+
+        **입력 파라미터 값:**
+
+        - **`Boolean isNotificationEnabled`**: 알림 수신 여부 (예: "true" or "false")
+          `기본값: true`
+
+        **반환 파라미터 값:**
+
+        - **`Member member`**: 알림 수신 설정이 업데이트된 회원 정보
+        """
+  )
+  ResponseEntity<MemberDto> changeNotificationSetting(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command);
 }
