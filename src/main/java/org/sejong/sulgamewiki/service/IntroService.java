@@ -38,7 +38,8 @@ public class IntroService {
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
     OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
-        command.getRelatedOfficialGameId());
+            command.getBasePostId())
+        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
 
     if (officialGame == null) {
       throw new CustomException(ErrorCode.GAME_NOT_FOUND); // 예외를 발생시킴
@@ -101,7 +102,8 @@ public class IntroService {
     }
 
     OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
-        command.getRelatedOfficialGameId());
+            command.getBasePostId())
+        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
 
     if (officialGame == null) {
       throw new CustomException(ErrorCode.GAME_NOT_FOUND); // 예외를 발생시킴
