@@ -31,9 +31,6 @@ public interface MemberControllerDocs {
 
         - **`String university`**: 회원의 대학 이름 (예: "세종대학교")  
           _최대 50자_
-          
-        - **`Boolean isUniversityVisible`**: 대학 공개 여부 (예: "true" or "false")  
-          `기본값: true`
 
         **반환 파라미터 값:**
 
@@ -194,6 +191,30 @@ public interface MemberControllerDocs {
         """
   )
   ResponseEntity<MemberDto> changeNotificationSetting(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
+
+  @Operation(
+      summary = "닉네임 중복 확인",
+      description = """
+        **닉네임 중복 확인**
+
+        회원 가입 또는 닉네임 변경 시, 사용자가 입력한 닉네임이 이미 사용 중인지 확인합니다.
+
+        **JWT 토큰 필요:**
+        
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
+
+        **입력 파라미터 값:**
+
+        - **`String nickname`**: 중복 여부를 확인할 닉네임
+
+        **반환 파라미터 값:**
+
+        - **`Boolean isExistingNickname`**: 닉네임 중복 여부 (`true`: 중복 있음, `false`: 중복 없음)
+        """
+  )
+  ResponseEntity<MemberDto> checkDuplicateNickname(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command);
 }

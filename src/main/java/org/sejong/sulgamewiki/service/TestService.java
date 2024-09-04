@@ -58,7 +58,7 @@ public class TestService {
         .email(dto.getEmail()) // 임의의 이메일
         .nickname(dto.getNickname())
         .birthDate(dto.getBirthDate())
-        .college("세종대학교")
+        .university("세종대학교")
         .isUniversityPublic(true)
         .isNotificationEnabled(true)
         .accountStatus(AccountStatus.PENDING)
