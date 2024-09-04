@@ -1,6 +1,8 @@
 package org.sejong.sulgamewiki.service;
 
 
+import static org.sejong.sulgamewiki.object.BasePost.checkCreatorInfoIsPrivate;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +67,7 @@ public class OfficialGameService {
             .weeklyScore(0)
             .sourceType(SourceType.OFFICIAL_GAME)
             .thumbnailIcon(command.getThumbnailIcon())
-            .creatorInfoIsPrivate(command.getCreatorInfoIsPrivate())
+            .creatorInfoIsPrivate(checkCreatorInfoIsPrivate(command.getCreatorInfoIsPrivate()))
             .gameTags(command.getGameTags())
             .build());
 

@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.object;
 
+import com.fasterxml.jackson.annotation.OptBoolean;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.ElementCollection;
@@ -14,6 +15,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToOne;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -122,4 +124,7 @@ public abstract class BasePost extends BaseTimeEntity {
     this.weeklyScore = 0;
   }
 
-}
+  public static Boolean checkCreatorInfoIsPrivate(Boolean info) {
+    return Optional.ofNullable(info).orElse(true);
+  }
+ }

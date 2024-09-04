@@ -40,6 +40,8 @@ public class CreationGameService {
 
     CreationGame savedCreationGame = basePostRepository.save(
         CreationGame.builder()
+            .isDeleted(false)
+            .isUpdated(false)
             .title(command.getTitle())
             .introduction(command.getIntroduction())
             .description(command.getDescription())
@@ -50,8 +52,13 @@ public class CreationGameService {
             .member(member)
             .dailyScore(0)
             .weeklyScore(0)
-            .officialGame(officialGame)
             .sourceType(SourceType.CREATION_GAME)
+            .thumbnailIcon(command.getThumbnailIcon())
+            .creatorInfoIsPrivate(command.getCreatorInfoIsPrivate())
+
+
+            .officialGame(officialGame)
+
             .build());
 
     command.setSourceType(savedCreationGame.getSourceType());
