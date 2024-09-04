@@ -18,6 +18,6 @@ public class MemberCommand {
   private LocalDate birthDate;
   private String university;
   private Boolean isUniversityVisible;
-  private Boolean isNotiEnabled;
+  private Boolean isNotificationEnabled;
   private Optional<MultipartFile> multipartFileOptional;
 }

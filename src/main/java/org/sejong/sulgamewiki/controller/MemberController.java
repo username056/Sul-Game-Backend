@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
-import org.sejong.sulgamewiki.service.CommentService;
 import org.sejong.sulgamewiki.service.MemberService;
 import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
@@ -28,9 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController implements MemberControllerDocs{
 
   private final MemberService memberService;
-  private final CommentService commentService;
 
   @PostMapping(value = "/complete-registration" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> completeRegistration(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -40,6 +39,7 @@ public class MemberController implements MemberControllerDocs{
   }
 
   @PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> getProfile(
       @AuthenticationPrincipal CustomUserDetails customUserDetails, //String memberId
@@ -49,6 +49,7 @@ public class MemberController implements MemberControllerDocs{
   }
 
   @PostMapping(value = "/liked-posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> getLikedPosts(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -57,7 +58,9 @@ public class MemberController implements MemberControllerDocs{
     return ResponseEntity.ok(memberService.getLikedPosts(command));
   }
 
+
   @PostMapping(value = "/bookmarked-posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> getBookmarkedPosts(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -67,6 +70,7 @@ public class MemberController implements MemberControllerDocs{
   }
 
   @PostMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> updateMemberProfileImage(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -76,11 +80,22 @@ public class MemberController implements MemberControllerDocs{
   }
 
   @PostMapping(value = "/nickname", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
   @LogMonitoringInvocation
   public ResponseEntity<MemberDto> changeNickname(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command) {
     command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberService.changeNickname(command));
+  }
+
+  @PostMapping(value = "/notification", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
+  @LogMonitoringInvocation
+  public ResponseEntity<MemberDto> changeNotificationSetting(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
+    return ResponseEntity.ok(memberService.changeNotificationSetting(command));
   }
 }

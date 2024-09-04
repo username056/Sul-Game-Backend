@@ -172,10 +172,28 @@ public interface MemberControllerDocs {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command);
 
-  /*TODO: 알림 전송 여부
+  @Operation(
+      summary = "알림 수신 설정 변경",
+      description = """
+        **알림 수신 설정 변경**
 
-        - **`Boolean isNotiEnabled`**: 알림 수신 여부 (예: "true" or "false")
+        회원의 알림 수신 설정을 변경합니다. 이 API를 통해 사용자는 알림 수신 여부를 활성화하거나 비활성화할 수 있습니다.
+
+        **JWT 토큰 필요:**
+        
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
+
+        **입력 파라미터 값:**
+
+        - **`Boolean isNotificationEnabled`**: 알림 수신 여부 (예: "true" or "false")
           `기본값: true`
 
-   */
+        **반환 파라미터 값:**
+
+        - **`Member member`**: 알림 수신 설정이 업데이트된 회원 정보
+        """
+  )
+  ResponseEntity<MemberDto> changeNotificationSetting(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
 }
