@@ -39,9 +39,9 @@ public class OfficialGameController implements OfficialGameControllerDocs {
     return ResponseEntity.ok(officialGameService.createOfficialGame(command));
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/details")
   @LogMonitoringInvocation
-  public ResponseEntity<BasePostDto> getPopularGame(
+  public ResponseEntity<BasePostDto> getOfficialGame(
       @ModelAttribute BasePostCommand command) {
     return ResponseEntity.ok(officialGameService.getOfficialGame(command));
   }

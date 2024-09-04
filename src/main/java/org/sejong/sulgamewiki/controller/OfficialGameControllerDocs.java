@@ -1,7 +1,6 @@
 package org.sejong.sulgamewiki.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import org.apache.catalina.User;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +60,7 @@ public interface OfficialGameControllerDocs {
           - **`OfficialGame officialGame`**: 조회된 공식 게임 게시물
           """
   )
-  ResponseEntity<BasePostDto> getPopularGame(@ModelAttribute BasePostCommand command);
+  ResponseEntity<BasePostDto> getOfficialGame(@ModelAttribute BasePostCommand command);
 
   @Operation(
       summary = "공식 게임 수정",
