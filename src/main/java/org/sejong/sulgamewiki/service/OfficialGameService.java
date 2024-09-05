@@ -64,7 +64,7 @@ public class OfficialGameService {
             .weeklyScore(0)
             .sourceType(SourceType.OFFICIAL_GAME)
             .thumbnailIcon(command.getThumbnailIcon())
-            .isCreatorInfoPrivate(checkCreatorInfoIsPrivate(command.getCreatorInfoIsPrivate()))
+            .isCreatorInfoPrivate(false)
             .gameTags(command.getGameTags())
             .build());
 
@@ -112,7 +112,6 @@ public class OfficialGameService {
     existingOfficialGame.setIntroduction(command.getIntroduction());
     existingOfficialGame.setDescription(command.getDescription());
     existingOfficialGame.setThumbnailIcon(command.getThumbnailIcon());
-    existingOfficialGame.setCreatorInfoPrivate(command.getCreatorInfoIsPrivate());
     existingOfficialGame.setGameTags(command.getGameTags());
 
     existingOfficialGame.markAsUpdated();
