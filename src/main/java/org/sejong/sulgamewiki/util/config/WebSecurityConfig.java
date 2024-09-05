@@ -41,8 +41,9 @@ public class WebSecurityConfig {
       "/favicon.ico", // 앱아이콘
       "/api/test/**", // 테스트 API
       "/v3/api-docs/**", // Swagger
-      "/login/oauth2/code/**", // OAuth
-      "/oauth2/authorization/**" // OAuth
+      "/login", // OAuth 관리페이지
+      "/login/oauth2/code/**", // OAuth 리다이렉션
+      "/oauth2/authorization/**" // OAuth 로그인 페이지
   };
 
   private static final String[] ALLOWED_ORIGINS = {
@@ -68,12 +69,14 @@ public class WebSecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers(AUTH_WHITELIST).permitAll()
-                .requestMatchers(HttpMethod.POST, "/complete-registration").hasAuthority("ROLE_USER")
-                .requestMatchers(HttpMethod.POST, "/profile").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/liked-posts").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/bookmarked-posts").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/profile-image").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/nickname").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/members/complete-registration").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/members/profile").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/members/liked-posts").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/members/bookmarked-posts").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/members/profile-image").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/members/nickname").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/members/notification").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/members/check-nickname").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/intro").hasRole("USER")
                 .anyRequest().authenticated()
             )

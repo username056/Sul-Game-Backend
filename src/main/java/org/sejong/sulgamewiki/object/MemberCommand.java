@@ -19,5 +19,5 @@ public class MemberCommand {
   private String university;
   private Boolean isUniversityVisible;
   private Boolean isNotificationEnabled;
-  private Optional<MultipartFile> multipartFileOptional;
+  private MultipartFile multipartFile;
 }
