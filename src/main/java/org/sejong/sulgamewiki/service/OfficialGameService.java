@@ -3,16 +3,13 @@ package org.sejong.sulgamewiki.service;
 
 import static org.sejong.sulgamewiki.object.BasePost.checkCreatorInfoIsPrivate;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
-import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
-import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.constants.SourceType;
@@ -67,7 +64,7 @@ public class OfficialGameService {
             .weeklyScore(0)
             .sourceType(SourceType.OFFICIAL_GAME)
             .thumbnailIcon(command.getThumbnailIcon())
-            .creatorInfoIsPrivate(checkCreatorInfoIsPrivate(command.getCreatorInfoIsPrivate()))
+            .isCreatorInfoPrivate(checkCreatorInfoIsPrivate(command.getCreatorInfoIsPrivate()))
             .gameTags(command.getGameTags())
             .build());
 
@@ -115,7 +112,7 @@ public class OfficialGameService {
     existingOfficialGame.setIntroduction(command.getIntroduction());
     existingOfficialGame.setDescription(command.getDescription());
     existingOfficialGame.setThumbnailIcon(command.getThumbnailIcon());
-    existingOfficialGame.setCreatorInfoIsPrivate(command.getCreatorInfoIsPrivate());
+    existingOfficialGame.setCreatorInfoPrivate(command.getCreatorInfoIsPrivate());
     existingOfficialGame.setGameTags(command.getGameTags());
 
     existingOfficialGame.markAsUpdated();

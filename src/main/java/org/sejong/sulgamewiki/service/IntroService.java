@@ -1,13 +1,9 @@
 package org.sejong.sulgamewiki.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
-import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Intro;
@@ -53,7 +49,7 @@ public class IntroService {
             .thumbnailIcon(command.getThumbnailIcon())
             .introTags(command.getIntroTags())
             .introType(command.getIntroType())
-            .creatorInfoIsPrivate(command.getCreatorInfoIsPrivate())
+            .isCreatorInfoPrivate(command.getCreatorInfoIsPrivate())
             .officialGame(officialGame)
             .likes(0)
             .views(0)
@@ -116,7 +112,7 @@ public class IntroService {
     existingIntro.setIntroType(command.getIntroType());
     existingIntro.setThumbnailIcon(command.getThumbnailIcon());
     existingIntro.setIntroTags(command.getIntroTags());
-    existingIntro.setCreatorInfoIsPrivate(command.getCreatorInfoIsPrivate());
+    existingIntro.setCreatorInfoPrivate(command.getCreatorInfoIsPrivate());
     existingIntro.setOfficialGame(officialGame);
 
     // 업데이트 표시
