@@ -41,8 +41,9 @@ public class WebSecurityConfig {
       "/favicon.ico", // 앱아이콘
       "/api/test/**", // 테스트 API
       "/v3/api-docs/**", // Swagger
-      "/login/oauth2/code/**", // OAuth
-      "/oauth2/authorization/**" // OAuth
+      "/login", // OAuth 관리페이지
+      "/login/oauth2/code/**", // OAuth 리다이렉션
+      "/oauth2/authorization/**" // OAuth 로그인 페이지
   };
 
   private static final String[] ALLOWED_ORIGINS = {
