@@ -49,7 +49,7 @@ public class IntroService {
             .thumbnailIcon(command.getThumbnailIcon())
             .introTags(command.getIntroTags())
             .introType(command.getIntroType())
-            .isCreatorInfoPrivate(command.getCreatorInfoIsPrivate())
+            .isCreatorInfoPrivate(command.getIsCreatorInfoPrivate())
             .officialGame(officialGame)
             .likes(0)
             .views(0)
@@ -112,7 +112,7 @@ public class IntroService {
     existingIntro.setIntroType(command.getIntroType());
     existingIntro.setThumbnailIcon(command.getThumbnailIcon());
     existingIntro.setIntroTags(command.getIntroTags());
-    existingIntro.setCreatorInfoPrivate(command.getCreatorInfoIsPrivate());
+    existingIntro.setCreatorInfoPrivate(command.getIsCreatorInfoPrivate());
     existingIntro.setOfficialGame(officialGame);
 
     // 업데이트 표시
