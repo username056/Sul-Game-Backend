@@ -43,7 +43,8 @@ public class WebSecurityConfig {
       "/v3/api-docs/**", // Swagger
       "/login", // OAuth 관리페이지
       "/login/oauth2/code/**", // OAuth 리다이렉션
-      "/oauth2/authorization/**" // OAuth 로그인 페이지
+      "/oauth2/authorization/**", // OAuth 로그인 페이지
+      "/api/intro/**"
   };
 
   private static final String[] ALLOWED_ORIGINS = {
@@ -77,7 +78,9 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/members/nickname").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/members/notification").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/members/check-nickname").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/api/intro").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/intro/create").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/intro/delete").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/intro/update").hasRole("USER")
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
