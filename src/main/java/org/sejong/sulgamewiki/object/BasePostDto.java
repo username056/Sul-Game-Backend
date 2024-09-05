@@ -16,7 +16,9 @@ public class BasePostDto {
   private BasePost basePost;
   private List<Intro> intros;
   private List<BaseMedia> baseMedias;
+  private BaseMedia introMediaFromGame;
   private OfficialGame officialGame;
   private CreationGame creationGame;
   private Map<Long, List<BaseMedia>> baseMediaMap;
+  private BaseMedia introMediaFileInGamePost;
 }

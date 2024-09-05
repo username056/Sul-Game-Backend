@@ -1,12 +1,10 @@
 package org.sejong.sulgamewiki.object;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -27,8 +25,8 @@ import org.sejong.sulgamewiki.object.constants.GameTag;
 @DiscriminatorValue("OfficialGame")
 public class OfficialGame extends BasePost {
 
-  private String introLyrics;
-  private String introMediaFileUrl;
+  private String introLyricsInGamePost;
+  private String introMediaFileInGamePostUrl;
 
   // 공식 술게임의 태그
   @ElementCollection
