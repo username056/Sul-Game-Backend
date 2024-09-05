@@ -1,13 +1,9 @@
 package org.sejong.sulgamewiki.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
-import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Intro;
@@ -38,7 +34,8 @@ public class IntroService {
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
     OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
-        command.getRelatedOfficialGameId());
+            command.getBasePostId())
+        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
 
     if (officialGame == null) {
       throw new CustomException(ErrorCode.GAME_NOT_FOUND); // 예외를 발생시킴
@@ -52,7 +49,7 @@ public class IntroService {
             .thumbnailIcon(command.getThumbnailIcon())
             .introTags(command.getIntroTags())
             .introType(command.getIntroType())
-            .creatorInfoIsPrivate(command.getCreatorInfoIsPrivate())
+            .isCreatorInfoPrivate(command.getCreatorInfoIsPrivate())
             .officialGame(officialGame)
             .likes(0)
             .views(0)
@@ -101,7 +98,8 @@ public class IntroService {
     }
 
     OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
-        command.getRelatedOfficialGameId());
+            command.getBasePostId())
+        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
 
     if (officialGame == null) {
       throw new CustomException(ErrorCode.GAME_NOT_FOUND); // 예외를 발생시킴
@@ -114,7 +112,7 @@ public class IntroService {
     existingIntro.setIntroType(command.getIntroType());
     existingIntro.setThumbnailIcon(command.getThumbnailIcon());
     existingIntro.setIntroTags(command.getIntroTags());
-    existingIntro.setCreatorInfoIsPrivate(command.getCreatorInfoIsPrivate());
+    existingIntro.setCreatorInfoPrivate(command.getCreatorInfoIsPrivate());
     existingIntro.setOfficialGame(officialGame);
 
     // 업데이트 표시

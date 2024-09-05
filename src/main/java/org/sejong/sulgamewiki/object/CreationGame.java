@@ -38,6 +38,7 @@ public class CreationGame extends BasePost {
   private OfficialGame officialGame;
 
   private String introLyrics;
+  private String introMediaFileUrl;
 
   // 창작 술게임의 태그
   @ElementCollection

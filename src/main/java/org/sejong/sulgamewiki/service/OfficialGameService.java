@@ -1,13 +1,13 @@
 package org.sejong.sulgamewiki.service;
 
 
-import java.util.ArrayList;
+import static org.sejong.sulgamewiki.object.BasePost.checkCreatorInfoIsPrivate;
+
 import java.util.HashSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
-import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Member;
@@ -42,7 +42,7 @@ public class OfficialGameService {
    * List<MulipartFile> mulipartfiles
    * @return
    */
-  @Transactional
+
   public BasePostDto createOfficialGame(BasePostCommand command) {
 
     Member member = memberRepository.findById(command.getMemberId())
@@ -50,6 +50,8 @@ public class OfficialGameService {
 
     OfficialGame savedOfficialGame = basePostRepository.save(
         OfficialGame.builder()
+            .isDeleted(false)
+            .isUpdated(false)
             .title(command.getTitle())
             .introduction(command.getIntroduction())
             .description(command.getDescription())
@@ -61,6 +63,9 @@ public class OfficialGameService {
             .dailyScore(0)
             .weeklyScore(0)
             .sourceType(SourceType.OFFICIAL_GAME)
+            .thumbnailIcon(command.getThumbnailIcon())
+            .isCreatorInfoPrivate(false)
+            .gameTags(command.getGameTags())
             .build());
 
     command.setBasePost((savedOfficialGame));
@@ -73,53 +78,73 @@ public class OfficialGameService {
         .build();
   }
 
+  @Transactional(readOnly = true)
   public BasePostDto getOfficialGame(BasePostCommand command) {
-    BasePostDto dto = BasePostDto.builder().build();
 
-    BasePost officialGame = basePostRepository.findById(command.getBasePostId())
+    OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
+        command.getBasePostId())
         .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
 
-    dto.setBasePost(officialGame);
-    return dto;
+    List<BaseMedia> medias = basePostRepository.findMediasByBasePostId(
+        command.getBasePostId());
+
+    return BasePostDto.builder()
+        .officialGame(officialGame)
+        .baseMedias(medias)
+        .build();
   }
 
-  public BasePostDto updateOfficialGame(Long gameId, BasePostCommand command) {
-    BasePostDto dto = BasePostDto.builder().build();
-    List<BaseMedia> baseMedias = new ArrayList<>();
+  public BasePostDto updateOfficialGame(BasePostCommand command) {
 
-    // 게임 정보 찾기
-    BasePost basePost = basePostRepository.findById(gameId)
+    OfficialGame existingOfficialGame = basePostRepository.findOfficialGameByBasePostId(
+            command.getBasePostId())
         .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
 
-    if (!(basePost instanceof OfficialGame existingOfficialGame)) {
-      throw new CustomException(ErrorCode.GAME_NOT_FOUND);
-    }
-
-    Member member = memberRepository.findById(command.getMemberId())
+    Member requestingMember = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    if (!existingOfficialGame.getMember().equals(requestingMember)) {
+      // 작성자가 아니거나 권한이 없는 경우 예외 발생
+      throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);
+    }
 
     // 기존 게임 정보 업데이트
     existingOfficialGame.setTitle(command.getTitle());
     existingOfficialGame.setIntroduction(command.getIntroduction());
     existingOfficialGame.setDescription(command.getDescription());
+    existingOfficialGame.setThumbnailIcon(command.getThumbnailIcon());
+    existingOfficialGame.setGameTags(command.getGameTags());
 
-    OfficialGame savedOfficialGame = basePostRepository.save(existingOfficialGame);
-    List<String> existingMediaUrls = baseMediaRepository.findMediaUrlsByBasePostId(gameId);
+    existingOfficialGame.markAsUpdated();
+    command.setBasePost(existingOfficialGame);
 
-    // 새 미디어 파일 처리 및 기존 미디어와 비교 후 업데이트
-    if (command.getGameMultipartFiles() != null && !command.getGameMultipartFiles().isEmpty()) {
-      // BaseMediaService의 updateMedias 메서드가 List<BaseMedia>를 반환하도록 가정
-      List<BaseMedia> updatedMediaEntities = baseMediaService.updateMedias(command);
+    List<BaseMedia> updatedMedias = baseMediaService.updateMedias(command);
+    // 게시글과 미디어 파일 저장
+    basePostRepository.save(existingOfficialGame);
 
-      // 업데이트된 미디어 엔티티 리스트를 그대로 저장
-      baseMedias.addAll(updatedMediaEntities);
+    return BasePostDto.builder()
+        .officialGame(existingOfficialGame)
+        .baseMedias(updatedMedias)
+        .build();
+  }
+
+  public void deleteOfficialGame(BasePostCommand command) {
+    OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
+            command.getBasePostId())
+        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+
+    Member requestingMember = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    if (!officialGame.getMember().equals(requestingMember)) {
+      // 작성자가 아니거나 권한이 없는 경우 예외 발생
+      throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);
     }
 
-
-    dto.setBasePost(savedOfficialGame);
-    dto.setBaseMedias(baseMedias);
-    return dto;
+    // 게시글을 삭제된 것으로 표시
+    officialGame.markAsDeleted();
+    // 변경사항을 저장
+    basePostRepository.save(officialGame);
   }
+
 
 //  public ReportDto reportGame(ReportCommand reportCommand) {
 //    OfficialGame officialGame = (OfficialGame) basePostRepository.findById(reportCommand.getSourceId())

@@ -27,6 +27,7 @@ import org.sejong.sulgamewiki.object.constants.GameTag;
 public class OfficialGame extends BasePost {
 
   private String introLyrics;
+  private String introMediaFileUrl;
 
   // 공식 술게임의 태그
   @ElementCollection

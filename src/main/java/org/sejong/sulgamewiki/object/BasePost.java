@@ -4,8 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +12,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToOne;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.object.constants.SourceType;
-import org.sejong.sulgamewiki.object.constants.GameTag;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 
@@ -83,7 +81,7 @@ public abstract class BasePost extends BaseTimeEntity {
 
   // 내 정보 공개 여부 필드
   @Builder.Default
-  private boolean creatorInfoIsPrivate = true; // 기본값은 비공개
+  private boolean isCreatorInfoPrivate = true; // 기본값은 비공개
 
 
   public void cancelLike(Long memberId) {
@@ -122,4 +120,7 @@ public abstract class BasePost extends BaseTimeEntity {
     this.weeklyScore = 0;
   }
 
-}
+  public static Boolean checkCreatorInfoIsPrivate(Boolean info) {
+    return Optional.ofNullable(info).orElse(true);
+  }
+ }
