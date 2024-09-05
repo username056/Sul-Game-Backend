@@ -33,7 +33,7 @@ public class BasePostCommand {
   private List<String> imageUrls;
   private Set<GameTag> gameTags;
   private String introLyrics;
-  private MultipartFile introMediaFile;
+  private MultipartFile introMediaFileInGamePost;
 
 
   // creation, intro

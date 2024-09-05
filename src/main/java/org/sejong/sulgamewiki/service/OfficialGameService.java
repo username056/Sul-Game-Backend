@@ -70,7 +70,7 @@ public class OfficialGameService {
 
     command.setBasePost((savedOfficialGame));
 
-    List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
+    List<BaseMedia> savedMedias = baseMediaService.uploadMediasFromGame(command);
 
     return BasePostDto.builder()
         .officialGame(savedOfficialGame)

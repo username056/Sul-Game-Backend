@@ -10,8 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
-// TODO: 명세 주석 다 바꾸기
-
 public interface IntroControllerDocs {
 
   @Operation(
@@ -28,13 +26,13 @@ public interface IntroControllerDocs {
           - **`String introType`**: 인트로 종류(opening, gathering)
                   
           - **`String title`**: 인트로의 제목  
-            _최대 100자_
+            _최대 00자_
 
           - **`String lyrics`**: 인트로에 포함될 가사  
-            _선택 사항, 최대 2000자_
+            _ 최대 00자_
             
           - **`String description`**: 인트로에 대한 설명  
-            _선택 사항, 최대 2000자_
+            _ 최대 00자_
 
           - **`List<MultipartFile> multipartFiles`**: 인트로와 함께 업로드할 미디어 파일들  
             _선택 사항_
@@ -43,6 +41,9 @@ public interface IntroControllerDocs {
            _선택 사항_
            
           - **`List<String> tags`**: 인트로에 대한 태그  
+           _선택 사항_
+           
+          - **`Boolean isCreatorInfoPrivate`**: 게시물 작성자 표시 여부
            _선택 사항_
            
           **반환 파라미터 값:**
@@ -83,24 +84,28 @@ public interface IntroControllerDocs {
 
           **입력 파라미터 값:**
                   
-          - **`Long basePostId`**: 수정할 인트로의 고유 ID
+          - **`String introType`**: 인트로 종류(opening, gathering)
+            _선택 사항_
                   
-          - **`String title`**: 인트로의 새로운 제목  
-            _최대 100자_
+          - **`String title`**: 인트로의 제목
+            _최대 00자_
 
-          - **`String lyrics`**: 인트로에 포함될 새로운 가사  
-            _선택 사항, 최대 2000자_
+          - **`String lyrics`**: 인트로에 포함될 가사  
+            _ 최대 00자_
             
-          - **`String description`**: 인트로에 대한 새로운 설명  
-            _선택 사항, 최대 2000자_
+          - **`String description`**: 인트로에 대한 설명  
+            _ 최대 00자_
 
-          - **`List<MultipartFile> multipartFiles`**: 인트로와 함께 업로드할 새로운 미디어 파일들  
+          - **`List<MultipartFile> multipartFiles`**: 인트로와 함께 업로드할 미디어 파일들  
             _선택 사항_
                   
           - **`Object<Icon>`**: 인트로에 대한 아이콘 
            _선택 사항_
-             
+           
           - **`List<String> tags`**: 인트로에 대한 태그  
+           _선택 사항_
+           
+          - **`Boolean isCreatorInfoPrivate`**: 게시물 작성자 표시 여부
            _선택 사항_
 
           **반환 파라미터 값:**
@@ -120,7 +125,7 @@ public interface IntroControllerDocs {
           **인트로 삭제**
 
           특정 인트로를 소프트 삭제합니다. 삭제된 인트로는 더 이상 활성 상태로 조회되지 않지만, 데이터베이스에서는 제거되지 않습니다.
-          단, 미디어 파일은 실제로 삭제됩니다.
+          단, 미디어 파일은 실제로 삭제됩니다. (즉, 제목이나 설명 등 문자열 값은 살릴 수 있지만 미디어 파일들은 못 살림)
 
           **입력 파라미터 값:**
 
