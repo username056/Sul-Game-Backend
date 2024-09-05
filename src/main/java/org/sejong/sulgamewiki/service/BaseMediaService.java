@@ -28,6 +28,57 @@ public class BaseMediaService {
   private final BaseMediaRepository baseMediaRepository;
 
   /**
+   * 미디어 파일 하나를 업로드하고 저장하는 메서드.
+   * <p>
+   * 이 메서드는 주어진 BasePostCommand 객체로부터 MultipartFile 을 받아, 파일을 S3에 업로드한 후,
+   * 업로드된 파일의 URL을 기반으로 BaseMedia 객체를 생성하여 저장소에 저장합니다.
+   *
+   * @param command 업로드할 파일과 관련된 명령 객체
+   * @return 업로드된 BaseMedia 객체
+   */
+  public BaseMedia uploadMedia(BasePostCommand command) {
+    MultipartFile file = null;
+
+    // Intro 타입인지 확인하고 멀티파트 파일 가져오기
+    if (command.getBasePost().getSourceType().equals(SourceType.INTRO)) {
+      if (command.getIntroMediaFile() != null && !command.getIntroMediaFile().isEmpty()) {
+        file = command.getIntroMediaFile();
+      }
+    } else { // Game 타입인 경우
+      if (command.getGameMultipartFiles() != null && !command.getGameMultipartFiles().isEmpty()) {
+        file = command.getIntroMediaFile();
+      }
+    }
+
+    // 파일이 없으면 null 반환
+    if (file == null || file.isEmpty()) {
+      log.info("파일이 없습니다 BasePostId : {}", command.getBasePostId());
+      return null;
+    }
+
+    String fileUrl = null;
+    try {
+      // 파일을 S3에 업로드하고 URL 반환
+      fileUrl = s3Service.uploadFile(file, command.getBasePost().getSourceType());
+    } catch (IOException e) {
+      throw new CustomException(ErrorCode.S3_UPLOAD_FILE_ERROR);
+    }
+
+    // BaseMedia 객체 생성 및 저장
+    BaseMedia savedMedia = baseMediaRepository.save(
+        BaseMedia.builder()
+            .mediaUrl(fileUrl)
+            .fileSize(file.getSize())
+            .mediaType(MediaType.getMediaType(file))
+            .basePost(command.getBasePost())
+            .build()
+    );
+
+    return savedMedia;
+  }
+
+
+  /**
    * 미디어 파일들을 업로드하고 저장하는 메서드.
    * <p>
    * 이 메서드는 주어진 BasePostCommand 객체로부터 MultipartFile 리스트를 받아, 각각의 파일을 S3에 업로드한 후,
@@ -40,13 +91,20 @@ public class BaseMediaService {
     List<BaseMedia> baseMedias = new ArrayList<>();
     List<String> uploadedFiles = new ArrayList<>();
 
-    if (command.getGameMultipartFiles() == null) {
-      log.info("파일이 없습니다 BasePostId : {} ", command.getBasePostId());
-      return null;
+    if(command.getBasePost().getSourceType().equals(SourceType.INTRO)){
+      if (command.getIntroMultipartFiles() == null) {
+        log.info("파일이 없습니다 BasePostId : {} ", command.getBasePostId());
+        return null;
+      }
+    }else {
+      if (command.getGameMultipartFiles() == null) {
+        log.info("파일이 없습니다 BasePostId : {} ", command.getBasePostId());
+        return null;
+      }
     }
 
     // TODO
-    if(command.getSourceType().equals(SourceType.INTRO)){
+    if(command.getBasePost().getSourceType().equals(SourceType.INTRO)){
       for (MultipartFile file : command.getIntroMultipartFiles()) {
         String fileUrl = null;
         try {
@@ -118,7 +176,7 @@ public class BaseMediaService {
     if (newFiles != null) {
       for (MultipartFile newFile : newFiles) {
         try {
-          String fileUrl = s3Service.uploadFile(newFile, command.getSourceType());
+          String fileUrl = s3Service.uploadFile(newFile, command.getBasePost().getSourceType());
           updatedMediaEntities.add(baseMediaRepository.save(BaseMedia.builder()
               .mediaUrl(fileUrl)
               .fileSize(newFile.getSize())

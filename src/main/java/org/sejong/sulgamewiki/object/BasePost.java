@@ -120,7 +120,7 @@ public abstract class BasePost extends BaseTimeEntity {
     this.weeklyScore = 0;
   }
 
-  public static Boolean checkCreatorInfoIsPrivate(Boolean info) {
-    return Optional.ofNullable(info).orElse(true);
+  public static Boolean checkCreatorInfoIsPrivate(Boolean isCreatorInfoPrivate) {
+    return Optional.ofNullable(isCreatorInfoPrivate).orElse(true);
   }
  }

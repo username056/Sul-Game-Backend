@@ -1,8 +1,14 @@
 package org.sejong.sulgamewiki.service;
 
+import static org.sejong.sulgamewiki.object.BasePost.checkCreatorInfoIsPrivate;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
@@ -30,32 +36,41 @@ public class IntroService {
 
   public BasePostDto createIntro(BasePostCommand command) {
 
+    // 멤버 조회
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
-            command.getBasePostId())
-        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+    // 공식 게임 조회 및 예외 처리
+    Optional<OfficialGame> officialGame = Optional.empty();
+    if (command.getRelatedOfficialGameId() != null) {
+      officialGame = basePostRepository.findOfficialGameByBasePostId(command.getRelatedOfficialGameId());
 
-    if (officialGame == null) {
-      throw new CustomException(ErrorCode.GAME_NOT_FOUND); // 예외를 발생시킴
+      // 존재하지 않는 공식 게임 ID일 경우 예외 발생
+      officialGame.orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
     }
 
-    Intro savedIntro = basePostRepository.save(
-        Intro.builder()
-            .title(command.getTitle())
-            .lyrics(command.getLyrics())
-            .description(command.getDescription())
-            .thumbnailIcon(command.getThumbnailIcon())
-            .introTags(command.getIntroTags())
-            .introType(command.getIntroType())
-            .isCreatorInfoPrivate(command.getIsCreatorInfoPrivate())
-            .officialGame(officialGame)
-            .likes(0)
-            .views(0)
-            .member(member)
-            .sourceType(SourceType.INTRO)
-            .build());
+    // Intro 빌더 패턴 시작
+    Intro.IntroBuilder introBuilder = Intro.builder()
+        .introType(command.getIntroType())
+        .title(command.getTitle())
+        .lyrics(command.getLyrics())
+        .description(command.getDescription())
+        .thumbnailIcon(command.getThumbnailIcon())
+        .introTags(command.getIntroTags())
+        .isCreatorInfoPrivate(checkCreatorInfoIsPrivate(command.getIsCreatorInfoPrivate()))
+        .likes(0)
+        .views(0)
+        .likedMemberIds(new HashSet<>())
+        .member(member)
+        .dailyScore(0)
+        .weeklyScore(0)
+        .sourceType(SourceType.INTRO);
+
+    // 연관 공식 게임이 있으면 설정
+    officialGame.ifPresent(introBuilder::officialGame);
+
+    // Intro 객체 생성 및 저장
+    Intro savedIntro = basePostRepository.save(introBuilder.build());
 
     command.setBasePost(savedIntro);
     List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
@@ -65,6 +80,7 @@ public class IntroService {
         .baseMedias(savedMedias)
         .build();
   }
+
 
   // Read: 특정 Intro 조회
   @Transactional(readOnly = true)
@@ -82,6 +98,7 @@ public class IntroService {
         .baseMedias(medias)
         .build();
   }
+
   @Transactional
   public BasePostDto updateIntro(BasePostCommand command) {
     // 기존 Intro 게시글 조회
@@ -92,17 +109,25 @@ public class IntroService {
     // 요청한 멤버가 게시글의 작성자인지 확인
     Member requestingMember = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
     if (!existingIntro.getMember().equals(requestingMember)) {
       // 작성자가 아니거나 권한이 없는 경우 예외 발생
       throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);
     }
 
-    OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
-            command.getBasePostId())
-        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+    // 공식 게임 조회 및 예외 처리
+    Optional<OfficialGame> officialGame = Optional.empty();
+    if (command.getRelatedOfficialGameId() != null) {
+      // 공식 게임이 전달된 경우 해당 게임을 찾아 설정
+      officialGame = basePostRepository.findOfficialGameByBasePostId(command.getRelatedOfficialGameId());
 
-    if (officialGame == null) {
-      throw new CustomException(ErrorCode.GAME_NOT_FOUND); // 예외를 발생시킴
+      // 존재하지 않는 공식 게임 ID일 경우 예외 발생
+      officialGame.orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+    }
+
+    // 연관된 공식 게임이 있는 경우 초기화
+    if (existingIntro.getOfficialGame() != null) {
+      Hibernate.initialize(existingIntro.getOfficialGame());
     }
 
     // 게시글의 제목, 가사, 설명 등을 업데이트
@@ -113,21 +138,34 @@ public class IntroService {
     existingIntro.setThumbnailIcon(command.getThumbnailIcon());
     existingIntro.setIntroTags(command.getIntroTags());
     existingIntro.setCreatorInfoPrivate(command.getIsCreatorInfoPrivate());
-    existingIntro.setOfficialGame(officialGame);
+
+    // 공식 게임이 있을 경우 업데이트, 없을 경우 기존 값 유지
+    if (command.getRelatedOfficialGameId() != null) {
+      // 연관된 공식 게임을 업데이트
+      existingIntro.setOfficialGame(officialGame.get());
+    } else if (command.getRelatedOfficialGameId() == null && existingIntro.getOfficialGame() != null) {
+      // 공식 게임 값이 들어오지 않았고 기존에 연관된 공식 게임이 존재하는 경우, 삭제를 원하면 null로 설정
+      existingIntro.setOfficialGame(null);
+    }
 
     // 업데이트 표시
     existingIntro.markAsUpdated();
     command.setBasePost(existingIntro);
+
     // 연관된 미디어 파일 업데이트
     List<BaseMedia> updatedMedias = baseMediaService.updateMedias(command);
+
     // 게시글과 미디어 파일 저장
     basePostRepository.save(existingIntro);
+
     // BasePostDto를 반환하여 업데이트된 정보를 반환
     return BasePostDto.builder()
         .basePost(existingIntro)
         .baseMedias(updatedMedias)
         .build();
   }
+
+
   // Delete: 특정 Intro 삭제 (소프트 삭제, 미디어 파일은 진짜 삭제)
   @Transactional
   public void deleteIntro(BasePostCommand command) {
