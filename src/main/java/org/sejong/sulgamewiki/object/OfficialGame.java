@@ -1,5 +1,6 @@
 package org.sejong.sulgamewiki.object;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -24,6 +25,7 @@ import org.sejong.sulgamewiki.object.constants.GameTag;
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("OfficialGame")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class OfficialGame extends BasePost {
 
   private String introLyrics;
