@@ -81,7 +81,7 @@ public abstract class BasePost extends BaseTimeEntity {
 
   // 내 정보 공개 여부 필드
   @Builder.Default
-  private boolean isCreatorInfoPrivate = true; // 기본값은 비공개
+  private boolean isCreatorInfoPrivate = false; // 기본값은 공개
 
 
   public void cancelLike(Long memberId) {
@@ -120,7 +120,7 @@ public abstract class BasePost extends BaseTimeEntity {
     this.weeklyScore = 0;
   }
 
-  public static Boolean checkCreatorInfoIsPrivate(Boolean info) {
-    return Optional.ofNullable(info).orElse(true);
+  public static Boolean checkCreatorInfoIsPrivate(Boolean isCreatorInfoPrivate) {
+    return Optional.ofNullable(isCreatorInfoPrivate).orElse(false);
   }
  }

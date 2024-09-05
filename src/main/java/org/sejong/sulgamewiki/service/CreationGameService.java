@@ -64,7 +64,7 @@ public class CreationGameService {
     command.setSourceType(savedCreationGame.getSourceType());
     command.setBasePost((savedCreationGame));
 
-    List<BaseMedia> savedCreationMedias = baseMediaService.uploadMedias(command);
+    List<BaseMedia> savedCreationMedias = baseMediaService.uploadMediasFromGame(command);
 
     return BasePostDto.builder()
         .creationGame(savedCreationGame)

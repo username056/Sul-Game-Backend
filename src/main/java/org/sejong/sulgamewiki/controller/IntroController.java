@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class IntroController implements IntroControllerDocs{
   private final IntroService introService;
 
-  @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<BasePostDto> createIntro(
       @AuthenticationPrincipal UserDetails userDetails,
@@ -43,12 +43,12 @@ public class IntroController implements IntroControllerDocs{
     return ResponseEntity.ok(introService.createIntro(command));
   }
 
-  @GetMapping("/details")
+  @PostMapping(value = "/get", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<BasePostDto> getIntro(@ModelAttribute BasePostCommand command) {
     return ResponseEntity.ok(introService.getIntro(command));
   }
 
-  @PutMapping(name = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<BasePostDto> updateIntro(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command) {
@@ -56,7 +56,7 @@ public class IntroController implements IntroControllerDocs{
     return ResponseEntity.ok(introService.updateIntro(command));
   }
 
-  @DeleteMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/delete", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Void> deleteIntro(@AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command) {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
