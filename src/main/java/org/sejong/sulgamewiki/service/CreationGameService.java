@@ -54,7 +54,7 @@ public class CreationGameService {
             .weeklyScore(0)
             .sourceType(SourceType.CREATION_GAME)
             .thumbnailIcon(command.getThumbnailIcon())
-            .isCreatorInfoPrivate(command.getCreatorInfoIsPrivate())
+            .isCreatorInfoPrivate(command.getIsCreatorInfoPrivate())
 
 
             .officialGame(officialGame)
