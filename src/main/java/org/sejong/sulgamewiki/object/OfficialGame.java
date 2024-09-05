@@ -25,7 +25,6 @@ import org.sejong.sulgamewiki.object.constants.GameTag;
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("OfficialGame")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class OfficialGame extends BasePost {
 
   private String introLyrics;

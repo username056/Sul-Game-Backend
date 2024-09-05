@@ -125,11 +125,6 @@ public class IntroService {
       officialGame.orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
     }
 
-    // 연관된 공식 게임이 있는 경우 초기화
-    if (existingIntro.getOfficialGame() != null) {
-      Hibernate.initialize(existingIntro.getOfficialGame());
-    }
-
     // 게시글의 제목, 가사, 설명 등을 업데이트
     existingIntro.setTitle(command.getTitle());
     existingIntro.setLyrics(command.getLyrics());
@@ -138,15 +133,7 @@ public class IntroService {
     existingIntro.setThumbnailIcon(command.getThumbnailIcon());
     existingIntro.setIntroTags(command.getIntroTags());
     existingIntro.setCreatorInfoPrivate(command.getIsCreatorInfoPrivate());
-
-    // 공식 게임이 있을 경우 업데이트, 없을 경우 기존 값 유지
-    if (command.getRelatedOfficialGameId() != null) {
-      // 연관된 공식 게임을 업데이트
-      existingIntro.setOfficialGame(officialGame.get());
-    } else if (command.getRelatedOfficialGameId() == null && existingIntro.getOfficialGame() != null) {
-      // 공식 게임 값이 들어오지 않았고 기존에 연관된 공식 게임이 존재하는 경우, 삭제를 원하면 null로 설정
-      existingIntro.setOfficialGame(null);
-    }
+    existingIntro.setOfficialGame(officialGame.orElse(null));
 
     // 업데이트 표시
     existingIntro.markAsUpdated();

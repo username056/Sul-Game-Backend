@@ -32,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @DiscriminatorValue("CreationGame")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CreationGame extends BasePost {
 
   @ManyToOne(fetch = FetchType.LAZY)
