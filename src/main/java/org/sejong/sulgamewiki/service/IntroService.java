@@ -73,7 +73,7 @@ public class IntroService {
     Intro savedIntro = basePostRepository.save(introBuilder.build());
 
     command.setBasePost(savedIntro);
-    List<BaseMedia> savedMedias = baseMediaService.uploadMedias(command);
+    List<BaseMedia> savedMedias = baseMediaService.uploadMediasFromIntro(command);
 
     return BasePostDto.builder()
         .basePost(savedIntro)
