@@ -7,16 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.MemberCommand;
-import org.sejong.sulgamewiki.object.MemberContentInteraction;
+import org.sejong.sulgamewiki.object.MemberInteraction;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.Report;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
-import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
-import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
+import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.repository.ReportRepository;
-import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
+import org.sejong.sulgamewiki.object.CustomUserDetails;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
@@ -30,12 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberService implements UserDetailsService {
+
   private final BasePostRepository basePostRepository;
   private final ReportRepository reportRepository;
   private final MemberRepository memberRepository;
-  private final MemberContentInteractionRepository memberContentInteractionRepository;
+  private final MemberInteractionRepository memberInteractionRepository;
   private final BaseMediaService baseMediaService;
-  private final BaseMediaRepository baseMediaRepository;
 
   @Override
   public CustomUserDetails loadUserByUsername(String stringMemberId)
@@ -76,18 +75,19 @@ public class MemberService implements UserDetailsService {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    MemberContentInteraction memberContent
-        = memberContentInteractionRepository.findByMember(member);
+    MemberInteraction memberContent
+        = memberInteractionRepository.findByMember(member)
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
 
     return MemberDto.builder()
         .member(member)
-        .memberContentInteraction(memberContent)
+        .memberInteraction(memberContent)
         .build();
   }
 
   // 관리자 기능
   @Transactional(readOnly = true)
-  public MemberDto getReport(MemberCommand command){
+  public MemberDto getReport(MemberCommand command) {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
     List<Report> reports = reportRepository.findByReporter(member);
@@ -101,11 +101,12 @@ public class MemberService implements UserDetailsService {
   public MemberDto getLikedPosts(MemberCommand command) {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-    MemberContentInteraction memberContent
-        = memberContentInteractionRepository.findByMember(member);
+    MemberInteraction memberContent
+        = memberInteractionRepository.findByMember(member)
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
 
     List<BasePost> likedIntros =
-    basePostRepository.findByBasePostIdIn(memberContent.getLikedIntroIds());
+        basePostRepository.findByBasePostIdIn(memberContent.getLikedIntroIds());
 
     List<BasePost> likedCreationGame =
         basePostRepository.findByBasePostIdIn(memberContent.getLikedCreationGameIds());
@@ -124,8 +125,9 @@ public class MemberService implements UserDetailsService {
   public MemberDto getBookmarkedPosts(MemberCommand command) {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-    MemberContentInteraction memberContent
-        = memberContentInteractionRepository.findByMember(member);
+    MemberInteraction memberContent
+        = memberInteractionRepository.findByMember(member)
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
 
     List<BasePost> bookmarkedIntroIds =
         basePostRepository.findByBasePostIdIn(memberContent.getBookmarkedIntroIds());
@@ -162,11 +164,9 @@ public class MemberService implements UserDetailsService {
 
   /**
    * 기존 회원의 닉네임을 업데이트합니다.
-   *
-   * 이 메서드는 제공된 닉네임이 이미 저장소에 존재하는지 확인합니다.
-   * 만약 닉네임이 이미 사용 중인 경우, `CustomException`이 발생하며
-   * 오류 코드 `NICKNAME_ALREADY_EXISTS`가 반환됩니다. 닉네임이 사용 가능할 경우,
-   * 회원의 닉네임을 업데이트하고 변경 사항을 저장소에 저장합니다.
+   * <p>
+   * 이 메서드는 제공된 닉네임이 이미 저장소에 존재하는지 확인합니다. 만약 닉네임이 이미 사용 중인 경우, `CustomException`이 발생하며 오류 코드 `NICKNAME_ALREADY_EXISTS`가
+   * 반환됩니다. 닉네임이 사용 가능할 경우, 회원의 닉네임을 업데이트하고 변경 사항을 저장소에 저장합니다.
    *
    * @param command 회원의 ID와 새로 설정할 닉네임이 포함된 객체입니다.
    * @return 새로운 닉네임으로 업데이트된 회원 정보를 포함한 MemberDto 객체를 반환합니다.
