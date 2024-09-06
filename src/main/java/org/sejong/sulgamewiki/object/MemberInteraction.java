@@ -32,6 +32,7 @@ import org.sejong.sulgamewiki.object.constants.ExpLevel;
 @ToString(callSuper = true)
 @Slf4j
 public class MemberInteraction extends BaseTimeEntity {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -117,17 +118,18 @@ public class MemberInteraction extends BaseTimeEntity {
   private List<Long> bookmarkedIntroIds = new ArrayList<>();
 
   /**
-   * 방문 횟수를 1 증가시키는 메서드.
-   * 마지막 방문한 날짜를 확인하여 당일 첫 방문일 경우에만 증가.
+   * 방문 횟수를 1 증가시키는 메서드 당일 첫 방문일 경우에 호출된다.
    */
-  public void incrementDailyVisitCount() {
-    LocalDate today = LocalDate.now();
-    if (this.lastVisitDate == null || !today.equals(this.lastVisitDate)) {
-      this.dailyVisitCount++;
-      this.lastVisitDate = today;
-      log.info("회원 활동 ID : {} : 방문 날짜 : {}", id, lastVisitDate);
-      log.info("회원 활동 ID : {} : 방문 횟수 증가 +1 : 총 {}", id ,dailyVisitCount);
-    }
+  public void upDailyVisitCount() {
+    this.dailyVisitCount++;
+    this.lastVisitDate = LocalDate.now();
+    log.info("회원 활동 ID : {} : 방문 날짜 : {}", id, lastVisitDate);
+    log.info("회원 활동 ID : {} : 방문 횟수 증가 +1 : 총 {}", id, dailyVisitCount);
+  }
+
+  // 경험치 추가
+  public void addExp(Long points) {
+    this.exp += points;
   }
 
 }
