@@ -25,5 +25,5 @@ public class AuthDto {
   private final String provider;
 
   private Member member;
-  private MemberContentInteraction memberContentInteraction;
+  private MemberInteraction memberInteraction;
 }

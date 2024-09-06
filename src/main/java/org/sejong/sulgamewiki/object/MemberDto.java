@@ -13,7 +13,7 @@ import lombok.ToString;
 public class MemberDto {
   // member
   private Member member;
-  private MemberContentInteraction memberContentInteraction;
+  private MemberInteraction memberInteraction;
   private List<Member> members;
   private Long memberId;
   private String nickname;
