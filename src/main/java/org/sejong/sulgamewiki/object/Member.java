@@ -57,14 +57,6 @@ public class Member extends BaseTimeEntity {
 
   @Builder.Default
   @Column(nullable = false)
-  private Long exp = 0L;
-
-  @Builder.Default
-  @Enumerated(EnumType.STRING)
-  private ExpLevel expLevel = ExpLevel.D;
-
-  @Builder.Default
-  @Column(nullable = false)
   private Boolean isUniversityPublic = true;
 
   @Builder.Default
