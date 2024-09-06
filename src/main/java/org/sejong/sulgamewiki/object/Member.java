@@ -82,7 +82,7 @@ public class Member extends BaseTimeEntity {
   @Column(nullable = false)
   private Boolean infoPopupVisible = true;
 
-  @Column(nullable = false)
+  // 마지막 로그인 일시
   private LocalDateTime lastLoginTime = LocalDateTime.now();
 
   public void setNickname(String name) {

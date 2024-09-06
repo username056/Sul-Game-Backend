@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.constants.ExpLevel;
 
 @Entity
@@ -28,7 +30,8 @@ import org.sejong.sulgamewiki.object.constants.ExpLevel;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
-public class MemberContentInteraction extends BaseTimeEntity {
+@Slf4j
+public class MemberInteraction extends BaseTimeEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -60,6 +63,10 @@ public class MemberContentInteraction extends BaseTimeEntity {
   @Builder.Default
   @Column(nullable = false)
   private Integer dailyVisitCount = 0;
+
+  // 마지막 방문한 날짜
+  // 주의: 처음 생성시 null 로 생성, VisitCountFilter 에서 업데이트
+  private LocalDate lastVisitDate;
 
   @Builder.Default
   @Column(nullable = false)
@@ -108,4 +115,19 @@ public class MemberContentInteraction extends BaseTimeEntity {
   @Builder.Default
   @ElementCollection
   private List<Long> bookmarkedIntroIds = new ArrayList<>();
+
+  /**
+   * 방문 횟수를 1 증가시키는 메서드.
+   * 마지막 방문한 날짜를 확인하여 당일 첫 방문일 경우에만 증가.
+   */
+  public void incrementDailyVisitCount() {
+    LocalDate today = LocalDate.now();
+    if (this.lastVisitDate == null || !today.equals(this.lastVisitDate)) {
+      this.dailyVisitCount++;
+      this.lastVisitDate = today;
+      log.info("회원 활동 ID : {} : 방문 날짜 : {}", id, lastVisitDate);
+      log.info("회원 활동 ID : {} : 방문 횟수 증가 +1 : 총 {}", id ,dailyVisitCount);
+    }
+  }
+
 }
