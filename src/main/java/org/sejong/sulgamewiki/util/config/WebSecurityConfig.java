@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.service.CustomOAuth2UserService;
+import org.sejong.sulgamewiki.service.ExpManagerService;
 import org.sejong.sulgamewiki.util.JwtUtil;
 import org.sejong.sulgamewiki.util.filter.VisitCountFilter;
 import org.sejong.sulgamewiki.util.auth.OAuth2MemberSuccessHandler;
@@ -39,6 +40,7 @@ public class WebSecurityConfig {
   private final JwtUtil jwtUtil;
   private final OAuth2MemberSuccessHandler oAuth2MemberSuccessHandler;
   private final CustomOAuth2UserService customOAuth2UserService;
+  private final ExpManagerService expManagerService;
 
   private static final String[] AUTH_WHITELIST = {
       "/", // 기본화면
@@ -95,7 +97,7 @@ public class WebSecurityConfig {
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(new TokenAuthenticationFilter(jwtUtil, Arrays.asList(AUTH_WHITELIST)), UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(new VisitCountFilter(memberRepository, memberInteractionRepository), TokenAuthenticationFilter.class)
+            .addFilterAfter(new VisitCountFilter(memberRepository, memberInteractionRepository, expManagerService), TokenAuthenticationFilter.class)
             .build();
   }
 
