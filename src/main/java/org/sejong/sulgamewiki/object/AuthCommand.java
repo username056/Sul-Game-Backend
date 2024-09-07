@@ -13,5 +13,5 @@ import lombok.ToString;
 public class AuthCommand {
   private String registrationId;
   private Map<String, Object> attributes;
-
+  private String refreshToken;
 }

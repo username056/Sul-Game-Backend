@@ -35,6 +35,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+
   private final MemberRepository memberRepository;
   private final MemberInteractionRepository memberInteractionRepository;
   private final JwtUtil jwtUtil;
@@ -49,6 +50,7 @@ public class WebSecurityConfig {
       "/api/test/**", // 테스트 API
       "/v3/api-docs/**", // Swagger
       "/login", // OAuth 관리페이지
+      "/api/auth/refresh-token", // AccessToken 재발행
       "/login/oauth2/code/**", // OAuth 리다이렉션
       "/oauth2/authorization/**", // OAuth 로그인 페이지
       "/api/intro/**"
@@ -64,6 +66,7 @@ public class WebSecurityConfig {
       "http://localhost:3000",
       "http://10.0.2.2:8080"
   };
+
   @Bean
   public WebSecurityCustomizer configure() {
     return (web) -> web.ignoring()
@@ -102,8 +105,10 @@ public class WebSecurityConfig {
                 .invalidateHttpSession(true)
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(new TokenAuthenticationFilter(jwtUtil, Arrays.asList(AUTH_WHITELIST)), UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(new VisitCountFilter(memberRepository, memberInteractionRepository, expManagerService), TokenAuthenticationFilter.class)
+            .addFilterBefore(new TokenAuthenticationFilter(jwtUtil, Arrays.asList(AUTH_WHITELIST)),
+                UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(new VisitCountFilter(memberRepository, memberInteractionRepository, expManagerService),
+                TokenAuthenticationFilter.class)
             .build();
   }
 
@@ -129,8 +134,9 @@ public class WebSecurityConfig {
     source.registerCorsConfiguration("/**", configuration);
     return source;
   }
+
   @Bean
-  public BCryptPasswordEncoder passwordEncoder(){
+  public BCryptPasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 }

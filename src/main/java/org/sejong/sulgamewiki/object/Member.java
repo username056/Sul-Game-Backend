@@ -84,6 +84,8 @@ public class Member extends BaseTimeEntity {
   // 마지막 로그인 일시
   private LocalDateTime lastLoginTime = LocalDateTime.now();
 
+  private String refreshToken;
+
   public void setNickname(String name) {
     if (!isNicknameModified) {
       this.nickname = name;
