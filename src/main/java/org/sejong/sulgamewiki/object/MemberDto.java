@@ -39,4 +39,10 @@ public class MemberDto {
   private Long remainingExpForNextLevel; // 다음 레벨까지 남은 경험치
   private Double progressPercentToNextLevel; // 다음 레벨까지의 진행 퍼센트
   private Integer rankChange; // 랭킹 변동 (기준: 어제)
+
+  // 페이징 관련 변수
+  private List<ExpLog> expLogs;  // 경험치 변동 내역 리스트
+  private int totalPages;        // 총 페이지 수
+  private int currentPage;       // 현재 페이지 번호
+  private long totalElements;    // 총 로그 수
 }

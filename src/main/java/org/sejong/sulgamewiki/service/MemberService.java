@@ -5,14 +5,15 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePost;
+import org.sejong.sulgamewiki.object.ExpLog;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberInteraction;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.Report;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
-import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
+import org.sejong.sulgamewiki.repository.ExpLogRepository;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.repository.ReportRepository;
@@ -20,6 +21,10 @@ import org.sejong.sulgamewiki.object.CustomUserDetails;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -35,6 +40,7 @@ public class MemberService implements UserDetailsService {
   private final ReportRepository reportRepository;
   private final MemberRepository memberRepository;
   private final MemberInteractionRepository memberInteractionRepository;
+  private final ExpLogRepository expLogRepository;
   private final BaseMediaService baseMediaService;
   private final MemberRankingService memberRankingService;
 
@@ -225,6 +231,29 @@ public class MemberService implements UserDetailsService {
     Optional<Member> checkingMember = memberRepository.findByNickname(command.getNickname());
     return MemberDto.builder()
         .isExistingNickname(checkingMember.isPresent())
+        .build();
+  }
+
+  /**
+   * 경험치 변동 내역 조회 메서드
+   */
+  public MemberDto getExpLogs(MemberCommand command) {
+    // Pageable 객체 생성 (페이지 번호와 크기 정보로 생성)
+    Pageable pageable = PageRequest.of(
+        command.getPageNumber(),
+        command.getPageSize(),
+        Sort.by(Sort.Order.desc("createdDate"), Sort.Order.desc("updatedDate"))
+    );
+
+    // 페이지네이션 적용된 ExpLog 내역
+    Page<ExpLog> expLogPage = expLogRepository.findByMemberMemberId(command.getMemberId(), pageable);
+
+    // DTO로 변환 및 반환
+    return MemberDto.builder()
+        .expLogs(expLogPage.getContent())  // 로그 내역 리스트
+        .totalPages(expLogPage.getTotalPages())  // 총 페이지 수
+        .totalElements(expLogPage.getTotalElements())  // 총 로그 수
+        .currentPage(expLogPage.getNumber())  // 현재 페이지 번호
         .build();
   }
 }
