@@ -19,7 +19,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
-import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.object.constants.Role;
 
 @Entity

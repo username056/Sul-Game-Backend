@@ -55,9 +55,12 @@ public class WebSecurityConfig {
 
   private static final String[] ALLOWED_ORIGINS = {
       "https://api.sul-game.info",
+      "https://test.sul-game.info",
       "https://www.sul-game.info",
       "http://220.85.169.165:8085",
+      "http://220.85.169.165:8086",
       "http://localhost:8080",
+      "http://localhost:3000",
       "http://10.0.2.2:8080"
   };
   @Bean
