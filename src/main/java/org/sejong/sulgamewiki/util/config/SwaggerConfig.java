@@ -42,8 +42,8 @@ import org.springframework.context.annotation.Configuration;
               
             - **MultipartFile, Object : 에서 잘 발생합니다. Can't Parse Json 오류가 생기면 이부분들을 체크해제해주세요**
               
-            <img src="http://220.85.169.165/sul-game/images/swagger_error_message.png" alt="에러메시지 이미지" width="300"/>
-            <img src="http://220.85.169.165/sul-game/images/swagger_check_box.png" alt="체크박스 이미지" width="200"/>
+            <img src="http://220.85.169.165/sul-game/images/swagger_error_message.png" alt="에러 메시지 이미지" width="300"/>
+            <img src="http://220.85.169.165/sul-game/images/swagger_check_box.png" alt="체크박스 이미지" width="300"/>
               
             """,
         version = "0.1v"),
