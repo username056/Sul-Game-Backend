@@ -11,6 +11,7 @@ import org.sejong.sulgamewiki.object.MemberInteraction;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.Report;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
+import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
@@ -75,13 +76,23 @@ public class MemberService implements UserDetailsService {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    MemberInteraction memberContent
-        = memberInteractionRepository.findByMember(member)
+    MemberInteraction memberInteraction = memberInteractionRepository.findByMember(member)
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
+
+    // 순위 및 상위 퍼센트 계산
+    calculateRankAndPercentile(command, memberInteraction);
+
+    log.info("경험치 순위 및 퍼센트 계산 완료. Rank: {}, Percentile: {}",
+        command.getExpRank(), command.getExpRankPercentile());
 
     return MemberDto.builder()
         .member(member)
-        .memberInteraction(memberContent)
+        .memberInteraction(memberInteraction)
+        .expRank(command.getExpRank()) // 경험치 순위
+        .expRankPercentile(command.getExpRankPercentile()) // 상위 몇 퍼센트인지
+        .nextLevelExp(command.getNextLevelExp()) // 다음 레벨까지 필요한 경험치
+        .remainingExpForNextLevel(command.getRemainingExpForNextLevel()) // 다음 레벨까지 남은 경험치
+        .progressPercentToNextLevel(command.getProgressPercentToNextLevel()) // 레벨까지 진행 퍼센트
         .build();
   }
 
@@ -211,5 +222,37 @@ public class MemberService implements UserDetailsService {
     return MemberDto.builder()
         .isExistingNickname(checkingMember.isPresent())
         .build();
+  }
+
+  /**
+   * 경험치 순위 및 상위 퍼센트 계산 메서드
+   */
+  private void calculateRankAndPercentile(MemberCommand command, MemberInteraction memberInteraction) {
+    // 전체 회원 수 가져오기
+    long totalMembers = memberInteractionRepository.countAllMembers();
+    log.info("전체 회원 수: {}", totalMembers);
+
+    // 특정 회원보다 경험치가 높은 회원 수 가져오기
+    long higherExpMemberCount = memberInteractionRepository.countMembersWithMoreExpThan(memberInteraction.getExp());
+    log.info("더 높은 경험치를 가진 회원 수: {}", higherExpMemberCount);
+
+    // 순위 계산
+    int expRank = (int) (higherExpMemberCount + 1);
+    double expRankPercentile = ((double) expRank / totalMembers) * 100;
+
+    // 현재 레벨 및 다음 레벨 계산
+    ExpLevel currentLevel = memberInteraction.getExpLevel();
+    long nextLevelExp = currentLevel.getNextLevelExp();
+    long remainingExpForNextLevel = nextLevelExp - memberInteraction.getExp();
+    double progressPercentToNextLevel = ((double) memberInteraction.getExp() / nextLevelExp) * 100;
+    log.info("순위: {}, 상위 퍼센트: {}, 다음 레벨까지 필요한 경험치: {}, 남은 경험치: {}, 레벨 진행률: {}",
+        expRank, expRankPercentile, nextLevelExp, remainingExpForNextLevel, progressPercentToNextLevel);
+
+    // 결과를 command 객체에 설정
+    command.setExpRank(expRank); // 순위 저장
+    command.setExpRankPercentile(expRankPercentile); // 상위 퍼센트 저장
+    command.setNextLevelExp(nextLevelExp); // 다음 레벨까지의 필요 경험치 저장
+    command.setRemainingExpForNextLevel(remainingExpForNextLevel); // 남은 경험치 저장
+    command.setProgressPercentToNextLevel(progressPercentToNextLevel); // 레벨 진행도 저장
   }
 }

@@ -44,23 +44,36 @@ public interface MemberControllerDocs {
   @Operation(
       summary = "마이페이지",
       description = """
-        **마이페이지**
+      **마이페이지**
 
-        회원의 마이페이지 정보를 제공합니다. 이 API는 사용자의 프로필과 관련된 데이터를 조회할 수 있습니다.
+      이 API는 인증된 사용자의 프로필 정보를 조회합니다. 
+      반환되는 데이터는 회원의 기본 정보, 콘텐츠 상호작용 정보, 그리고 회원의 경험치 순위와 퍼센트 등입니다.
 
-        **JWT 토큰 필요:**
-        
-        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
+      **JWT 토큰 필요:**
+      
+      이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
-        **입력 파라미터 값:**
+      **경험치 관련 반환 값:**
+      - **`expRank`**: 회원의 경험치 순위 (1등이 가장 높음).
+      - **`expRankPercentile`**: 회원이 상위 몇 퍼센트에 속하는지 나타냅니다. 예를 들어, 1%는 최고 순위.
+      - **`nextLevelExp`**: 다음 레벨로 올라가기 위해 필요한 총 경험치.
+      - **`remainingExpForNextLevel`**: 다음 레벨로 올라가기 위해 남은 경험치.
+      - **`progressPercentToNextLevel`**: 현재 레벨에서 다음 레벨로 진행된 비율 (백분율).
 
-        - **`필요없음`**
-        
-        **반환 파라미터 값:**
+      **입력 파라미터 값:**
+      
+      - **`필요없음`**: 추가 입력 파라미터 없이 JWT 토큰만으로 회원 정보를 조회합니다.
 
-        - **`Member member`**: 회원 정보
-        - **`MemberContentInteraction memberInteraction`**: 회원의 콘텐츠 상호작용 정보
-        """
+      **반환 파라미터 값:**
+      
+      - **`Member member`**: 회원의 기본 정보.
+      - **`MemberInteraction memberInteraction`**: 회원의 콘텐츠 상호작용 정보.
+      - **`Integer expRank`**: 회원의 경험치 순위.
+      - **`Double expRankPercentile`**: 상위 몇 퍼센트에 속하는지 백분율로 반환.
+      - **`Long nextLevelExp`**: 다음 레벨로 올라가기 위한 총 경험치.
+      - **`Long remainingExpForNextLevel`**: 다음 레벨까지 남은 경험치.
+      - **`Double progressPercentToNextLevel`**: 다음 레벨로 향한 경험치 진행도(백분율).
+      """
   )
   ResponseEntity<MemberDto> getProfile(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
