@@ -59,6 +59,7 @@ public interface MemberControllerDocs {
       - **`nextLevelExp`**: 다음 레벨로 올라가기 위해 필요한 총 경험치.
       - **`remainingExpForNextLevel`**: 다음 레벨로 올라가기 위해 남은 경험치.
       - **`progressPercentToNextLevel`**: 현재 레벨에서 다음 레벨로 진행된 비율 (백분율).
+      - **`exp`**: 현재 사용자의 총 경험치.
 
       **입력 파라미터 값:**
       
@@ -68,6 +69,7 @@ public interface MemberControllerDocs {
       
       - **`Member member`**: 회원의 기본 정보.
       - **`MemberInteraction memberInteraction`**: 회원의 콘텐츠 상호작용 정보.
+      - **`Long exp`**: 현재 사용자의 총 경험치.
       - **`Integer expRank`**: 회원의 경험치 순위.
       - **`Double expRankPercentile`**: 상위 몇 퍼센트에 속하는지 백분율로 반환.
       - **`Long nextLevelExp`**: 다음 레벨로 올라가기 위한 총 경험치.
@@ -228,6 +230,41 @@ public interface MemberControllerDocs {
         """
   )
   ResponseEntity<MemberDto> checkDuplicateNickname(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
+
+  @Operation(
+      summary = "경험치 정보 업데이트",
+      description = """
+    **경험치 정보 업데이트**
+
+    이 API는 사용자가 경험치를 기반으로 한 순위 정보를 다시 계산하고, 업데이트된 순위를 반환합니다. 
+    순위는 경험치에 따라 결정되며, 상위 퍼센트와 다음 레벨로의 진행도를 함께 제공합니다.
+
+    **JWT 토큰 필요:**
+    이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
+
+    **경험치 관련 반환 값:**
+    - **`expRank`**: 회원의 경험치 순위 (1등이 가장 높음).
+    - **`expRankPercentile`**: 회원이 상위 몇 퍼센트에 속하는지 나타냅니다.
+    - **`nextLevelExp`**: 다음 레벨로 올라가기 위해 필요한 총 경험치.
+    - **`remainingExpForNextLevel`**: 다음 레벨로 올라가기 위해 남은 경험치.
+    - **`progressPercentToNextLevel`**: 현재 레벨에서 다음 레벨로 진행된 비율 (백분율).
+    - **`exp`**: 현재 사용자의 총 경험치.
+
+    **입력 파라미터 값:**
+    - **`필요없음`**: 추가 입력 파라미터 없이 JWT 토큰만으로 회원의 경험치 순위를 조회합니다.
+
+    **반환 파라미터 값:**
+    - **`Long exp`**: 현재 사용자의 총 경험치.
+    - **`Integer expRank`**: 회원의 경험치 순위.
+    - **`Double expRankPercentile`**: 상위 몇 퍼센트에 속하는지 백분율로 반환.
+    - **`Long nextLevelExp`**: 다음 레벨로 올라가기 위한 총 경험치.
+    - **`Long remainingExpForNextLevel`**: 다음 레벨까지 남은 경험치.
+    - **`Double progressPercentToNextLevel`**: 다음 레벨로 향한 경험치 진행도(백분율).
+    """
+  )
+  ResponseEntity<MemberDto> reloadRankInfo(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command);
 }

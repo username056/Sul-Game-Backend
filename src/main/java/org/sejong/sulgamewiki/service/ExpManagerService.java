@@ -35,7 +35,7 @@ public class ExpManagerService {
   @LogMonitoringInvocation
   public void updateExp(Member member, ExpRule expRule) {
     // 사용자 Interaction 정보 가져오기
-    MemberInteraction interaction = memberInteractionRepository.findByMember(member)
+    MemberInteraction interaction = memberInteractionRepository.findById(member.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
 
     // 경험치 업데이트
