@@ -3,10 +3,14 @@ package org.sejong.sulgamewiki.util.config;
 import java.util.Arrays;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.util.auth.CustomOAuth2UserService;
+import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
+import org.sejong.sulgamewiki.repository.MemberRepository;
+import org.sejong.sulgamewiki.service.CustomOAuth2UserService;
+import org.sejong.sulgamewiki.service.ExpManagerService;
 import org.sejong.sulgamewiki.util.JwtUtil;
+import org.sejong.sulgamewiki.util.filter.VisitCountFilter;
 import org.sejong.sulgamewiki.util.auth.OAuth2MemberSuccessHandler;
-import org.sejong.sulgamewiki.util.TokenAuthenticationFilter;
+import org.sejong.sulgamewiki.util.filter.TokenAuthenticationFilter;
 import org.sejong.sulgamewiki.service.MemberService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,9 +35,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+  private final MemberRepository memberRepository;
+  private final MemberInteractionRepository memberInteractionRepository;
   private final JwtUtil jwtUtil;
   private final OAuth2MemberSuccessHandler oAuth2MemberSuccessHandler;
   private final CustomOAuth2UserService customOAuth2UserService;
+  private final ExpManagerService expManagerService;
 
   private static final String[] AUTH_WHITELIST = {
       "/", // 기본화면
@@ -92,7 +99,8 @@ public class WebSecurityConfig {
                 .invalidateHttpSession(true)
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(new TokenAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new TokenAuthenticationFilter(jwtUtil, Arrays.asList(AUTH_WHITELIST)), UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(new VisitCountFilter(memberRepository, memberInteractionRepository, expManagerService), TokenAuthenticationFilter.class)
             .build();
   }
 

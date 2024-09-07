@@ -3,7 +3,7 @@ package org.sejong.sulgamewiki.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
-import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
+import org.sejong.sulgamewiki.object.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -59,7 +59,7 @@ public interface MemberControllerDocs {
         **반환 파라미터 값:**
 
         - **`Member member`**: 회원 정보
-        - **`MemberContentInteraction memberContentInteraction`**: 회원의 콘텐츠 상호작용 정보
+        - **`MemberContentInteraction memberInteraction`**: 회원의 콘텐츠 상호작용 정보
         """
   )
   ResponseEntity<MemberDto> getProfile(

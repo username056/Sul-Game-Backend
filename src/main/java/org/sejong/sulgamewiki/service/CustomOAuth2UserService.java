@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.util.auth;
+package org.sejong.sulgamewiki.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,12 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.AuthCommand;
 import org.sejong.sulgamewiki.object.AuthDto;
 import org.sejong.sulgamewiki.object.Member;
-import org.sejong.sulgamewiki.object.MemberContentInteraction;
-import org.sejong.sulgamewiki.object.MemberDto;
+import org.sejong.sulgamewiki.object.MemberInteraction;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
+import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.object.constants.Role;
-import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
+import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
+import org.sejong.sulgamewiki.util.auth.OAuth2AttributeConverter;
+import org.sejong.sulgamewiki.object.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -33,7 +35,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
     UserDetailsService {
 
   private final MemberRepository memberRepository;
-  private final MemberContentInteractionRepository memberContentInteractionRepository;
+  private final MemberInteractionRepository memberInteractionRepository;
 
   /**
    * OAuth2 사용자 정보를 로드합니다.
@@ -91,8 +93,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
           dto.setMember(memberRepository.save(newMember));
           log.info("신규 회원 생성됨: 이메일 = {}, 제공자 = {}", newMember.getEmail(), dto.getProvider());
 
-          MemberContentInteraction newMemberContentInteraction = MemberContentInteraction.builder()
+          MemberInteraction newMemberInteraction = MemberInteraction.builder()
               .member(newMember)
+              .exp(0L)
+              .expLevel(ExpLevel.D)
+              .currentRank(0)
               .totalLikeCount(0)
               .totalPostCount(0)
               .totalCommentCount(0)
@@ -103,10 +108,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
               .likedCreationGameIds(new ArrayList<>())
               .likedIntroIds(new ArrayList<>())
               .bookmarkedOfficialGameIds(new ArrayList<>())
+              .bookmarkedCreationGameIds(new ArrayList<>())
               .bookmarkedIntroIds(new ArrayList<>())
               .build();
-          dto.setMemberContentInteraction(memberContentInteractionRepository.save(newMemberContentInteraction));
-          log.info("신규 MemberContentInteraction 생성됨: id = {}, 회원ID = {}", newMemberContentInteraction.getId(), newMemberContentInteraction.getMember().getMemberId());
+          dto.setMemberInteraction(memberInteractionRepository.save(newMemberInteraction));
+          log.info("신규 MemberInteraction 생성됨: id = {}, 회원ID = {}", newMemberInteraction.getId(), newMemberInteraction.getMember().getMemberId());
 
           return dto;
         });
@@ -123,9 +129,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
   public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     Long memberId;
     try {
-      memberId = Long.parseLong(username);  // memberId는 Long 타입으로 변환됩니다.
+      memberId = Long.parseLong(username);  // memberId -> Long 타입 변환
     } catch (NumberFormatException e) {
-      throw new UsernameNotFoundException("Invalid memberId format: " + username);
+      throw new UsernameNotFoundException("회원 ID 포맷 문제 : " + username);
     }
 
     Member member = memberRepository.findById(memberId)
