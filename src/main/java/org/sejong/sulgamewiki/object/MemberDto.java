@@ -32,9 +32,11 @@ public class MemberDto {
   private List<Report> reports;
 
   // 경험치 계산
+  private Long exp; // 현재 경험치
   private Integer expRank; // 경험치 순위
   private Double expRankPercentile; // 경험치 상위 몇 퍼센트인지
   private Long nextLevelExp; // 다음 레벨까지 필요한 경험치
   private Long remainingExpForNextLevel; // 다음 레벨까지 남은 경험치
   private Double progressPercentToNextLevel; // 다음 레벨까지의 진행 퍼센트
+  private Integer rankChange; // 랭킹 변동 (기준: 어제)
 }

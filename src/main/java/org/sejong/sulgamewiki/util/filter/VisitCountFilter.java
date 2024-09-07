@@ -44,7 +44,7 @@ public class VisitCountFilter extends OncePerRequestFilter {
       // Member와 MemberContentInteraction 정보 조회
       Member member = memberRepository.findById(memberId)
           .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-      MemberInteraction memberInteraction = memberInteractionRepository.findByMember(member)
+      MemberInteraction memberInteraction = memberInteractionRepository.findById(member.getMemberId())
           .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
 
       LocalDate today = LocalDate.now();

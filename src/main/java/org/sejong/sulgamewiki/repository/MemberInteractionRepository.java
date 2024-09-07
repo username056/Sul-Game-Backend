@@ -10,9 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MemberInteractionRepository extends JpaRepository<MemberInteraction, Long> {
-
-  Optional<MemberInteraction> findByMember(Member member);
-
   // 전체 회원 수 조회
   @Query("SELECT COUNT(mi) FROM MemberInteraction mi")
   long countAllMembers();
