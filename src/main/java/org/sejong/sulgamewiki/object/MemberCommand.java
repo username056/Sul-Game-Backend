@@ -29,4 +29,5 @@ public class MemberCommand {
   private Long nextLevelExp; // 다음 레벨까지 필요한 경험치
   private Long remainingExpForNextLevel; // 다음 레벨까지 남은 경험치
   private Double progressPercentToNextLevel; // 다음 레벨까지의 진행 퍼센트
+  private Integer rankChange; // 어제와 비교해서 랭크 변화
 }

@@ -112,8 +112,7 @@ public class TestService {
     Member member = memberRepository.findByEmail(command.getEmail())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    MemberInteraction memberInteraction
-        = memberInteractionRepository.findByMember(member)
+    MemberInteraction memberInteraction = memberInteractionRepository.findById(member.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
 
     Long targetDeleteMemberId = member.getMemberId();
