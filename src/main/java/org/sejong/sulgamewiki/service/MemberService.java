@@ -36,6 +36,7 @@ public class MemberService implements UserDetailsService {
   private final MemberRepository memberRepository;
   private final MemberInteractionRepository memberInteractionRepository;
   private final BaseMediaService baseMediaService;
+  private final MemberRankingService memberRankingService;
 
   @Override
   public CustomUserDetails loadUserByUsername(String stringMemberId)
@@ -79,8 +80,9 @@ public class MemberService implements UserDetailsService {
     MemberInteraction memberInteraction = memberInteractionRepository.findByMember(member)
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
 
-    // 순위 및 상위 퍼센트 계산
-    calculateRankAndPercentile(command, memberInteraction);
+    // 랭킹 계산
+    command.setMemberInteraction(memberInteraction);
+    memberRankingService.calculateRankAndPercentile(command);
 
     log.info("경험치 순위 및 퍼센트 계산 완료. Rank: {}, Percentile: {}",
         command.getExpRank(), command.getExpRankPercentile());

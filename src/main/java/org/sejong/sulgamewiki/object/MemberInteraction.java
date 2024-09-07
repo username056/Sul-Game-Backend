@@ -55,10 +55,10 @@ public class MemberInteraction extends BaseTimeEntity {
   @Column(nullable = false)
   private Integer currentRank = 0;
 
-  // 순위 변동 정보 (이전 순위와 비교)
+  // 순위 변동 정보 (매일 자정에 업데이트)
   @Builder.Default
   @Column(nullable = false)
-  private Integer rankChange = 0;
+  private Integer previousRank = 0;
 
   // 하루 방문 횟수를 기록하는 필드
   @Builder.Default

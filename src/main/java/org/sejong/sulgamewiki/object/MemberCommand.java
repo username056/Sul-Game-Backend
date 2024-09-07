@@ -21,6 +21,8 @@ public class MemberCommand {
   private Boolean isNotificationEnabled;
   private MultipartFile multipartFile;
 
+  private MemberInteraction memberInteraction;
+
   // 경험치 계산
   private Integer expRank; // 경험치 순위
   private Double expRankPercentile; // 경험치 상위 몇 퍼센트인지
