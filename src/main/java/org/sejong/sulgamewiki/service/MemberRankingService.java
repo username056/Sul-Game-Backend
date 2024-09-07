@@ -9,6 +9,7 @@ import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.MemberInteraction;
+import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
@@ -58,7 +59,15 @@ public class MemberRankingService {
 
     long nextLevelExp = memberInteraction.getExpLevel().getNextLevelExp();
     long remainingExpForNextLevel = nextLevelExp - memberInteraction.getExp();
-    double progressPercentToNextLevel = ((double) memberInteraction.getExp() / nextLevelExp) * 100;
+    double progressPercentToNextLevel;
+
+    // 만약 A 레벨이라면 진행률을 100%로 설정
+    if (memberInteraction.getExpLevel() == ExpLevel.A) {
+      progressPercentToNextLevel = 100.0;
+    } else {
+      // A 레벨이 아닐 경우에는 정상적인 진행률 계산
+      progressPercentToNextLevel = ((double) memberInteraction.getExp() / memberInteraction.getExpLevel().getNextLevelExp()) * 100;
+    }
 
     int rankChange = memberInteraction.getPreviousRank() - memberInteraction.getCurrentRank();
 
