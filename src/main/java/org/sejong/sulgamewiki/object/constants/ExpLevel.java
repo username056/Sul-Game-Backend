@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ExpLevel {
-  A("마스터 레벨 - 탁월한 경험치", Long.MAX_VALUE),
+  A("마스터 레벨 - 탁월한 경험치", 10000L),
   B("고급 레벨 - 우수한 경험치", 5000L),
   C("중급 레벨 - 보통의 경험치", 2000L),
   D("초급 레벨 - 기본적인 경험치", 500L);
