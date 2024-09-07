@@ -11,12 +11,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ExpLevel {
-  A("마스터 레벨 - 탁월한 경험치"),
-  B("고급 레벨 - 우수한 경험치"),
-  C("중급 레벨 - 보통의 경험치"),
-  D("초급 레벨 - 기본적인 경험치");
+  A("마스터 레벨 - 탁월한 경험치", Long.MAX_VALUE),
+  B("고급 레벨 - 우수한 경험치", 5000L),
+  C("중급 레벨 - 보통의 경험치", 2000L),
+  D("초급 레벨 - 기본적인 경험치", 500L);
 
   private final String description;
+  private final long requiredExp;
 
   /**
    * 누적 경험치에 따라 적절한 경험치 레벨을 반환합니다.
@@ -25,14 +26,23 @@ public enum ExpLevel {
    * @return 해당 경험치에 맞는 ExpLevel
    */
   public static ExpLevel calculateLevel(Long totalExp) {
-    if (totalExp >= 5000L) {
+    if (totalExp >= B.getRequiredExp()) {
       return A;
-    } else if (totalExp >= 2000L) {
+    } else if (totalExp >= C.getRequiredExp()) {
       return B;
-    } else if (totalExp >= 500L) {
+    } else if (totalExp >= D.getRequiredExp()) {
       return C;
     } else {
       return D;
     }
+  }
+
+  /**
+   * 현재 레벨에 따라 다음 레벨로 올라가기 위한 경험치 양을 반환합니다.
+   *
+   * @return 다음 레벨로 올라가기 위한 필요 경험치 양
+   */
+  public long getNextLevelExp() {
+    return this.requiredExp;
   }
 }
