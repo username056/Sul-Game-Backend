@@ -120,4 +120,13 @@ public class MemberController implements MemberControllerDocs{
     command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberRankingService.reloadRankInfo(command));
   }
+
+  @PostMapping(value = "/exp-logs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
+  public ResponseEntity<MemberDto> getExpLogs(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
+    return ResponseEntity.ok(memberService.getExpLogs(command));
+  }
 }

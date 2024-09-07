@@ -271,4 +271,30 @@ public interface MemberControllerDocs {
   ResponseEntity<MemberDto> reloadRankInfo(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command);
+
+  @Operation(
+      summary = "경험치 변동 내역 조회",
+      description = """
+        **경험치 변동 내역 조회**
+
+        이 API는 사용자가 경험치 변동 내역을 조회할 수 있습니다. 
+        페이징 처리가 되어 있으며, 페이지 번호와 크기를 요청 파라미터로 보낼 수 있습니다.
+
+        **JWT 토큰 필요:**
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
+
+        **입력 파라미터 값:**
+        - **`int pageNumber`**: 페이지 번호 (기본값: 0, 첫 페이지)
+        - **`int pageSize`**: 페이지 크기 (기본값: 10)
+
+        **반환 파라미터 값:**
+        - **`List<ExpLog>`**: 경험치 변동 내역 리스트
+        - **`int totalPages`**: 총 페이지 수
+        - **`int currentPage`**: 현재 페이지 번호
+        - **`long totalElements`**: 총 내역 개수
+        """
+  )
+  ResponseEntity<MemberDto> getExpLogs(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
 }
