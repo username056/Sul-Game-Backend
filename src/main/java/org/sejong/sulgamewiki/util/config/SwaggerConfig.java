@@ -34,6 +34,17 @@ import org.springframework.context.annotation.Configuration;
               
             - 🎨 **[프론트엔드 소스코드](https://github.com/Sul-Game-Wiki/Sul-Game-Frontend)**  
               > 프론트엔드 디자인 및 로직을 확인해보세요
+              
+            ### ⚠️ **API 테스트 공지사항:**
+            - **참고:** 만약 응답에 문제가 있다면,
+              Swagger UI에서 `Send empty value` 체크박스가 선택되어 있지 않은지 확인해 주세요.
+              `체크박스 해제`한 후 다시 시도해 주세요.
+              
+            - **MultipartFile, Object : 에서 잘 발생합니다. Can't Parse Json 오류가 생기면 이부분들을 체크해제해주세요**
+              
+            <img src="http://220.85.169.165/sul-game/images/swagger_error_message.png" alt="에러메시지 이미지" width="300"/>
+            <img src="http://220.85.169.165/sul-game/images/swagger_check_box.png" alt="체크박스 이미지" width="200"/>
+              
             """,
         version = "0.1v"),
     servers = {
