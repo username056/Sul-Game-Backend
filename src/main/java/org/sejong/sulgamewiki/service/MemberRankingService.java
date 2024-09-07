@@ -60,11 +60,14 @@ public class MemberRankingService {
     long remainingExpForNextLevel = nextLevelExp - memberInteraction.getExp();
     double progressPercentToNextLevel = ((double) memberInteraction.getExp() / nextLevelExp) * 100;
 
+    int rankChange = memberInteraction.getPreviousRank() - memberInteraction.getCurrentRank();
+
     command.setExpRank(expRank);
     command.setExpRankPercentile(expRankPercentile);
     command.setNextLevelExp(nextLevelExp);
     command.setRemainingExpForNextLevel(remainingExpForNextLevel);
     command.setProgressPercentToNextLevel(progressPercentToNextLevel);
+    command.setRankChange(rankChange);
   }
 
   public MemberDto reloadRankInfo(MemberCommand command) {
@@ -88,6 +91,7 @@ public class MemberRankingService {
         .nextLevelExp(command.getNextLevelExp())
         .remainingExpForNextLevel(command.getRemainingExpForNextLevel())
         .progressPercentToNextLevel(command.getProgressPercentToNextLevel())
+        .rankChange(command.getRankChange())
         .build();
   }
 }

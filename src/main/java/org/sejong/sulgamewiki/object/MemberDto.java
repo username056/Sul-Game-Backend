@@ -38,4 +38,5 @@ public class MemberDto {
   private Long nextLevelExp; // 다음 레벨까지 필요한 경험치
   private Long remainingExpForNextLevel; // 다음 레벨까지 남은 경험치
   private Double progressPercentToNextLevel; // 다음 레벨까지의 진행 퍼센트
+  private Integer rankChange; // 랭킹 변동 (기준: 어제)
 }

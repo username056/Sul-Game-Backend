@@ -54,12 +54,13 @@ public interface MemberControllerDocs {
       이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
       **경험치 관련 반환 값:**
+      - **`exp`**: 현재 사용자의 총 경험치.
       - **`expRank`**: 회원의 경험치 순위 (1등이 가장 높음).
       - **`expRankPercentile`**: 회원이 상위 몇 퍼센트에 속하는지 나타냅니다. 예를 들어, 1%는 최고 순위.
       - **`nextLevelExp`**: 다음 레벨로 올라가기 위해 필요한 총 경험치.
       - **`remainingExpForNextLevel`**: 다음 레벨로 올라가기 위해 남은 경험치.
       - **`progressPercentToNextLevel`**: 현재 레벨에서 다음 레벨로 진행된 비율 (백분율).
-      - **`exp`**: 현재 사용자의 총 경험치.
+      - **`Integer rankChange`**: 전날 자정과 비교한 랭크 변화. ( 어제 5등이고 현재 3등이면 -> 2) 로 표시됩니다
 
       **입력 파라미터 값:**
       
@@ -75,6 +76,7 @@ public interface MemberControllerDocs {
       - **`Long nextLevelExp`**: 다음 레벨로 올라가기 위한 총 경험치.
       - **`Long remainingExpForNextLevel`**: 다음 레벨까지 남은 경험치.
       - **`Double progressPercentToNextLevel`**: 다음 레벨로 향한 경험치 진행도(백분율).
+      - **`Integer rankChange`**: 전날 자정과 비교한 랭크 변화. ( 어제 5등이고 현재 3등이면 -> 2) 로 표시됩니다
       """
   )
   ResponseEntity<MemberDto> getProfile(
@@ -245,12 +247,13 @@ public interface MemberControllerDocs {
     이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
     **경험치 관련 반환 값:**
+    - **`exp`**: 현재 사용자의 총 경험치.
     - **`expRank`**: 회원의 경험치 순위 (1등이 가장 높음).
     - **`expRankPercentile`**: 회원이 상위 몇 퍼센트에 속하는지 나타냅니다.
     - **`nextLevelExp`**: 다음 레벨로 올라가기 위해 필요한 총 경험치.
     - **`remainingExpForNextLevel`**: 다음 레벨로 올라가기 위해 남은 경험치.
     - **`progressPercentToNextLevel`**: 현재 레벨에서 다음 레벨로 진행된 비율 (백분율).
-    - **`exp`**: 현재 사용자의 총 경험치.
+    - **`Integer rankChange`**: 전날 자정과 비교한 랭크 변화. ( 어제 5등이고 현재 3등이면 -> 2) 로 표시됩니다
 
     **입력 파라미터 값:**
     - **`필요없음`**: 추가 입력 파라미터 없이 JWT 토큰만으로 회원의 경험치 순위를 조회합니다.
@@ -262,6 +265,7 @@ public interface MemberControllerDocs {
     - **`Long nextLevelExp`**: 다음 레벨로 올라가기 위한 총 경험치.
     - **`Long remainingExpForNextLevel`**: 다음 레벨까지 남은 경험치.
     - **`Double progressPercentToNextLevel`**: 다음 레벨로 향한 경험치 진행도(백분율).
+    - **`Integer rankChange`**: 전날 자정과 비교한 랭크 변화. ( 어제 5등이고 현재 3등이면 -> 2) 로 표시됩니다
     """
   )
   ResponseEntity<MemberDto> reloadRankInfo(

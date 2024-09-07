@@ -96,6 +96,7 @@ public class MemberService implements UserDetailsService {
         .nextLevelExp(command.getNextLevelExp()) // 다음 레벨까지 필요한 경험치
         .remainingExpForNextLevel(command.getRemainingExpForNextLevel()) // 다음 레벨까지 남은 경험치
         .progressPercentToNextLevel(command.getProgressPercentToNextLevel()) // 레벨까지 진행 퍼센트
+        .rankChange(command.getRankChange())
         .build();
   }
 
