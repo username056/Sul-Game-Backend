@@ -1,11 +1,10 @@
-package org.sejong.sulgamewiki.util.auth;
+package org.sejong.sulgamewiki.object;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import lombok.Getter;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
-import org.sejong.sulgamewiki.object.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -65,7 +64,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
   @Override
   public boolean isEnabled() {
     // AccountStatus가 ACTIVE인 경우에만 계정이 활성화됨
-    return member.getAccountStatus() == AccountStatus.ACTIVE;
+    return member.getAccountStatus() != AccountStatus.DELETED;
   }
 
   @Override

@@ -9,6 +9,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.AuthDto;
+import org.sejong.sulgamewiki.object.CustomUserDetails;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.JwtUtil;

@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.service.MemberService;
-import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
+import org.sejong.sulgamewiki.object.CustomUserDetails;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
