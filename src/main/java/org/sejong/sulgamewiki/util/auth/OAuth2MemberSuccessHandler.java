@@ -73,6 +73,10 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     log.info("AccessToken 생성됨: {}", accessToken);
     log.info("RefreshToken 생성됨 : {}", refreshToken);
 
+    // Refresh Token을 Member 엔티티에 저장
+    member.setRefreshToken(refreshToken);
+    memberRepository.save(member);
+
     // SecurityContextHolder에 CustomUserDetails 설정
     SecurityContextHolder.getContext().setAuthentication(new OAuth2AuthenticationToken(userDetails, authentication.getAuthorities(), registrationId));
 
