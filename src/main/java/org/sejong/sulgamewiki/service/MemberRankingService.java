@@ -10,6 +10,7 @@ import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.MemberInteraction;
 import org.sejong.sulgamewiki.object.constants.ExpLevel;
+import org.sejong.sulgamewiki.repository.ExpLogRepository;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
@@ -26,6 +27,7 @@ public class MemberRankingService {
 
   private final MemberInteractionRepository memberInteractionRepository;
   private final MemberRepository memberRepository;
+  private final ExpLogRepository expLogRepository;
 
   @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
   @Async
@@ -103,4 +105,5 @@ public class MemberRankingService {
         .rankChange(command.getRankChange())
         .build();
   }
+
 }
