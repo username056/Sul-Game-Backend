@@ -9,6 +9,7 @@ import org.sejong.sulgamewiki.object.CommentCommand;
 import org.sejong.sulgamewiki.object.CommentDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.ReportCommand;
+import org.sejong.sulgamewiki.object.constants.PointRule;
 import org.sejong.sulgamewiki.object.constants.ReportType;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
@@ -46,6 +47,8 @@ public class CommentService {
 
     Comment savedComment = commentRepository.save(comment);
 
+    basePost.updateScore(PointRule.COMMENT);
+
     return CommentDto.builder()
         .comment(savedComment)
         .build();
@@ -55,11 +58,16 @@ public class CommentService {
     Comment comment = commentRepository.findById(command.getCommentId())
         .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
+    BasePost basePost = basePostRepository.findById(command.getBasePostId())
+        .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
     // 댓글 작성자가 요청한 사용자인지 확인
     if (!comment.getMember().getMemberId().equals(command.getMemberId())) {
       throw new CustomException(ErrorCode.COMMENT_NOT_OWNED_BY_USER);
     }
     commentRepository.deleteById(comment.getCommentId());
+
+    basePost.updateScore(PointRule.COMMENT);
   }
 
   public CommentDto getComment(CommentCommand command) {
@@ -89,19 +97,4 @@ public class CommentService {
         .comment(updatedComment)
         .build();
   }
-
-  public void reportComment(Long commentId, Long memberId, ReportType reportType) {
-    Comment comment = commentRepository.findById(commentId)
-        .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-
-    ReportCommand command = ReportCommand.builder()
-        .memberId(memberId)
-        .sourceId(commentId)
-        .sourceType(SourceType.COMMENT)
-        .reportType(reportType)
-        .build();
-
-    reportService.reportComment(command);
-  }
-
 }
