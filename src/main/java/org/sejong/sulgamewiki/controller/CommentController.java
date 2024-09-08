@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
     name = "댓글 관리 API",
     description = "댓글 관리 API 제공"
 )
-public class CommentController {
+public class CommentController implements CommentControllerDocs{
 
   private final CommentService commentService;
 
