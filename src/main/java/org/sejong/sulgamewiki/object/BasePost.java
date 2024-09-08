@@ -22,6 +22,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
+import org.sejong.sulgamewiki.object.constants.PointRule;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
@@ -35,6 +37,7 @@ import org.sejong.sulgamewiki.util.exception.ErrorCode;
 @AllArgsConstructor
 @SuperBuilder
 @DiscriminatorColumn(name = "dtype")
+@Slf4j
 public abstract class BasePost extends BaseTimeEntity {
 
   @Id
@@ -101,12 +104,21 @@ public abstract class BasePost extends BaseTimeEntity {
     this.likedMemberIds.add(memberId);
   }
 
-  // 실시간 점수 증가
+
+  public void updateScore(PointRule pointRule){
+    increaseDailyScore(pointRule.getPoint());
+    increaseWeeklyScore(pointRule.getPoint());
+
+    log.info("[ 포인트 POINT ] 게시물 {}에 {}점 부여 (사유: {})", basePostId,
+        pointRule.getPoint(), pointRule.getDescription());
+  }
+
+  // 데일리 점수 증가
   public void increaseDailyScore(int score) {
     this.dailyScore += score;
   }
 
-  // 오늘의 점수 증가
+  // 위클리 점수 증가
   public void increaseWeeklyScore(int score) {
     this.weeklyScore += score;
   }
