@@ -26,7 +26,6 @@ public class CommentService {
   private final MemberRepository memberRepository;
   private final BasePostRepository basePostRepository;
   private final CommentRepository commentRepository;
-  private final ReportService reportService;
 
   public CommentDto createComment(CommentCommand command) {
 
@@ -50,7 +49,9 @@ public class CommentService {
     basePost.updateScore(PointRule.COMMENT);
 
     return CommentDto.builder()
-        .comment(savedComment)
+        .commentId(comment.getCommentId())
+        .memberId(command.getMemberId())
+        .content(savedComment.getContent())
         .build();
   }
 
@@ -75,11 +76,14 @@ public class CommentService {
         .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
     return CommentDto.builder()
-        .comment(comment)
+        .content(comment.getContent())
+        .commentId(comment.getCommentId())
+        .memberId(comment.getMember().getMemberId())
         .build();
   }
 
   public CommentDto updateComment(CommentCommand command) {
+
     Comment comment = commentRepository.findById(command.getCommentId())
         .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
@@ -94,7 +98,9 @@ public class CommentService {
     Comment updatedComment = commentRepository.save(comment);
 
     return CommentDto.builder()
-        .comment(updatedComment)
+        .commentId(updatedComment.getCommentId())
+        .memberId(updatedComment.getMember().getMemberId())
+        .content(updatedComment.getContent())
         .build();
   }
 }

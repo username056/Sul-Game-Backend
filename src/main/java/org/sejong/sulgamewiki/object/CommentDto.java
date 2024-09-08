@@ -11,6 +11,6 @@ import lombok.ToString;
 @ToString
 public class CommentDto {
   private Long commentId;
-  private Comment comment;
   private Long memberId;
+  private String content;
 }
