@@ -6,10 +6,12 @@ import org.sejong.sulgamewiki.object.CommentCommand;
 import org.sejong.sulgamewiki.object.CommentDto;
 import org.sejong.sulgamewiki.service.CommentService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,23 +22,39 @@ import org.springframework.web.bind.annotation.RestController;
     name = "댓글 관리 API",
     description = "댓글 관리 API 제공"
 )
-public class CommentController {
-    private final CommentService commentService;
+public class CommentController implements CommentControllerDocs{
 
-    @PostMapping("")
-    @LogMonitoringInvocation
-    public ResponseEntity<CommentDto> createComment(
-        @RequestBody CommentCommand command) {
-        CommentDto dto = commentService.createComment(command);
-        return ResponseEntity.ok(dto);
-    }
+  private final CommentService commentService;
 
-    @DeleteMapping("")
-    @LogMonitoringInvocation
-    public ResponseEntity<Void> deleteComment(
-        @RequestBody CommentCommand command
-    ) {
-        commentService.deleteComment(command);
-        return ResponseEntity.noContent().build();
-    }
+  @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  public ResponseEntity<CommentDto> createComment(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute CommentCommand command) {
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+
+    return ResponseEntity.ok(commentService.createComment(command));
+  }
+
+  @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  public ResponseEntity<CommentDto> updateComment(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute CommentCommand command){
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+
+    return ResponseEntity.ok(commentService.updateComment(command));
+  }
+
+  @PostMapping(value = "/delete", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  public ResponseEntity<Void> deleteComment(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute CommentCommand command
+  ) {
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+    commentService.deleteComment(command);
+
+    return ResponseEntity.noContent().build();
+  }
 }
