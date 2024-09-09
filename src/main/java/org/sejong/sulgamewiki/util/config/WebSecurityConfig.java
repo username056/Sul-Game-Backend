@@ -53,7 +53,8 @@ public class WebSecurityConfig {
       "/api/auth/refresh-token", // AccessToken 재발행
       "/login/oauth2/code/**", // OAuth 리다이렉션
       "/oauth2/authorization/**", // OAuth 로그인 페이지
-      "/api/intro/**"
+      "/api/intro/get",
+      "/api/comment/get"
   };
 
   private static final String[] ALLOWED_ORIGINS = {
@@ -94,6 +95,9 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/intro/create").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/intro/delete").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/intro/update").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/comment/create").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/comment/delete").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/comment/update").hasRole("USER")
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
