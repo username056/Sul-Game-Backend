@@ -23,7 +23,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.sejong.sulgamewiki.object.constants.PointRule;
+import org.sejong.sulgamewiki.object.constants.ScoreRule;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
@@ -105,12 +105,12 @@ public abstract class BasePost extends BaseTimeEntity {
   }
 
 
-  public void updateScore(PointRule pointRule){
-    increaseDailyScore(pointRule.getPoint());
-    increaseWeeklyScore(pointRule.getPoint());
+  public void updateScore(ScoreRule scoreRule){
+    increaseDailyScore(scoreRule.getScore());
+    increaseWeeklyScore(scoreRule.getScore());
 
-    log.info("[ 포인트 POINT ] 게시물 {}에 {}점 부여 (사유: {})", basePostId,
-        pointRule.getPoint(), pointRule.getDescription());
+    log.info("[ 스코어 SCORE ] 게시물 {}에 {}점 부여 (사유: {})", basePostId,
+        scoreRule.getScore(), scoreRule.getDescription());
   }
 
   // 데일리 점수 증가

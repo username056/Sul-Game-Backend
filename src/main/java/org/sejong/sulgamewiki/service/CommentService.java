@@ -1,17 +1,12 @@
 package org.sejong.sulgamewiki.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.Comment;
 import org.sejong.sulgamewiki.object.CommentCommand;
 import org.sejong.sulgamewiki.object.CommentDto;
 import org.sejong.sulgamewiki.object.Member;
-import org.sejong.sulgamewiki.object.ReportCommand;
-import org.sejong.sulgamewiki.object.constants.PointRule;
-import org.sejong.sulgamewiki.object.constants.ReportType;
-import org.sejong.sulgamewiki.object.constants.SourceType;
+import org.sejong.sulgamewiki.object.constants.ScoreRule;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.CommentRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
@@ -46,7 +41,7 @@ public class CommentService {
 
     Comment savedComment = commentRepository.save(comment);
 
-    basePost.updateScore(PointRule.COMMENT);
+    basePost.updateScore(ScoreRule.WRITE_COMMENT);
 
     return CommentDto.builder()
         .commentId(comment.getCommentId())
@@ -68,7 +63,7 @@ public class CommentService {
     }
     commentRepository.deleteById(comment.getCommentId());
 
-    basePost.updateScore(PointRule.COMMENT);
+    basePost.updateScore(ScoreRule.WRITE_COMMENT);
   }
 
   public CommentDto getComment(CommentCommand command) {
