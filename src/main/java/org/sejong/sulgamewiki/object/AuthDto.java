@@ -13,9 +13,9 @@ import org.sejong.sulgamewiki.object.constants.AccountStatus;
 @ToString
 public class AuthDto {
   // 로그인 성공 응답 데이터
-  AccountStatus loginAccountStatus;
-  String refreshToken;
-  String nickname;
+  private AccountStatus loginAccountStatus;
+  private String refreshToken;
+  private String nickname;
 
   // OAuthAttributes
   private final Map<String, Object> attributes;
@@ -25,5 +25,8 @@ public class AuthDto {
   private final String provider;
 
   private Member member;
-  private MemberContentInteraction memberContentInteraction;
+  private MemberInteraction memberInteraction;
+
+  // RefreshToken 토큰 -> AccessToken 재발급
+  private String accessToken;
 }

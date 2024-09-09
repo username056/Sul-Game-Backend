@@ -5,8 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
+import org.sejong.sulgamewiki.service.MemberRankingService;
 import org.sejong.sulgamewiki.service.MemberService;
-import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
+import org.sejong.sulgamewiki.object.CustomUserDetails;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController implements MemberControllerDocs{
 
   private final MemberService memberService;
+  private final MemberRankingService memberRankingService;
 
   @PostMapping(value = "/complete-registration" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Override
@@ -107,5 +109,24 @@ public class MemberController implements MemberControllerDocs{
       @ModelAttribute MemberCommand command) {
     command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberService.isDuplicationNickname(command));
+  }
+
+  @PostMapping(value = "/rank", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
+  @LogMonitoringInvocation
+  public ResponseEntity<MemberDto> reloadRankInfo(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
+    return ResponseEntity.ok(memberRankingService.reloadRankInfo(command));
+  }
+
+  @PostMapping(value = "/exp-logs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
+  public ResponseEntity<MemberDto> getExpLogs(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command) {
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
+    return ResponseEntity.ok(memberService.getExpLogs(command));
   }
 }

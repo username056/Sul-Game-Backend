@@ -3,10 +3,14 @@ package org.sejong.sulgamewiki.util.config;
 import java.util.Arrays;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import org.sejong.sulgamewiki.util.auth.CustomOAuth2UserService;
+import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
+import org.sejong.sulgamewiki.repository.MemberRepository;
+import org.sejong.sulgamewiki.service.CustomOAuth2UserService;
+import org.sejong.sulgamewiki.service.ExpManagerService;
 import org.sejong.sulgamewiki.util.JwtUtil;
+import org.sejong.sulgamewiki.util.filter.VisitCountFilter;
 import org.sejong.sulgamewiki.util.auth.OAuth2MemberSuccessHandler;
-import org.sejong.sulgamewiki.util.TokenAuthenticationFilter;
+import org.sejong.sulgamewiki.util.filter.TokenAuthenticationFilter;
 import org.sejong.sulgamewiki.service.MemberService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,9 +35,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+
+  private final MemberRepository memberRepository;
+  private final MemberInteractionRepository memberInteractionRepository;
   private final JwtUtil jwtUtil;
   private final OAuth2MemberSuccessHandler oAuth2MemberSuccessHandler;
   private final CustomOAuth2UserService customOAuth2UserService;
+  private final ExpManagerService expManagerService;
 
   private static final String[] AUTH_WHITELIST = {
       "/", // 기본화면
@@ -42,6 +50,7 @@ public class WebSecurityConfig {
       "/api/test/**", // 테스트 API
       "/v3/api-docs/**", // Swagger
       "/login", // OAuth 관리페이지
+      "/api/auth/refresh-token", // AccessToken 재발행
       "/login/oauth2/code/**", // OAuth 리다이렉션
       "/oauth2/authorization/**", // OAuth 로그인 페이지
       "/api/intro/**"
@@ -49,11 +58,15 @@ public class WebSecurityConfig {
 
   private static final String[] ALLOWED_ORIGINS = {
       "https://api.sul-game.info",
+      "https://test.sul-game.info",
       "https://www.sul-game.info",
       "http://220.85.169.165:8085",
+      "http://220.85.169.165:8086",
       "http://localhost:8080",
+      "http://localhost:3000",
       "http://10.0.2.2:8080"
   };
+
   @Bean
   public WebSecurityCustomizer configure() {
     return (web) -> web.ignoring()
@@ -92,7 +105,10 @@ public class WebSecurityConfig {
                 .invalidateHttpSession(true)
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(new TokenAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new TokenAuthenticationFilter(jwtUtil, Arrays.asList(AUTH_WHITELIST)),
+                UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(new VisitCountFilter(memberRepository, memberInteractionRepository, expManagerService),
+                TokenAuthenticationFilter.class)
             .build();
   }
 
@@ -118,8 +134,9 @@ public class WebSecurityConfig {
     source.registerCorsConfiguration("/**", configuration);
     return source;
   }
+
   @Bean
-  public BCryptPasswordEncoder passwordEncoder(){
+  public BCryptPasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 }

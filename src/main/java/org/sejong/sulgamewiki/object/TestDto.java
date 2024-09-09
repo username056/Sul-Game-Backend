@@ -14,7 +14,7 @@ import lombok.ToString;
 public class TestDto {
   //mockMember
   private Member member;
-  private MemberContentInteraction memberContentInteraction;
+  private MemberInteraction memberInteraction;
 
   // 삭제된 객체
   private Long deletedMemberId;
@@ -24,7 +24,7 @@ public class TestDto {
   private String email;
   private LocalDate birthDate;
   private List<Member> members;
-  private List<MemberContentInteraction> memberContentInteractions;
+  private List<MemberInteraction> memberInteractions;
 
   //mock Post
   private List<BasePost> basePosts;

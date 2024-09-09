@@ -1,14 +1,15 @@
-package org.sejong.sulgamewiki.util;
+package org.sejong.sulgamewiki.util.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
+import org.sejong.sulgamewiki.object.CustomUserDetails;
+import org.sejong.sulgamewiki.util.JwtUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
@@ -18,19 +19,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
   private final JwtUtil jwtUtil;
+  private final List<String> whitelist;
   private final AntPathMatcher antPathMatcher = new AntPathMatcher();
-
-  private static final String[] WHITELIST = {
-      "/",
-      "/api/signup",
-      "/api/login",
-      "/login/**",
-      "/signup",
-      "/docs/**",
-      "/v3/api-docs/**",
-      "/login/oauth2/code/google",
-      "/api/members/complete-registration"
-  };
 
   @Override
   protected void doFilterInternal(HttpServletRequest request,
@@ -39,32 +29,37 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
 
     String URI = request.getRequestURI();
+    log.info("요청된 URI: {}", URI);
 
-    // WHITELIST URL인 경우 JWT 토큰 검증을 생략
+    // 화이트리스트에 있는 URL은 JWT 검증을 생략
     if (isWhitelistedPath(URI)) {
+      log.info("화이트리스트에 포함된 경로이므로 JWT 검증을 생략합니다: {}", URI);
       filterChain.doFilter(request, response);
       return;
     }
 
     String token = getAccessToken(request);
+    log.info("JWT 토큰 추출: {}", token != null ? "토큰 존재" : "토큰 없음");
 
     if (token != null && jwtUtil.validateToken(token)) {
+      log.info("JWT 토큰 유효성 검사 성공");
+
       Authentication authentication = jwtUtil.getAuthentication(token);
       if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        log.info("Set Authentication to security context for '{}', uri: {}", ((CustomUserDetails) authentication.getPrincipal()).getUsername(), URI);
+        log.info("SecurityContext에 '{}' 사용자 인증 정보 설정 완료", ((CustomUserDetails) authentication.getPrincipal()).getUsername());
       } else {
-        log.warn("Authentication object is null or not instance of CustomUserDetails");
+        log.warn("Authentication 객체가 null이거나 CustomUserDetails 타입이 아닙니다.");
       }
     } else {
-      log.info("No valid JWT token found, uri: {}", URI);
+      log.warn("유효하지 않은 JWT 토큰입니다: {}", URI);
     }
 
     filterChain.doFilter(request, response);
   }
 
   private boolean isWhitelistedPath(String uri) {
-    return Arrays.stream(WHITELIST).anyMatch(path -> antPathMatcher.match(path, uri));
+    return whitelist.stream().anyMatch(path -> antPathMatcher.match(path, uri));
   }
 
   private String getAccessToken(HttpServletRequest request) {

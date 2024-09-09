@@ -3,7 +3,7 @@ package org.sejong.sulgamewiki.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
-import org.sejong.sulgamewiki.util.auth.CustomUserDetails;
+import org.sejong.sulgamewiki.object.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -44,23 +44,40 @@ public interface MemberControllerDocs {
   @Operation(
       summary = "마이페이지",
       description = """
-        **마이페이지**
+      **마이페이지**
 
-        회원의 마이페이지 정보를 제공합니다. 이 API는 사용자의 프로필과 관련된 데이터를 조회할 수 있습니다.
+      이 API는 인증된 사용자의 프로필 정보를 조회합니다. 
+      반환되는 데이터는 회원의 기본 정보, 콘텐츠 상호작용 정보, 그리고 회원의 경험치 순위와 퍼센트 등입니다.
 
-        **JWT 토큰 필요:**
-        
-        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
+      **JWT 토큰 필요:**
+      
+      이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
-        **입력 파라미터 값:**
+      **경험치 관련 반환 값:**
+      - **`exp`**: 현재 사용자의 총 경험치.
+      - **`expRank`**: 회원의 경험치 순위 (1등이 가장 높음).
+      - **`expRankPercentile`**: 회원이 상위 몇 퍼센트에 속하는지 나타냅니다. 예를 들어, 1%는 최고 순위.
+      - **`nextLevelExp`**: 다음 레벨로 올라가기 위해 필요한 총 경험치.
+      - **`remainingExpForNextLevel`**: 다음 레벨로 올라가기 위해 남은 경험치.
+      - **`progressPercentToNextLevel`**: 현재 레벨에서 다음 레벨로 진행된 비율 (백분율).
+      - **`Integer rankChange`**: 전날 자정과 비교한 랭크 변화. ( 어제 5등이고 현재 3등이면 -> 2) 로 표시됩니다
 
-        - **`필요없음`**
-        
-        **반환 파라미터 값:**
+      **입력 파라미터 값:**
+      
+      - **`필요없음`**: 추가 입력 파라미터 없이 JWT 토큰만으로 회원 정보를 조회합니다.
 
-        - **`Member member`**: 회원 정보
-        - **`MemberContentInteraction memberContentInteraction`**: 회원의 콘텐츠 상호작용 정보
-        """
+      **반환 파라미터 값:**
+      
+      - **`Member member`**: 회원의 기본 정보.
+      - **`MemberInteraction memberInteraction`**: 회원의 콘텐츠 상호작용 정보.
+      - **`Long exp`**: 현재 사용자의 총 경험치.
+      - **`Integer expRank`**: 회원의 경험치 순위.
+      - **`Double expRankPercentile`**: 상위 몇 퍼센트에 속하는지 백분율로 반환.
+      - **`Long nextLevelExp`**: 다음 레벨로 올라가기 위한 총 경험치.
+      - **`Long remainingExpForNextLevel`**: 다음 레벨까지 남은 경험치.
+      - **`Double progressPercentToNextLevel`**: 다음 레벨로 향한 경험치 진행도(백분율).
+      - **`Integer rankChange`**: 전날 자정과 비교한 랭크 변화. ( 어제 5등이고 현재 3등이면 -> 2) 로 표시됩니다
+      """
   )
   ResponseEntity<MemberDto> getProfile(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -215,6 +232,69 @@ public interface MemberControllerDocs {
         """
   )
   ResponseEntity<MemberDto> checkDuplicateNickname(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
+
+  @Operation(
+      summary = "경험치 정보 업데이트",
+      description = """
+    **경험치 정보 업데이트**
+
+    이 API는 사용자가 경험치를 기반으로 한 순위 정보를 다시 계산하고, 업데이트된 순위를 반환합니다. 
+    순위는 경험치에 따라 결정되며, 상위 퍼센트와 다음 레벨로의 진행도를 함께 제공합니다.
+
+    **JWT 토큰 필요:**
+    이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
+
+    **경험치 관련 반환 값:**
+    - **`exp`**: 현재 사용자의 총 경험치.
+    - **`expRank`**: 회원의 경험치 순위 (1등이 가장 높음).
+    - **`expRankPercentile`**: 회원이 상위 몇 퍼센트에 속하는지 나타냅니다.
+    - **`nextLevelExp`**: 다음 레벨로 올라가기 위해 필요한 총 경험치.
+    - **`remainingExpForNextLevel`**: 다음 레벨로 올라가기 위해 남은 경험치.
+    - **`progressPercentToNextLevel`**: 현재 레벨에서 다음 레벨로 진행된 비율 (백분율).
+    - **`Integer rankChange`**: 전날 자정과 비교한 랭크 변화. ( 어제 5등이고 현재 3등이면 -> 2) 로 표시됩니다
+
+    **입력 파라미터 값:**
+    - **`필요없음`**: 추가 입력 파라미터 없이 JWT 토큰만으로 회원의 경험치 순위를 조회합니다.
+
+    **반환 파라미터 값:**
+    - **`Long exp`**: 현재 사용자의 총 경험치.
+    - **`Integer expRank`**: 회원의 경험치 순위.
+    - **`Double expRankPercentile`**: 상위 몇 퍼센트에 속하는지 백분율로 반환.
+    - **`Long nextLevelExp`**: 다음 레벨로 올라가기 위한 총 경험치.
+    - **`Long remainingExpForNextLevel`**: 다음 레벨까지 남은 경험치.
+    - **`Double progressPercentToNextLevel`**: 다음 레벨로 향한 경험치 진행도(백분율).
+    - **`Integer rankChange`**: 전날 자정과 비교한 랭크 변화. ( 어제 5등이고 현재 3등이면 -> 2) 로 표시됩니다
+    """
+  )
+  ResponseEntity<MemberDto> reloadRankInfo(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
+
+  @Operation(
+      summary = "경험치 변동 내역 조회",
+      description = """
+        **경험치 변동 내역 조회**
+
+        이 API는 사용자가 경험치 변동 내역을 조회할 수 있습니다. 
+        페이징 처리가 되어 있으며, 페이지 번호와 크기를 요청 파라미터로 보낼 수 있습니다.
+
+        **JWT 토큰 필요:**
+        이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
+
+        **입력 파라미터 값:**
+        - **`int pageNumber`**: 페이지 번호 (기본값: 0, 첫 페이지)
+        - **`int pageSize`**: 페이지 크기 (기본값: 10)
+
+        **반환 파라미터 값:**
+        - **`List<ExpLog>`**: 경험치 변동 내역 리스트
+        - **`int totalPages`**: 총 페이지 수
+        - **`int currentPage`**: 현재 페이지 번호
+        - **`long totalElements`**: 총 내역 개수
+        """
+  )
+  ResponseEntity<MemberDto> getExpLogs(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @ModelAttribute MemberCommand command);
 }

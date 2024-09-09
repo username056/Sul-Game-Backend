@@ -19,7 +19,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
-import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.object.constants.Role;
 
 @Entity
@@ -57,14 +56,6 @@ public class Member extends BaseTimeEntity {
 
   @Builder.Default
   @Column(nullable = false)
-  private Long exp = 0L;
-
-  @Builder.Default
-  @Enumerated(EnumType.STRING)
-  private ExpLevel expLevel = ExpLevel.D;
-
-  @Builder.Default
-  @Column(nullable = false)
   private Boolean isUniversityPublic = true;
 
   @Builder.Default
@@ -90,8 +81,10 @@ public class Member extends BaseTimeEntity {
   @Column(nullable = false)
   private Boolean infoPopupVisible = true;
 
-  @Column(nullable = false)
+  // 마지막 로그인 일시
   private LocalDateTime lastLoginTime = LocalDateTime.now();
+
+  private String refreshToken;
 
   public void setNickname(String name) {
     if (!isNicknameModified) {

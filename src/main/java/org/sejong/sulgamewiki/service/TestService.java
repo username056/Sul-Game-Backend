@@ -3,7 +3,6 @@ package org.sejong.sulgamewiki.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -12,14 +11,14 @@ import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.CreationGame;
 import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.Member;
-import org.sejong.sulgamewiki.object.MemberContentInteraction;
+import org.sejong.sulgamewiki.object.MemberInteraction;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.TestCommand;
 import org.sejong.sulgamewiki.object.TestDto;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
 import org.sejong.sulgamewiki.object.constants.ExpLevel;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
-import org.sejong.sulgamewiki.repository.MemberContentInteractionRepository;
+import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.MockUtil;
 import org.sejong.sulgamewiki.util.exception.CustomException;
@@ -33,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class TestService {
   private final MemberRepository memberRepository;
-  private final MemberContentInteractionRepository memberContentInteractionRepository;
+  private final MemberInteractionRepository memberInteractionRepository;
   private final BasePostRepository basePostRepository;
 
   /**
@@ -63,12 +62,12 @@ public class TestService {
         .isNotificationEnabled(true)
         .accountStatus(AccountStatus.PENDING)
         .lastLoginTime(LocalDateTime.now())
-        .exp(0L)
-        .expLevel(ExpLevel.D)
         .build();
 
-    MemberContentInteraction memberContent = MemberContentInteraction.builder()
+    MemberInteraction memberContent = MemberInteraction.builder()
         .member(member)
+        .exp(0L)
+        .expLevel(ExpLevel.D)
         .totalLikeCount(0)
         .totalCommentCount(0)
         .totalPostCount(0)
@@ -85,15 +84,15 @@ public class TestService {
 
     // DB 저장
     Member savedMember = memberRepository.save(member);
-    MemberContentInteraction savedMemberContent
-        = memberContentInteractionRepository.save(memberContent);
+    MemberInteraction savedMemberContent
+        = memberInteractionRepository.save(memberContent);
 
     log.info("가짜 회원 생성 : id : {} , email : {}", member.getMemberId(), member.getEmail());
 
     return TestDto
         .builder()
         .member(savedMember)
-        .memberContentInteraction(savedMemberContent)
+        .memberInteraction(savedMemberContent)
         .build();
   }
 
@@ -113,13 +112,13 @@ public class TestService {
     Member member = memberRepository.findByEmail(command.getEmail())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    MemberContentInteraction memberContentInteraction
-        = memberContentInteractionRepository.findByMember(member);
+    MemberInteraction memberInteraction = memberInteractionRepository.findById(member.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
 
     Long targetDeleteMemberId = member.getMemberId();
-    Long targetDeleteMemberInteractionId = memberContentInteraction.getId();
+    Long targetDeleteMemberInteractionId = memberInteraction.getId();
 
-    memberContentInteractionRepository.deleteById(targetDeleteMemberInteractionId);
+    memberInteractionRepository.deleteById(targetDeleteMemberInteractionId);
     memberRepository.deleteById(targetDeleteMemberId);
 
     return TestDto.builder()
