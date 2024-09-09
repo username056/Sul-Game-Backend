@@ -5,5 +5,6 @@ public enum SourceType {
   OFFICIAL_GAME,
   CREATION_GAME,
   COMMENT,
+  GAMES,
   MEMBER
 }
