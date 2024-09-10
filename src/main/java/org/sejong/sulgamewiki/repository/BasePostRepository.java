@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePost;
+import org.sejong.sulgamewiki.object.Comment;
 import org.sejong.sulgamewiki.object.CreationGame;
 import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.OfficialGame;
@@ -36,7 +37,7 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
   List<BasePost> findByBasePostIdIn(List<Long> ids);
 
   @Query("SELECT entity FROM BasePost entity WHERE entity.basePostId = :basePostId AND entity.isDeleted = false")
-  Optional<BasePost> findByBasePostId(Long basePostId);
+  BasePost findByBasePostId(Long basePostId);
 
   @Query("SELECT entity FROM BaseMedia entity WHERE entity.basePost.basePostId = :basePostId AND entity.basePost.isDeleted = false")
   List<BaseMedia> findMediasByBasePostId(Long basePostId);
@@ -49,5 +50,4 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
 
   @Query("SELECT entity FROM CreationGame entity WHERE entity.basePostId = :basePostId AND entity.isDeleted = false")
   Optional<CreationGame> findCreationGameByBasePostId(Long basePostId);
-
 }

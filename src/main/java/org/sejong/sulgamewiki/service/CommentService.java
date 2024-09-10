@@ -36,7 +36,6 @@ public class CommentService {
         .basePost(basePost)
         .likeCount(0)
         .reportedCount(0)
-        .isEdited(false)
         .build();
 
     Comment savedComment = commentRepository.save(comment);
@@ -49,6 +48,7 @@ public class CommentService {
         .commentId(comment.getCommentId())
         .memberId(command.getMemberId())
         .content(savedComment.getContent())
+        .comment(savedComment)
         .build();
   }
 
@@ -78,6 +78,7 @@ public class CommentService {
         .content(comment.getContent())
         .commentId(comment.getCommentId())
         .memberId(comment.getMember().getMemberId())
+        .comment(comment)
         .build();
   }
 
@@ -92,7 +93,7 @@ public class CommentService {
     }
 
     comment.setContent(command.getContent());
-    comment.setEdited(true);
+    comment.markAsUpdated();
 
     Comment updatedComment = commentRepository.save(comment);
 

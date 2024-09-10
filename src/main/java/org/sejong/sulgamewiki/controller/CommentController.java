@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.CommentCommand;
 import org.sejong.sulgamewiki.object.CommentDto;
 import org.sejong.sulgamewiki.service.CommentService;
+import org.sejong.sulgamewiki.service.LikeService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController implements CommentControllerDocs{
 
   private final CommentService commentService;
+  private final LikeService likeService;
 
   @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
@@ -56,5 +58,27 @@ public class CommentController implements CommentControllerDocs{
     commentService.deleteComment(command);
 
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping(value = "/like", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  public ResponseEntity<CommentDto> upCommentLike(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute CommentCommand command
+  ){
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+
+    return ResponseEntity.ok(likeService.upCommentLike(command));
+  }
+
+  @PostMapping(value = "/unlike", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  public ResponseEntity<CommentDto> downCommentLike(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute CommentCommand command
+  ){
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+
+    return ResponseEntity.ok(likeService.downCommentLike(command));
   }
 }
