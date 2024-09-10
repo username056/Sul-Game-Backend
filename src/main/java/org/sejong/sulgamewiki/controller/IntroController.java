@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.service.IntroService;
+import org.sejong.sulgamewiki.service.LikeService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 )
 public class IntroController implements IntroControllerDocs{
   private final IntroService introService;
+  private final LikeService likeService;
 
   @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
@@ -58,5 +60,24 @@ public class IntroController implements IntroControllerDocs{
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
     introService.deleteIntro(command);
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping(value = "/like", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<BasePostDto> likeIntro(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute BasePostCommand command) {
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+
+    return ResponseEntity.ok(likeService.upPostLike(command));
+  }
+
+  @PostMapping(value = "/cancel-like", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<BasePostDto> cancelIntroLike(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute BasePostCommand command
+  ){
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+
+    return ResponseEntity.ok(likeService.cancelPostLike(command));
   }
 }

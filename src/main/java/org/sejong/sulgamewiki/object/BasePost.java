@@ -91,7 +91,7 @@ public abstract class BasePost extends BaseTimeEntity {
 
 
   public void cancelLike(Long memberId) {
-    if(this.likedMemberIds.contains(memberId)) {
+    if(!this.likedMemberIds.contains(memberId)) {
       throw new CustomException(ErrorCode.NO_LIKE_TO_CANCEL);
     }
     if (likes > 0) {
@@ -103,6 +103,9 @@ public abstract class BasePost extends BaseTimeEntity {
   }
 
   public void upLike(Long memberId) {
+    if(this.likedMemberIds.contains(memberId)) {
+      throw new CustomException(ErrorCode.ALREADY_LIKED);
+    }
     likes++;
     this.likedMemberIds.add(memberId);
   }

@@ -41,8 +41,9 @@ public class CommentService {
     Comment savedComment = commentRepository.save(comment);
 
     basePost.updateScore(ScoreRule.WRITE_COMMENT);
-
     basePost.increaseCommentCount();
+
+    basePostRepository.save(basePost);
 
     return CommentDto.builder()
         .commentId(comment.getCommentId())
@@ -66,8 +67,8 @@ public class CommentService {
     commentRepository.deleteById(comment.getCommentId());
 
     basePost.updateScore(ScoreRule.WRITE_COMMENT);
-
     basePost.decreaseCommentCount();
+    basePostRepository.save(basePost);
   }
 
   public CommentDto getComment(CommentCommand command) {

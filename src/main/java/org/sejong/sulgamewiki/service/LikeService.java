@@ -1,7 +1,6 @@
 package org.sejong.sulgamewiki.service;
 
 
-import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.BasePostCommand;
@@ -9,7 +8,6 @@ import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Comment;
 import org.sejong.sulgamewiki.object.CommentCommand;
 import org.sejong.sulgamewiki.object.CommentDto;
-import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.CommentRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
@@ -42,7 +40,7 @@ public class LikeService {
         .build();
   }
 
-  public BasePostDto downPostLike(BasePostCommand command) {
+  public BasePostDto cancelPostLike(BasePostCommand command) {
 
     BasePost basePost = basePostRepository.findById(command.getBasePostId())
         .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -74,7 +72,7 @@ public class LikeService {
         .build();
   }
 
-  public CommentDto downCommentLike(CommentCommand command) {
+  public CommentDto cancelCommentLike(CommentCommand command) {
 
     BasePost basePost = basePostRepository.findById(command.getBasePostId())
         .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));

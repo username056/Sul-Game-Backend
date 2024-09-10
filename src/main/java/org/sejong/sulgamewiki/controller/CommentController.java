@@ -73,12 +73,12 @@ public class CommentController implements CommentControllerDocs{
 
   @PostMapping(value = "/unlike", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
-  public ResponseEntity<CommentDto> downCommentLike(
+  public ResponseEntity<CommentDto> cancelCommentLike(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute CommentCommand command
   ){
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
-    return ResponseEntity.ok(likeService.downCommentLike(command));
+    return ResponseEntity.ok(likeService.cancelCommentLike(command));
   }
 }
