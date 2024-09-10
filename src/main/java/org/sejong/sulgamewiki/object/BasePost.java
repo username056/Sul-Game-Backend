@@ -75,6 +75,9 @@ public abstract class BasePost extends BaseTimeEntity {
   @Builder.Default
   private int weeklyScore = 0;  // 매주 일요일마다 초기화
 
+  @Builder.Default
+  private int commentCount = 0;
+
   private SourceType sourceType;
 
   // TODO: 썸네일 정해지면 ENUM타입 생성하기
@@ -112,6 +115,10 @@ public abstract class BasePost extends BaseTimeEntity {
     log.info("[ 스코어 SCORE ] 게시물 {}에 {}점 부여 (사유: {})", basePostId,
         scoreRule.getScore(), scoreRule.getDescription());
   }
+
+  public void increaseCommentCount(){this.commentCount++;}
+
+  public void decreaseCommentCount(){this.commentCount--;}
 
   // 데일리 점수 증가
   public void increaseDailyScore(int score) {

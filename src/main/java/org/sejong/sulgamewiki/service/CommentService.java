@@ -43,6 +43,8 @@ public class CommentService {
 
     basePost.updateScore(ScoreRule.WRITE_COMMENT);
 
+    basePost.increaseCommentCount();
+
     return CommentDto.builder()
         .commentId(comment.getCommentId())
         .memberId(command.getMemberId())
@@ -64,6 +66,8 @@ public class CommentService {
     commentRepository.deleteById(comment.getCommentId());
 
     basePost.updateScore(ScoreRule.WRITE_COMMENT);
+
+    basePost.decreaseCommentCount();
   }
 
   public CommentDto getComment(CommentCommand command) {
