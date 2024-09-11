@@ -10,7 +10,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -23,7 +25,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.sejong.sulgamewiki.object.constants.PointRule;
+import org.sejong.sulgamewiki.object.constants.ScoreRule;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
@@ -44,13 +46,19 @@ public abstract class BasePost extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long basePostId;
 
+  // 20
   @Column(length = 100)
+  @Size(max = 20, message = "제목 20자 제한")
   private String title;
 
-  @Column(length = 90)
+  // 20
+  @Column(length = 100)
+  @Size(max = 20, message = "소개 20자 제한")
   private String introduction;
 
-  @Column(length = 500)
+  // 1000
+  @Lob
+  @Size(max = 1000, message = "설명 1000자 제한")
   private String description;
 
   @Builder.Default
@@ -75,12 +83,19 @@ public abstract class BasePost extends BaseTimeEntity {
   @Builder.Default
   private int weeklyScore = 0;  // 매주 일요일마다 초기화
 
+  @Builder.Default
+  private int totalScore = 0;   // 초기화 x
+
+  @Builder.Default
+  private int commentCount = 0;
+
   private SourceType sourceType;
 
   // TODO: 썸네일 정해지면 ENUM타입 생성하기
   // 썸네일 아이콘 선택 필드
   @Column(length = 255)
   private String thumbnailIcon;
+
 
   // 내 정보 공개 여부 필드
   @Builder.Default
@@ -105,12 +120,12 @@ public abstract class BasePost extends BaseTimeEntity {
   }
 
 
-  public void updateScore(PointRule pointRule){
-    increaseDailyScore(pointRule.getPoint());
-    increaseWeeklyScore(pointRule.getPoint());
+  public void updateScore(ScoreRule scoreRule){
+    increaseDailyScore(scoreRule.getPoint());
+    increaseWeeklyScore(scoreRule.getPoint());
 
     log.info("[ 포인트 POINT ] 게시물 {}에 {}점 부여 (사유: {})", basePostId,
-        pointRule.getPoint(), pointRule.getDescription());
+        scoreRule.getPoint(), scoreRule.getDescription());
   }
 
   // 데일리 점수 증가
