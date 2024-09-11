@@ -1,9 +1,6 @@
 package org.sejong.sulgamewiki.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePostCommand;
@@ -68,6 +65,10 @@ public class IntroController implements IntroControllerDocs{
       @ModelAttribute BasePostCommand command) {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
-    return ResponseEntity.ok(likeService.postLike(command));
+    if (!command.getIsLiked()){
+      return ResponseEntity.ok(likeService.upPostLike(command));
+    } else {
+      return ResponseEntity.ok(likeService.cancelPostLike(command));
+    }
   }
 }

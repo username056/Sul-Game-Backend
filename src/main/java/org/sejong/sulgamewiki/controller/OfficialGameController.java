@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
-import org.sejong.sulgamewiki.object.ReportCommand;
-import org.sejong.sulgamewiki.object.ReportDto;
 import org.sejong.sulgamewiki.service.LikeService;
 import org.sejong.sulgamewiki.service.OfficialGameService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
@@ -70,6 +68,10 @@ public class OfficialGameController implements OfficialGameControllerDocs {
       @ModelAttribute BasePostCommand command) {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
-    return ResponseEntity.ok(likeService.postLike(command));
+    if (!command.getIsLiked()) {
+      return ResponseEntity.ok(likeService.upPostLike(command));
+    } else {
+      return ResponseEntity.ok(likeService.cancelPostLike(command));
+    }
   }
 }

@@ -11,4 +11,5 @@ import lombok.ToString;
 @ToString
 public class CommentDto {
   private Comment comment;
+  private Boolean isLiked;
 }

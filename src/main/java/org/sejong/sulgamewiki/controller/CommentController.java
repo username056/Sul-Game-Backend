@@ -68,6 +68,10 @@ public class CommentController implements CommentControllerDocs{
   ){
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
-    return ResponseEntity.ok(likeService.commentLike(command));
+    if (!command.getIsLiked()){
+      return ResponseEntity.ok(likeService.upCommentLike(command));
+    } else {
+      return ResponseEntity.ok(likeService.cancelCommentLike(command));
+    }
   }
 }

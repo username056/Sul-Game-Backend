@@ -23,6 +23,8 @@ public class BasePostCommand {
   private SourceType sourceType;
   private BasePost basePost;
   private String thumbnailIcon;
+  private Boolean isLiked;
+  private Boolean isBookmarked;
 
   // official, creation
   private String introduction;
