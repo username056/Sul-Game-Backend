@@ -1,5 +1,10 @@
 package org.sejong.sulgamewiki.object.constants;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum SortBy {
   CREATION_DATE("createdDate", "생성날짜순"),
   LIKES("likes", "좋아요순"),
@@ -9,17 +14,4 @@ public enum SortBy {
 
   private final String value;  // 정렬에 사용할 필드명
   private final String description;  // 설명용
-
-  SortBy(String value, String description) {
-    this.value = value;
-    this.description = description;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public String getDescription() {
-    return description;
-  }
 }

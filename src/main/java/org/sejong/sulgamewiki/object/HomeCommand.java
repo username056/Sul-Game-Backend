@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort.Direction;
 public class HomeCommand {
   private int pageNumber;
   private int pageSize;
-  private Pageable pageable;
   private SourceType postType;
   private SortBy sortBy;
   private Direction Direction;

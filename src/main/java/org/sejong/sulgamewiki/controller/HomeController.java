@@ -24,14 +24,13 @@ public class HomeController {
 
   private final HomeService homeService;
 
-  @PostMapping(value = "/get-homepage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/get", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<HomeDto> getHomepage(@ModelAttribute HomeCommand command) {
-    command.setPageable(PageRequest.of(command.getPageNumber(), command.getPageSize()));
 
     return ResponseEntity.ok(homeService.getHomepage(command));
   }
 
-  @PostMapping(value = "/get-posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<HomeDto> getPosts(@ModelAttribute HomeCommand command) {
 
     return ResponseEntity.ok(homeService.getPosts(command));
