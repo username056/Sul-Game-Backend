@@ -13,6 +13,7 @@ import org.sejong.sulgamewiki.repository.CommentRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +27,13 @@ public class LikeService {
   //TODO comment Like 추가해야함
   //FIXME: 지금 basePost에 LikedMemberIds 추가함 : 이전 코드 수정 필요
 
+  public BasePostDto likePost(BasePostCommand command) {
+    if (!command.getIsLiked()) {
+      return upPostLike(command);
+    } else{
+      return cancelPostLike(command);
+    }
+  }
   public BasePostDto upPostLike(BasePostCommand command) {
 
     BasePost basePost = basePostRepository.findById(command.getBasePostId())
@@ -58,6 +66,13 @@ public class LikeService {
 
 
 
+  public CommentDto likeComment(CommentCommand command) {
+    if (!command.getIsLiked()) {
+      return upCommentLike(command);
+    } else{
+      return cancelCommentLike(command);
+    }
+  }
   public CommentDto upCommentLike(CommentCommand command) {
 
     BasePost basePost = basePostRepository.findById(command.getBasePostId())

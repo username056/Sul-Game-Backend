@@ -65,10 +65,6 @@ public class IntroController implements IntroControllerDocs{
       @ModelAttribute BasePostCommand command) {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
-    if (!command.getIsLiked()){
-      return ResponseEntity.ok(likeService.upPostLike(command));
-    } else {
-      return ResponseEntity.ok(likeService.cancelPostLike(command));
-    }
+    return ResponseEntity.ok(likeService.likePost(command));
   }
 }
