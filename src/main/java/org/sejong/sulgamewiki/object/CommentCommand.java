@@ -15,4 +15,5 @@ public class CommentCommand {
   private Long BasePostId;
   private Long memberId;
   private String content;
+  private Boolean isLiked;
 }

@@ -55,12 +55,9 @@ public class Comment extends BaseTimeEntity {
     @Builder.Default
     private int reportedCount = 0;
 
-    @Builder.Default
-    private boolean isEdited = false;
-
 
     public void cancelLike(Long memberId) {
-        if(this.likedMemberIds.contains(memberId)) {
+        if(!this.likedMemberIds.contains(memberId)) {
             throw new CustomException(ErrorCode.NO_LIKE_TO_CANCEL);
         }
         if (likeCount > 0) {
@@ -72,6 +69,9 @@ public class Comment extends BaseTimeEntity {
     }
 
     public void upLike(Long memberId) {
+        if(this.likedMemberIds.contains(memberId)) {
+            throw new CustomException(ErrorCode.ALREADY_LIKED);
+        }
         likeCount++;
         this.likedMemberIds.add(memberId);
     }
