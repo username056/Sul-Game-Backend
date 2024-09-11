@@ -90,6 +90,14 @@ public abstract class BasePost extends BaseTimeEntity {
   private boolean isCreatorInfoPrivate = false; // 기본값은 공개
 
 
+  public void postLike(Long memberId){
+    if(this.likedMemberIds.contains(memberId)){
+      cancelLike(memberId);
+    } else if (!this.likedMemberIds.contains(memberId)) {
+      upLike(memberId);
+    }
+  }
+
   public void cancelLike(Long memberId) {
     if(!this.likedMemberIds.contains(memberId)) {
       throw new CustomException(ErrorCode.NO_LIKE_TO_CANCEL);

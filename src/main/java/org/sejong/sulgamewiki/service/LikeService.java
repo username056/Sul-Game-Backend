@@ -26,12 +26,12 @@ public class LikeService {
   //TODO comment Like 추가해야함
   //FIXME: 지금 basePost에 LikedMemberIds 추가함 : 이전 코드 수정 필요
 
-  public BasePostDto upPostLike(BasePostCommand command) {
+  public BasePostDto postLike(BasePostCommand command) {
 
     BasePost basePost = basePostRepository.findById(command.getBasePostId())
         .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-    basePost.upLike(command.getMemberId());
+    basePost.postLike(command.getMemberId());
 
     BasePost savedBasePost = basePostRepository.save(basePost);
 
@@ -40,22 +40,7 @@ public class LikeService {
         .build();
   }
 
-  public BasePostDto cancelPostLike(BasePostCommand command) {
-
-    BasePost basePost = basePostRepository.findById(command.getBasePostId())
-        .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-
-    // 좋아요 취소
-    basePost.cancelLike(command.getMemberId());
-
-    BasePost savedBasePost = basePostRepository.save(basePost);
-
-    return BasePostDto.builder()
-        .basePost(savedBasePost)
-        .build();
-  }
-
-  public CommentDto upCommentLike(CommentCommand command) {
+  public CommentDto commentLike(CommentCommand command) {
 
     BasePost basePost = basePostRepository.findById(command.getBasePostId())
         .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -63,24 +48,8 @@ public class LikeService {
     Comment comment = commentRepository.findById(command.getCommentId())
         .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-    comment.upLike(command.getMemberId());
+    comment.commentLike(command.getMemberId());
 
-    basePostRepository.save(basePost);
-
-    return CommentDto.builder()
-        .comment(comment)
-        .build();
-  }
-
-  public CommentDto cancelCommentLike(CommentCommand command) {
-
-    BasePost basePost = basePostRepository.findById(command.getBasePostId())
-        .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-
-    Comment comment = commentRepository.findById(command.getCommentId())
-            .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-
-    comment.cancelLike(command.getMemberId());
     basePostRepository.save(basePost);
 
     return CommentDto.builder()

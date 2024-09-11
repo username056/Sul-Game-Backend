@@ -62,23 +62,12 @@ public class CommentController implements CommentControllerDocs{
 
   @PostMapping(value = "/like", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
-  public ResponseEntity<CommentDto> upCommentLike(
+  public ResponseEntity<CommentDto> commentLike(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute CommentCommand command
   ){
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
-    return ResponseEntity.ok(likeService.upCommentLike(command));
-  }
-
-  @PostMapping(value = "/unlike", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  @LogMonitoringInvocation
-  public ResponseEntity<CommentDto> cancelCommentLike(
-      @AuthenticationPrincipal UserDetails userDetails,
-      @ModelAttribute CommentCommand command
-  ){
-    command.setMemberId(Long.parseLong(userDetails.getUsername()));
-
-    return ResponseEntity.ok(likeService.cancelCommentLike(command));
+    return ResponseEntity.ok(likeService.commentLike(command));
   }
 }

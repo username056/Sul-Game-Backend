@@ -68,16 +68,6 @@ public class IntroController implements IntroControllerDocs{
       @ModelAttribute BasePostCommand command) {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
-    return ResponseEntity.ok(likeService.upPostLike(command));
-  }
-
-  @PostMapping(value = "/cancel-like", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<BasePostDto> cancelIntroLike(
-      @AuthenticationPrincipal UserDetails userDetails,
-      @ModelAttribute BasePostCommand command
-  ){
-    command.setMemberId(Long.parseLong(userDetails.getUsername()));
-
-    return ResponseEntity.ok(likeService.cancelPostLike(command));
+    return ResponseEntity.ok(likeService.postLike(command));
   }
 }
