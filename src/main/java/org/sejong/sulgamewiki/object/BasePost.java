@@ -132,11 +132,12 @@ public abstract class BasePost extends BaseTimeEntity {
 
 
   public void updateScore(ScoreRule scoreRule){
-    increaseDailyScore(scoreRule.getPoint());
-    increaseWeeklyScore(scoreRule.getPoint());
+    increaseDailyScore(scoreRule.getScore());
+    increaseWeeklyScore(scoreRule.getScore());
 
-    log.info("[ 포인트 POINT ] 게시물 {}에 {}점 부여 (사유: {})", basePostId,
-        scoreRule.getPoint(), scoreRule.getDescription());
+    log.info("[ 스코어 SCORE ] 게시물 {}에 {}점 부여 (사유: {})", basePostId,
+        scoreRule.getScore(), scoreRule.getDescription());
+  }
 
   public void increaseCommentCount(){this.commentCount++;}
 

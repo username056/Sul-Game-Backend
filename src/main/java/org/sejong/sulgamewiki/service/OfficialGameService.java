@@ -85,7 +85,7 @@ public class OfficialGameService {
     return BasePostDto.builder()
         .officialGame(savedOfficialGame)
         .baseMedias(savedMedias)
-        .introMediaFromGame(savedIntroMedia)
+        .introMediaInGame(savedIntroMedia)
         .build();
   }
 
@@ -105,7 +105,7 @@ public class OfficialGameService {
     return BasePostDto.builder()
         .officialGame(officialGame)
         .baseMedias(medias)
-        .introMediaFromGame(introMediaFileInGamePost)
+        .introMediaInGame(introMediaFileInGamePost)
         .build();
   }
 
