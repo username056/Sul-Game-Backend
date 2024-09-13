@@ -43,6 +43,8 @@ public enum ErrorCode {
 
   GAME_NOT_FOUND(HttpStatus.NOT_FOUND, "게임이 존재하지 않습니다."),
 
+  INVALID_GAME_INTRO_MEDIA_TYPE(HttpStatus.NOT_FOUND, "존재하지 않는 게임의 인트로 미디어 타입입니다."),
+
   // Comment
   COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글이 존재하지 않습니다."),
 
