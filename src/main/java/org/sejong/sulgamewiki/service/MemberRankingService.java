@@ -105,5 +105,4 @@ public class MemberRankingService {
         .rankChange(command.getRankChange())
         .build();
   }
-
 }
