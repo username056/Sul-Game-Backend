@@ -342,8 +342,6 @@ public class BaseMediaService {
     List<BaseMedia> updatedMediaEntities = new ArrayList<>();
     Long basePostId = command.getBasePostId();
 
-    log.debug("Updating media for BasePostId: {}", basePostId);
-
     List<String> existingUrls = baseMediaRepository.findMediaUrlsByBasePostId(basePostId);
     PostMediaType postMediaType = getPostMediaType(command);
 
@@ -357,41 +355,30 @@ public class BaseMediaService {
     for (String url : existingUrlSet) {
       BaseMedia mediaToDelete = baseMediaRepository.findByMediaUrl(url);
       if (mediaToDelete == null) {
-        log.warn("BaseMedia not found for url: {}", url);
         continue;
       }
 
       s3Service.deleteFile(url);
-      log.debug("Deleted file from S3: {}", url);
 
       if (mediaToDelete.getPostMediaType().equals(postMediaType)) {
-        if (postMediaType == null) {
-          log.warn("PostMediaType is null for media: {}", mediaToDelete.getMediaUrl());
-          continue;
-        } else if (postMediaType.equals(PostMediaType.INTRO_IN_OFFICIAL_GAME_MEDIA)) {
+        if (postMediaType.equals(PostMediaType.INTRO_IN_OFFICIAL_GAME_MEDIA)) {
           OfficialGame officialGame = basePostRepository
               .findOfficialGameByBasePostId(mediaToDelete.getBasePost().getBasePostId())
               .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
           officialGame.setIntroMediaFileInGamePostUrl(null);
-          log.debug("Cleared intro media URL for OfficialGame with BasePostId: {}",
-              mediaToDelete.getBasePost().getBasePostId());
         } else if (postMediaType.equals(PostMediaType.INTRO_IN_CREATION_GAME_MEDIA)) {
           CreationGame creationGame = basePostRepository
               .findCreationGameByBasePostId(mediaToDelete.getBasePost().getBasePostId())
               .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
           creationGame.setIntroMediaFileInGamePostUrl(null);
-          log.debug("Cleared intro media URL for CreationGame with BasePostId: {}",
-              mediaToDelete.getBasePost().getBasePostId());
         }
       }
 
       baseMediaRepository.delete(mediaToDelete);
-      log.debug("Deleted BaseMedia with URL: {}", mediaToDelete.getMediaUrl());
     }
 
     // 추가
     BaseMedia introMediaFromGame = uploadIntroMediaFromGame(command);
-    log.debug("Uploaded new intro media from game for BasePostId: {}", basePostId);
 
     // 새로 들어온 multipart 파일 업로드 및 BaseMedia 엔티티 생성
     List<MultipartFile> newFiles =
@@ -410,7 +397,6 @@ public class BaseMediaService {
               .basePost(command.getBasePost())
               .postMediaType(PostMediaType.POST_MEDIA)
               .build()));
-          log.debug("Uploaded new file to S3 and saved BaseMedia with URL: {}", fileUrl);
         } catch (IOException e) {
           throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
@@ -419,15 +405,12 @@ public class BaseMediaService {
 
     updatedMediaEntities.addAll(
         baseMediaRepository.findByBasePost_BasePostId(basePostId));
-    log.debug("Updated media entities for BasePostId: {}", basePostId);
 
     return updatedMediaEntities;
   }
 
   private void setIntroMediaFileInGamePostUrl(BaseMedia baseMedia, PostMediaType postMediaType) {
     Long basePostId = baseMedia.getBasePost().getBasePostId();
-
-    log.debug("Setting intro media for BasePostId: {}, PostMediaType: {}", basePostId, postMediaType);
 
     if (postMediaType.equals(PostMediaType.INTRO_IN_OFFICIAL_GAME_MEDIA)) {
       OfficialGame officialGame = basePostRepository
@@ -440,7 +423,6 @@ public class BaseMediaService {
           .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
       creationGame.setIntroMediaFileInGamePostUrl(baseMedia.getMediaUrl());
     } else if (postMediaType == null) {
-      log.warn("PostMediaType is null for BasePostId: {}", basePostId);
       return;
     } else {
       throw new CustomException(ErrorCode.INVALID_GAME_INTRO_MEDIA_TYPE);
