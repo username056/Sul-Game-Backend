@@ -78,7 +78,6 @@ public class OfficialGameService {
 
     List<BaseMedia> savedMedias = baseMediaService.uploadMediasFromGame(command);
     BaseMedia savedIntroMedia = baseMediaService.uploadIntroMediaFromGame(command);
-    savedOfficialGame.setIntroMediaFileInGamePostUrl(savedIntroMedia.getMediaUrl());
 
     // 창작자 점수 올리는 메서드
     expManagerService.updateExp(member, POST_CREATION);
@@ -142,12 +141,19 @@ public class OfficialGameService {
     List<BaseMedia> updatedMedias = baseMediaService.updateMedias(command);
     // 게시글과 미디어 파일 저장
 
+
+
     // 태그는 4개 이하 에러코드 만들기
     basePostRepository.save(existingOfficialGame);
+
+    BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(
+        existingOfficialGame.getIntroMediaFileInGamePostUrl());
+
 
     return BasePostDto.builder()
         .officialGame(existingOfficialGame)
         .baseMedias(updatedMedias)
+        .introMediaFileInGamePost(introMediaFileInGamePost)
         .build();
   }
 
