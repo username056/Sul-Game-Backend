@@ -5,8 +5,9 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum PointRule {
+public enum ScoreRule {
   // 게시글 관련
+  // TODO: 이름바꾸기
   LIKE(10, "해당 게시글 좋아요를 받으면 10 포인트 부여"),
   VIEW(1, "해당 게시글 조회하면 1 포인트 부여"),
   COMMENT(2, "해당 게시글에 댓글이 달리면 2 포인트 부여"),
