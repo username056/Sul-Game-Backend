@@ -10,7 +10,6 @@ import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.CreationGame;
-import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.constants.ExpRule;
@@ -76,7 +75,7 @@ public class CreationGameService {
     return BasePostDto.builder()
         .creationGame(savedCreationGame)
         .baseMedias(savedCreationMedias)
-        .introMediaFromGame(savedIntroMeida)
+        .introMediaInGame(savedIntroMeida)
         .build();
   }
 
@@ -95,7 +94,7 @@ public class CreationGameService {
     return BasePostDto.builder()
         .creationGame(creationGame)
         .baseMedias(medias)
-        .introMediaFromGame(introMediaFileInGamePost)
+        .introMediaInGame(introMediaFileInGamePost)
         .build();
   }
 
