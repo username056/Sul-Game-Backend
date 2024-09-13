@@ -132,4 +132,8 @@ public class MemberInteraction extends BaseTimeEntity {
     this.exp += points;
   }
 
+  public void increaseCommentCount(){this.totalCommentCount++;}
+
+  public void decreaseCommentCount(){this.totalCommentCount--;}
+
 }

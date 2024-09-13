@@ -39,4 +39,6 @@ public class HomeDto {
   오늘 가장 핫했던 술게임
    */
   private List<BasePost> gamesByWeeklyScore;
+
+  private boolean hasNext;
 }

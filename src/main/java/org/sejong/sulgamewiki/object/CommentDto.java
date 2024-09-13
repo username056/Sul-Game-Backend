@@ -10,7 +10,6 @@ import lombok.ToString;
 @Builder
 @ToString
 public class CommentDto {
-  private Long commentId;
-  private Long memberId;
-  private String content;
+  private Comment comment;
+  private Boolean isLiked;
 }

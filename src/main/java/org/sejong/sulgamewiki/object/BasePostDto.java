@@ -21,4 +21,7 @@ public class BasePostDto {
   private CreationGame creationGame;
   private Map<Long, List<BaseMedia>> baseMediaMap;
   private BaseMedia introMediaFileInGamePost;
+  private Boolean isLiked;
+  private Boolean isBookmarked;
+
 }
