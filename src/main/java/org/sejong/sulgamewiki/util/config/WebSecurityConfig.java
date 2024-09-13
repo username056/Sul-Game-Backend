@@ -54,7 +54,8 @@ public class WebSecurityConfig {
       "/login/oauth2/code/**", // OAuth 리다이렉션
       "/oauth2/authorization/**", // OAuth 로그인 페이지
       "/api/intro/get",
-      "/api/comment/get"
+      "/api/comment/get",
+      "/api/home/**"
   };
 
   private static final String[] ALLOWED_ORIGINS = {

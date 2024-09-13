@@ -23,7 +23,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.sejong.sulgamewiki.object.constants.PointRule;
+import org.sejong.sulgamewiki.object.constants.ScoreRule;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
@@ -75,6 +75,9 @@ public abstract class BasePost extends BaseTimeEntity {
   @Builder.Default
   private int weeklyScore = 0;  // 매주 일요일마다 초기화
 
+  @Builder.Default
+  private int commentCount = 0;
+
   private SourceType sourceType;
 
   // TODO: 썸네일 정해지면 ENUM타입 생성하기
@@ -87,8 +90,16 @@ public abstract class BasePost extends BaseTimeEntity {
   private boolean isCreatorInfoPrivate = false; // 기본값은 공개
 
 
+  public void postLike(Long memberId){
+    if(this.likedMemberIds.contains(memberId)){
+      cancelLike(memberId);
+    } else if (!this.likedMemberIds.contains(memberId)) {
+      upLike(memberId);
+    }
+  }
+
   public void cancelLike(Long memberId) {
-    if(this.likedMemberIds.contains(memberId)) {
+    if(!this.likedMemberIds.contains(memberId)) {
       throw new CustomException(ErrorCode.NO_LIKE_TO_CANCEL);
     }
     if (likes > 0) {
@@ -100,18 +111,25 @@ public abstract class BasePost extends BaseTimeEntity {
   }
 
   public void upLike(Long memberId) {
+    if(this.likedMemberIds.contains(memberId)) {
+      throw new CustomException(ErrorCode.ALREADY_LIKED);
+    }
     likes++;
     this.likedMemberIds.add(memberId);
   }
 
 
-  public void updateScore(PointRule pointRule){
-    increaseDailyScore(pointRule.getPoint());
-    increaseWeeklyScore(pointRule.getPoint());
+  public void updateScore(ScoreRule scoreRule){
+    increaseDailyScore(scoreRule.getScore());
+    increaseWeeklyScore(scoreRule.getScore());
 
-    log.info("[ 포인트 POINT ] 게시물 {}에 {}점 부여 (사유: {})", basePostId,
-        pointRule.getPoint(), pointRule.getDescription());
+    log.info("[ 스코어 SCORE ] 게시물 {}에 {}점 부여 (사유: {})", basePostId,
+        scoreRule.getScore(), scoreRule.getDescription());
   }
+
+  public void increaseCommentCount(){this.commentCount++;}
+
+  public void decreaseCommentCount(){this.commentCount--;}
 
   // 데일리 점수 증가
   public void increaseDailyScore(int score) {
