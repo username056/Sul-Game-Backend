@@ -1,6 +1,10 @@
 package org.sejong.sulgamewiki.service;
 
 
+import static org.sejong.sulgamewiki.object.BasePost.checkCreatorInfoIsPrivate;
+import static org.sejong.sulgamewiki.object.constants.ExpRule.POST_CREATION;
+import static org.sejong.sulgamewiki.object.constants.ExpRule.POST_DELETION;
+
 import java.util.HashSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +32,7 @@ public class OfficialGameService {
   private final BaseMediaRepository baseMediaRepository;
   private final BasePostRepository basePostRepository;
   private final BaseMediaService baseMediaService;
+  private final ExpManagerService expManagerService;
   private final ReportService reportService;
 
   /**
@@ -61,6 +66,7 @@ public class OfficialGameService {
             .member(member)
             .dailyScore(0)
             .weeklyScore(0)
+            .commentCount(0)
             .sourceType(SourceType.OFFICIAL_GAME)
             .thumbnailIcon(command.getThumbnailIcon())
             .isCreatorInfoPrivate(false)
@@ -68,9 +74,14 @@ public class OfficialGameService {
             .build());
 
     command.setBasePost((savedOfficialGame));
+    command.setBasePostId(savedOfficialGame.getBasePostId());
 
     List<BaseMedia> savedMedias = baseMediaService.uploadMediasFromGame(command);
     BaseMedia savedIntroMedia = baseMediaService.uploadIntroMediaFromGame(command);
+    savedOfficialGame.setIntroMediaFileInGamePostUrl(savedIntroMedia.getMediaUrl());
+
+    // 창작자 점수 올리는 메서드
+    expManagerService.updateExp(member, POST_CREATION);
 
     return BasePostDto.builder()
         .officialGame(savedOfficialGame)
@@ -90,6 +101,7 @@ public class OfficialGameService {
         command.getBasePostId());
 
     BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(command.getIntroMediaFileInGamePostUrl());
+    //TODO: 해당 포스트와 연관된 창작 술게임 가져와야함
 
     return BasePostDto.builder()
         .officialGame(officialGame)
@@ -120,7 +132,8 @@ public class OfficialGameService {
     // 인트로 미디어
     existingOfficialGame.setThumbnailIcon(command.getThumbnailIcon());
     existingOfficialGame.setGameTags(command.getGameTags());
-    existingOfficialGame.setCreatorInfoPrivate(command.getIsCreatorInfoPrivate());
+    existingOfficialGame.setCreatorInfoPrivate(checkCreatorInfoIsPrivate(command.getIsCreatorInfoPrivate()));
+    // 업데이트시 널값 들어오면 자동으로 공개로 설정되도록 수정
 
 
     existingOfficialGame.markAsUpdated();
@@ -128,13 +141,13 @@ public class OfficialGameService {
 
     List<BaseMedia> updatedMedias = baseMediaService.updateMedias(command);
     // 게시글과 미디어 파일 저장
-    BaseMedia updatedIntroMediaFromGame = baseMediaService.updateMedias(command).get(0);
 
+    // 태그는 4개 이하 에러코드 만들기
     basePostRepository.save(existingOfficialGame);
 
     return BasePostDto.builder()
         .officialGame(existingOfficialGame)
- //       .baseMedias(updatedIntroMediaFromGame)
+        .baseMedias(updatedMedias)
         .build();
   }
 
@@ -160,6 +173,10 @@ public class OfficialGameService {
 
     // 게시글을 삭제된 것으로 표시
     officialGame.markAsDeleted();
+    officialGame.setIntroMediaFileInGamePostUrl(null);
+
+    // 창작자 경험치 회수
+    expManagerService.updateExp(requestingMember, POST_DELETION);
 
     // 변경사항을 저장
     basePostRepository.save(officialGame);
