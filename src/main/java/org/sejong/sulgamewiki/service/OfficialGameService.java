@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.object.CreationGame;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.constants.SourceType;
@@ -102,10 +103,13 @@ public class OfficialGameService {
     BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(command.getIntroMediaUrlFromGame());
     //TODO: 해당 포스트와 연관된 창작 술게임 가져와야함
 
+    List<CreationGame> relatedCreationGames = basePostRepository.findCreationGamesByRelatedOfficialGame(officialGame);
+
     return BasePostDto.builder()
         .officialGame(officialGame)
         .baseMedias(medias)
         .introMediaInGame(introMediaFileInGamePost)
+        .relatedCreationGames(relatedCreationGames)
         .build();
   }
 
@@ -141,9 +145,7 @@ public class OfficialGameService {
     List<BaseMedia> updatedMedias = baseMediaService.updateMedias(command);
     // 게시글과 미디어 파일 저장
 
-
-
-    // 태그는 4개 이하 에러코드 만들기
+    // TODO: 태그는 4개 이하 에러코드 만들기
     basePostRepository.save(existingOfficialGame);
 
     BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(
