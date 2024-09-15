@@ -55,8 +55,8 @@ public class WebSecurityConfig {
       "/oauth2/authorization/**", // OAuth 로그인 페이지
       "/api/intro/get",
       "/api/comment/get",
-      "/api/official/get",
-      "/api/creation/get",
+      "/api/official/details",
+      "/api/creation/details",
       "/api/home/**"
   };
 
