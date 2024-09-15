@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.service.CreationGameService;
+import org.sejong.sulgamewiki.service.LikeService;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CreationGameController {
 
   private final CreationGameService creationGameService;
+  private final LikeService likeService;
 
   @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
@@ -59,5 +61,14 @@ public class CreationGameController {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
     creationGameService.deleteCreationGame(command);
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping(value = "/like", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<BasePostDto> likeOfficial(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute BasePostCommand command) {
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+
+    return ResponseEntity.ok(likeService.likePost(command));
   }
 }
