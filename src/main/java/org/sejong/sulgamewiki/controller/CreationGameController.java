@@ -37,7 +37,7 @@ public class CreationGameController {
     return ResponseEntity.ok(creationGameService.createCreationGame(command));
   }
 
-  @PostMapping("/details")
+  @PostMapping(value = "/details", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   public ResponseEntity<BasePostDto> getCreationGame(
       @ModelAttribute BasePostCommand command) {
