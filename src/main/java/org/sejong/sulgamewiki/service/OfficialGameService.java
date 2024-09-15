@@ -53,6 +53,10 @@ public class OfficialGameService {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+    if (command.getGameTags().size() > 4) {
+      throw new CustomException(ErrorCode.TAG_LIMIT_EXCEEDED);
+    }
+
     OfficialGame savedOfficialGame = basePostRepository.save(
         OfficialGame.builder()
             .isDeleted(false)
@@ -127,6 +131,11 @@ public class OfficialGameService {
       throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);
     }
 
+    if (command.getGameTags().size() > 4) {
+      throw new CustomException(ErrorCode.TAG_LIMIT_EXCEEDED);
+    }
+
+
     // 기존 게임 정보 업데이트
     existingOfficialGame.setTitle(command.getTitle());
     existingOfficialGame.setIntroduction(command.getIntroduction());
@@ -145,7 +154,6 @@ public class OfficialGameService {
     List<BaseMedia> updatedMedias = baseMediaService.updateMedias(command);
     // 게시글과 미디어 파일 저장
 
-    // TODO: 태그는 4개 이하 에러코드 만들기
     basePostRepository.save(existingOfficialGame);
 
     BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(

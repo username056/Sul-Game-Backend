@@ -42,6 +42,10 @@ public class CreationGameService {
     OfficialGame officialGame = (OfficialGame) basePostRepository.findById(command.getRelatedOfficialGameId())
         .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
 
+    if (command.getGameTags().size() > 4) {
+      throw new CustomException(ErrorCode.TAG_LIMIT_EXCEEDED);
+    }
+    
     CreationGame savedCreationGame = basePostRepository.save(
         CreationGame.builder()
             .isDeleted(false)
@@ -112,6 +116,11 @@ public class CreationGameService {
       // 작성자가 아니거나 권한이 없는 경우 예외 발생
       throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);
     }
+
+    if (command.getGameTags().size() > 4) {
+      throw new CustomException(ErrorCode.TAG_LIMIT_EXCEEDED);
+    }
+
 
     // 기존 게임 정보 업데이트
     existingCreationGame.setTitle(command.getTitle());
