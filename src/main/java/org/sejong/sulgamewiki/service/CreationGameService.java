@@ -89,7 +89,7 @@ public class CreationGameService {
     List<BaseMedia> medias = basePostRepository.findMediasByBasePostId(
         command.getBasePostId());
 
-    BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(command.getIntroMediaFileInGamePostUrl());
+    BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(command.getIntroMediaUrlFromGame());
 
     return BasePostDto.builder()
         .creationGame(creationGame)
@@ -138,7 +138,7 @@ public class CreationGameService {
     return BasePostDto.builder()
         .creationGame(existingCreationGame)
         .baseMedias(updatedMedias)
-        .introMediaFileInGamePost(introMediaFileInGamePost)
+        .introMediaFileInGame(introMediaFileInGamePost)
         .build();
   }
 

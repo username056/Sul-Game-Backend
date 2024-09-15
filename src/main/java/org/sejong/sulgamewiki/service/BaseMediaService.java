@@ -47,7 +47,7 @@ public class BaseMediaService {
    */
   public BaseMedia uploadIntroMediaFromGame(BasePostCommand command) {
 
-    MultipartFile file = command.getIntroMediaFileInGamePost();
+    MultipartFile file = command.getIntroMultipartFileInGame();
 
     // 파일이 없으면 null 반환
     if (file == null || file.isEmpty()) {
@@ -78,7 +78,7 @@ public class BaseMediaService {
             .build()
     );
     // url 추가 로직 필요
-    command.setIntroMediaFileInGamePostUrl(savedMedia.getMediaUrl());
+    command.setIntroMediaUrlFromGame(savedMedia.getMediaUrl());
     setIntroMediaFileInGamePostUrl(savedMedia, postMediaType);
 
     return savedMedia;
@@ -88,10 +88,10 @@ public class BaseMediaService {
   public BaseMedia updateIntroMediaFromGame(BasePostCommand command) {
 
     // 기존 인트로 미디어 파일 URL 가져오기
-    String existingIntroMediaUrl = command.getIntroMediaFileInGamePostUrl();
+    String existingIntroMediaUrl = command.getIntroMediaUrlFromGame();
 
     // 새로 들어온 파일 가져오기
-    MultipartFile newIntroFile = command.getIntroMediaFileInGamePost();
+    MultipartFile newIntroFile = command.getIntroMultipartFileInGame();
 
     // 기존 파일 삭제
     if (existingIntroMediaUrl != null && !existingIntroMediaUrl.isEmpty()) {

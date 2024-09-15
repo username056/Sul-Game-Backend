@@ -99,7 +99,7 @@ public class OfficialGameService {
     List<BaseMedia> medias = basePostRepository.findMediasByBasePostId(
         command.getBasePostId());
 
-    BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(command.getIntroMediaFileInGamePostUrl());
+    BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(command.getIntroMediaUrlFromGame());
     //TODO: 해당 포스트와 연관된 창작 술게임 가져와야함
 
     return BasePostDto.builder()
@@ -127,7 +127,7 @@ public class OfficialGameService {
     existingOfficialGame.setTitle(command.getTitle());
     existingOfficialGame.setIntroduction(command.getIntroduction());
     existingOfficialGame.setDescription(command.getDescription());
-    existingOfficialGame.setIntroLyricsInGamePost(command.getIntroLyricsInGamePost());
+    existingOfficialGame.setIntroLyricsInGamePost(command.getIntroLyricsInGame());
     // 인트로 미디어
     existingOfficialGame.setThumbnailIcon(command.getThumbnailIcon());
     existingOfficialGame.setGameTags(command.getGameTags());
@@ -153,7 +153,7 @@ public class OfficialGameService {
     return BasePostDto.builder()
         .officialGame(existingOfficialGame)
         .baseMedias(updatedMedias)
-        .introMediaFileInGamePost(introMediaFileInGamePost)
+        .introMediaFileInGame(introMediaFileInGamePost)
         .build();
   }
 
