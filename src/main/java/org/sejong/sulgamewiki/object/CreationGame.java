@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -34,10 +35,14 @@ public class CreationGame extends BasePost {
   @JoinColumn(name = "official_game_id")
   private OfficialGame officialGame;
 
+  // 150
+  @Size(max = 150, message = "게임 내 인트로 150자 제한")
   private String introLyricsInGamePost;
+  
   private String introMediaFileInGamePostUrl;
 
   // 창작 술게임의 태그
+  // 4개 이하
   @ElementCollection
   @Enumerated(EnumType.STRING)
   @Builder.Default
