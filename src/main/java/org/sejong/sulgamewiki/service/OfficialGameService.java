@@ -117,6 +117,16 @@ public class OfficialGameService {
         .build();
   }
 
+  @Transactional(readOnly = true)
+  public BasePostDto getOfficialGames(BasePostCommand command) {
+
+    List<OfficialGame> officialGames = basePostRepository.findAllOfficialGame();
+
+    return BasePostDto.builder()
+        .officialGames(officialGames)
+        .build();
+  }
+
   @Transactional
   public BasePostDto updateOfficialGame(BasePostCommand command) {
 

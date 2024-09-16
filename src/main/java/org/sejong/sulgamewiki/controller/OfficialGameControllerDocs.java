@@ -82,6 +82,24 @@ public interface OfficialGameControllerDocs {
   ResponseEntity<BasePostDto> getOfficialGame(@ModelAttribute BasePostCommand command);
 
   @Operation(
+      summary = "공식 게임 전체조회",
+      description = """
+          **공식 게임 조회**
+
+          공식 게임 게시물 전체를 조회합니다.
+
+          **입력 파라미터 값:**
+          
+          없음
+
+          **반환 파라미터 값:**
+
+          - **`List<OfficialGame> officialGames`**: 연관된 창작 게임 리스트
+          """
+  )
+  ResponseEntity<BasePostDto> getOfficialGames(@ModelAttribute BasePostCommand command);
+
+  @Operation(
       summary = "공식 게임 수정",
       description = """
          **토큰 필요**

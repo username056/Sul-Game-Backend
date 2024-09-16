@@ -57,6 +57,7 @@ public class WebSecurityConfig {
       "/api/comment/get",
       "/api/official/details",
       "/api/creation/details",
+      "/api/official/get-all",
       "/api/home/**"
   };
 
