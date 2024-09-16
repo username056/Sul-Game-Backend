@@ -56,4 +56,7 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
   // 검색 쿼리
   @Query("SELECT bp FROM BasePost bp WHERE bp.isDeleted = false AND (bp.title LIKE %:query% OR bp.introduction LIKE %:query% OR bp.description LIKE %:query%)")
   List<BasePost> searchBasePosts(String query);
+
+  @Query("SELECT entity FROM OfficialGame entity WHERE entity.isDeleted = false")
+  List<OfficialGame> findAllOfficialGame();
 }
