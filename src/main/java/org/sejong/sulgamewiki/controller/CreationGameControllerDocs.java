@@ -8,16 +8,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-public interface OfficialGameControllerDocs {
-
+public interface CreationGameControllerDocs {
   @Operation(
-      summary = "공식 게임 생성",
+      summary = "창작 게임 생성",
       description = """
           **토큰 필요**
             
-          **공식 게임 생성**
+          **창작 게임 생성**
 
-          새로운 공식 게임 게시물을 생성합니다.
+          새로운 창작 게임 게시물을 생성합니다.
 
           **입력 파라미터 값:**
         
@@ -51,21 +50,21 @@ public interface OfficialGameControllerDocs {
           
           **반환 파라미터 값:**
 
-          - **`OfficialGame officialGame`**: 생성된 공식 게임 게시물
+          - **`CreationGame creationGame`**: 생성된 창작 게임 게시물
           - **`List<BaseMedia> baseMedias`**: 게임과 연관된 미디어 파일 리스트
           - **`BaseMedia introMediaInGame`**: 게임 인트로 미디어 파일
           """
   )
-  ResponseEntity<BasePostDto> createOfficialGame(
+  ResponseEntity<BasePostDto> createCreationGame(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command);
 
   @Operation(
-      summary = "공식 게임 조회",
+      summary = "창작 게임 조회",
       description = """
-          **공식 게임 조회**
+          **창작 게임 조회**
 
-          ID를 사용하여 특정 공식 게임 게시물을 조회합니다.
+          ID를 사용하여 특정 창작 게임 게시물을 조회합니다.
 
           **입력 파라미터 값:**
 
@@ -73,22 +72,21 @@ public interface OfficialGameControllerDocs {
 
           **반환 파라미터 값:**
 
-          - **`OfficialGame officialGame`**: 조회된 공식 게임 게시물
+          - **`CreationGame creationGame`**: 조회된 창작 게임 게시물
           - **`List<BaseMedia> baseMedias`**: 게임과 연관된 미디어 파일 리스트
           - **`BaseMedia introMediaInGame`**: 게임 인트로 미디어 파일
-          - **`List<CreationGame> creationGames`**: 연관된 창작 게임 리스트
           """
   )
-  ResponseEntity<BasePostDto> getOfficialGame(@ModelAttribute BasePostCommand command);
+  ResponseEntity<BasePostDto> getCreationGame(@ModelAttribute BasePostCommand command);
 
   @Operation(
-      summary = "공식 게임 수정",
+      summary = "창작 게임 수정",
       description = """
          **토큰 필요**
           
-         **공식 게임 수정**
+         **창작 게임 수정**
 
-          기존 공식 게임 게시물을 수정합니다.
+          기존 창작 게임 게시물을 수정합니다.
 
          **입력 파라미터 값**
         
@@ -121,12 +119,12 @@ public interface OfficialGameControllerDocs {
             
           **반환 파라미터 값:**
 
-          - **`OfficialGame officialGame`**: 생성된 공식 게임 게시물
+          - **`CreationGame creationGame`**: 생성된 창작 게임 게시물
           - **`List<BaseMedia> baseMedias`**: 게임과 연관된 미디어 파일 리스트
           - **`BaseMedia introMediaInGame`**: 게임 인트로 미디어 파일
           """
   )
-  ResponseEntity<BasePostDto> updateOfficialGame(
+  ResponseEntity<BasePostDto> updateCreationGame(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command);
 
@@ -149,7 +147,7 @@ public interface OfficialGameControllerDocs {
           - 없음
           """
   )
-  ResponseEntity<Void> deleteOfficialGame(
+  ResponseEntity<Void> deleteCreationGame(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command);
 
