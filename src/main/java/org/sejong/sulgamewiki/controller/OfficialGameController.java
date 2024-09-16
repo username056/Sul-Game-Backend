@@ -48,6 +48,13 @@ public class OfficialGameController implements OfficialGameControllerDocs {
     return ResponseEntity.ok(officialGameService.getOfficialGame(command));
   }
 
+  @PostMapping(value = "/get-all", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  public ResponseEntity<BasePostDto> getOfficialGames(
+      @ModelAttribute BasePostCommand command){
+    return ResponseEntity.ok(officialGameService.getOfficialGames(command));
+  }
+
   @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<BasePostDto> updateOfficialGame(
       @AuthenticationPrincipal UserDetails userDetails,
