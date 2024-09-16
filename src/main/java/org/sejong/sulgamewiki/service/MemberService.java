@@ -238,22 +238,19 @@ public class MemberService implements UserDetailsService {
    * 경험치 변동 내역 조회 메서드
    */
   public MemberDto getExpLogs(MemberCommand command) {
-    // Pageable 객체 생성 (페이지 번호와 크기 정보로 생성)
     Pageable pageable = PageRequest.of(
         command.getPageNumber(),
         command.getPageSize(),
         Sort.by(Sort.Order.desc("createdDate"), Sort.Order.desc("updatedDate"))
     );
 
-    // 페이지네이션 적용된 ExpLog 내역
     Page<ExpLog> expLogPage = expLogRepository.findByMemberMemberId(command.getMemberId(), pageable);
 
-    // DTO로 변환 및 반환
     return MemberDto.builder()
-        .expLogs(expLogPage.getContent())  // 로그 내역 리스트
-        .totalPages(expLogPage.getTotalPages())  // 총 페이지 수
-        .totalElements(expLogPage.getTotalElements())  // 총 로그 수
-        .currentPage(expLogPage.getNumber())  // 현재 페이지 번호
+        .expLogs(expLogPage.getContent())
+        .totalPages(expLogPage.getTotalPages())
+        .totalElements(expLogPage.getTotalElements())
+        .currentPage(expLogPage.getNumber())
         .build();
   }
 }
