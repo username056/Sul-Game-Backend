@@ -117,7 +117,7 @@ public class LikeService {
 
     comment.upLike(command.getMemberId());
 
-    expManagerService.updateExp(postOwner, ExpRule.COMMENT_LIKE_RECEIVED);
+    expManagerService.updateExp(postOwner, ExpRule.COMMENT_LIKE_GIVEN);
     basePostRepository.save(basePost);
 
     return CommentDto.builder()

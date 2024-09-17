@@ -24,7 +24,7 @@ public enum ExpRule {
 
   // 댓글 관련
   COMMENT_CREATION(2L, "댓글 작성 시 2 경험치 부여"),
-  COMMENT_LIKE_RECEIVED(1L, "댓글에 좋아요를 받으면 1 경험치 부여"),
+  COMMENT_LIKE_GIVEN(1L, "댓글에 좋아요를 받으면 1 경험치 부여"),
   COMMENT_LIKE_CANCELED(1L, "댓글에 좋아요가 취소되면 1 경험치 회수"),
   COMMENT_DELETION(-2L, "댓글 삭제 시 2 경험치 회수"),
 
