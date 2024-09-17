@@ -1,21 +1,32 @@
 package org.sejong.sulgamewiki.service;
 
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.MemberInteraction;
+import org.sejong.sulgamewiki.object.RankingHistory;
 import org.sejong.sulgamewiki.object.constants.ExpLevel;
+import org.sejong.sulgamewiki.object.constants.RankChangeStatus;
 import org.sejong.sulgamewiki.repository.ExpLogRepository;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
+import org.sejong.sulgamewiki.repository.RankingHistoryRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -27,6 +38,7 @@ public class MemberRankingService {
 
   private final MemberInteractionRepository memberInteractionRepository;
   private final MemberRepository memberRepository;
+  private final RankingHistoryRepository rankingHistoryRepository;
   private final ExpLogRepository expLogRepository;
 
   @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
@@ -104,5 +116,74 @@ public class MemberRankingService {
         .progressPercentToNextLevel(command.getProgressPercentToNextLevel())
         .rankChange(command.getRankChange())
         .build();
+  }
+//  @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+//  @Async
+//  @Transactional
+//  public void updateDailyMemberExpRanks() {
+//    LocalDate today = LocalDate.now();
+//    LocalDate yesterday = today.minusDays(1);
+//
+//    List<MemberInteraction> topMemberInteractions
+//        = memberInteractionRepository.findTop100ByOrderByExpDesc();
+//
+//    Map<Long, RankingHistory> yesterdayRankings = getYesterdayRankings(yesterday);
+//
+//    for (int i = 0; i < topMemberInteractions.size(); i++) {
+//      MemberInteraction memberInteraction = topMemberInteractions.get(i);
+//      Member member = memberInteraction.getMember();
+//      int currentRank = i + 1;
+//      RankingHistory yesterdayRanking = yesterdayRankings.get(member.getMemberId());
+//
+//      RankChangeStatus status;
+//      Integer rankChange;
+//
+//      if (yesterdayRanking == null) {
+//        status = RankChangeStatus.NEW;
+//        rankChange = null;
+//      } else {
+//        int yesterdayRank = yesterdayRanking.getRank();
+//        if (currentRank < yesterdayRank) {
+//          status = RankChangeStatus.UP;
+//          rankChange = yesterdayRank - currentRank;
+//        } else if (currentRank > yesterdayRank) {
+//          status = RankChangeStatus.DOWN;
+//          rankChange = currentRank - yesterdayRank;
+//        } else {
+//          status = RankChangeStatus.SAME;
+//          rankChange = 0;
+//        }
+//      }
+//
+//      RankingHistory todayRanking = RankingHistory.builder()
+//          .member(member)
+//          .recordDate(today)
+//          .rank(currentRank)
+//          .exp(memberInteraction.getExp())
+//          .rankChangeStatus(status)
+//          .rankChange(rankChange)
+//          .build();
+//
+//      rankingHistoryRepository.save(todayRanking);
+//    }
+//  }
+
+//  private Map<Long, RankingHistory> getYesterdayRankings(LocalDate yesterday) {
+//    return rankingHistoryRepository.findByRecordDate(yesterday).stream()
+//        .collect(Collectors.toMap(rh -> rh.getMember().getMemberId(), Function.identity()));
+//  }
+//
+//  public MemberDto getRankingHistory(MemberCommand command) {
+//    LocalDate today = LocalDate.now();
+//    Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "rank"));
+//    Page<RankingHistory> rankingHistoryPage = rankingHistoryRepository.findByRecordDate(today, pageable);
+//
+//    return MemberDto.builder()
+//        .rankingHistoryPage(rankingHistoryPage)
+//        .build();
+//  }
+
+  public MemberDto getDailyMemberExpRankings(MemberCommand command) {
+    return null;
   }
 }
