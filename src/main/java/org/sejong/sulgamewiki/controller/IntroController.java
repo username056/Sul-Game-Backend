@@ -7,7 +7,7 @@ import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.service.IntroService;
 import org.sejong.sulgamewiki.service.LikeService;
-import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

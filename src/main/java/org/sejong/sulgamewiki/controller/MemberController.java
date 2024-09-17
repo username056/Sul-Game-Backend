@@ -8,7 +8,7 @@ import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.service.MemberRankingService;
 import org.sejong.sulgamewiki.service.MemberService;
 import org.sejong.sulgamewiki.object.CustomUserDetails;
-import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

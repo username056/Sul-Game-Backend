@@ -192,12 +192,12 @@ public class BaseMediaService {
 //
 //    if (command.getBasePost().getSourceType().equals(SourceType.INTRO)) {
 //      if (command.getIntroMultipartFiles() == null) {
-//        log.info("파일이 없습니다 BasePostId : {} ", command.getBasePostId());
+//        annotation.info("파일이 없습니다 BasePostId : {} ", command.getBasePostId());
 //        return null;
 //      }
 //    } else {
 //      if (command.getGameMultipartFiles() == null) {
-//        log.info("파일이 없습니다 BasePostId : {} ", command.getBasePostId());
+//        annotation.info("파일이 없습니다 BasePostId : {} ", command.getBasePostId());
 //        return null;
 //      }
 //    }

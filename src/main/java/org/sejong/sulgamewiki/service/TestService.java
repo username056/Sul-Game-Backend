@@ -23,7 +23,7 @@ import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.MockUtil;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
-import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,7 +1,7 @@
 package org.sejong.sulgamewiki.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
 import org.sejong.sulgamewiki.service.NotificationService;
 import org.sejong.sulgamewiki.object.Notification;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -15,7 +15,7 @@ import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.JwtUtil;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
-import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;

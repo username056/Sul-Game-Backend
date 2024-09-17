@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.TestCommand;
 import org.sejong.sulgamewiki.object.TestDto;
 import org.sejong.sulgamewiki.service.TestService;
-import org.sejong.sulgamewiki.util.log.LogMonitoringInvocation;
+import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
