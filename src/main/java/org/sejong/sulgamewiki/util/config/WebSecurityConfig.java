@@ -55,6 +55,9 @@ public class WebSecurityConfig {
       "/oauth2/authorization/**", // OAuth 로그인 페이지
       "/api/intro/get",
       "/api/comment/get",
+      "/api/official/details",
+      "/api/creation/details",
+      "/api/official/get-all",
       "/api/home/**"
   };
 
@@ -99,6 +102,12 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/comment/create").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/comment/delete").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/comment/update").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/official/create").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/official/delete").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/official/update").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/creation/create").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/creation/delete").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/creation/update").hasRole("USER")
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2

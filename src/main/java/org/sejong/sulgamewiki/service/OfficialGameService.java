@@ -2,6 +2,8 @@ package org.sejong.sulgamewiki.service;
 
 
 import static org.sejong.sulgamewiki.object.BasePost.checkCreatorInfoIsPrivate;
+import static org.sejong.sulgamewiki.object.constants.ExpRule.POST_CREATION;
+import static org.sejong.sulgamewiki.object.constants.ExpRule.POST_DELETION;
 
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.object.CreationGame;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.constants.SourceType;
@@ -30,6 +33,7 @@ public class OfficialGameService {
   private final BaseMediaRepository baseMediaRepository;
   private final BasePostRepository basePostRepository;
   private final BaseMediaService baseMediaService;
+  private final ExpManagerService expManagerService;
   private final ReportService reportService;
 
   /**
@@ -43,10 +47,15 @@ public class OfficialGameService {
    * @return
    */
 
+  @Transactional
   public BasePostDto createOfficialGame(BasePostCommand command) {
 
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    if (command.getGameTags().size() > 4) {
+      throw new CustomException(ErrorCode.TAG_LIMIT_EXCEEDED);
+    }
 
     OfficialGame savedOfficialGame = basePostRepository.save(
         OfficialGame.builder()
@@ -62,6 +71,7 @@ public class OfficialGameService {
             .member(member)
             .dailyScore(0)
             .weeklyScore(0)
+            .commentCount(0)
             .sourceType(SourceType.OFFICIAL_GAME)
             .thumbnailIcon(command.getThumbnailIcon())
             .isCreatorInfoPrivate(false)
@@ -69,12 +79,18 @@ public class OfficialGameService {
             .build());
 
     command.setBasePost((savedOfficialGame));
+    command.setBasePostId(savedOfficialGame.getBasePostId());
 
     List<BaseMedia> savedMedias = baseMediaService.uploadMediasFromGame(command);
+    BaseMedia savedIntroMedia = baseMediaService.uploadIntroMediaFromGame(command);
+
+    // 창작자 점수 올리는 메서드
+    expManagerService.updateExp(member, POST_CREATION);
 
     return BasePostDto.builder()
         .officialGame(savedOfficialGame)
         .baseMedias(savedMedias)
+        .introMediaInGame(savedIntroMedia)
         .build();
   }
 
@@ -88,12 +104,30 @@ public class OfficialGameService {
     List<BaseMedia> medias = basePostRepository.findMediasByBasePostId(
         command.getBasePostId());
 
+    BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(command.getIntroMediaUrlFromGame());
+    //TODO: 해당 포스트와 연관된 창작 술게임 가져와야함
+
+    List<CreationGame> relatedCreationGames = basePostRepository.findCreationGamesByRelatedOfficialGame(officialGame);
+
     return BasePostDto.builder()
         .officialGame(officialGame)
         .baseMedias(medias)
+        .introMediaInGame(introMediaFileInGamePost)
+        .relatedCreationGames(relatedCreationGames)
         .build();
   }
 
+  @Transactional(readOnly = true)
+  public BasePostDto getOfficialGames(BasePostCommand command) {
+
+    List<OfficialGame> officialGames = basePostRepository.findAllOfficialGame();
+
+    return BasePostDto.builder()
+        .officialGames(officialGames)
+        .build();
+  }
+
+  @Transactional
   public BasePostDto updateOfficialGame(BasePostCommand command) {
 
     OfficialGame existingOfficialGame = basePostRepository.findOfficialGameByBasePostId(
@@ -107,26 +141,43 @@ public class OfficialGameService {
       throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);
     }
 
+    if (command.getGameTags().size() > 4) {
+      throw new CustomException(ErrorCode.TAG_LIMIT_EXCEEDED);
+    }
+
+
     // 기존 게임 정보 업데이트
     existingOfficialGame.setTitle(command.getTitle());
     existingOfficialGame.setIntroduction(command.getIntroduction());
     existingOfficialGame.setDescription(command.getDescription());
+    existingOfficialGame.setIntroLyricsInGamePost(command.getIntroLyricsInGame());
+    // 인트로 미디어
     existingOfficialGame.setThumbnailIcon(command.getThumbnailIcon());
     existingOfficialGame.setGameTags(command.getGameTags());
+    existingOfficialGame.setCreatorInfoPrivate(checkCreatorInfoIsPrivate(command.getIsCreatorInfoPrivate()));
+    // 업데이트시 널값 들어오면 자동으로 공개로 설정되도록 수정
+
 
     existingOfficialGame.markAsUpdated();
     command.setBasePost(existingOfficialGame);
 
     List<BaseMedia> updatedMedias = baseMediaService.updateMedias(command);
     // 게시글과 미디어 파일 저장
+
     basePostRepository.save(existingOfficialGame);
+
+    BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(
+        existingOfficialGame.getIntroMediaFileInGamePostUrl());
+
 
     return BasePostDto.builder()
         .officialGame(existingOfficialGame)
         .baseMedias(updatedMedias)
+        .introMediaFileInGame(introMediaFileInGamePost)
         .build();
   }
 
+  @Transactional
   public void deleteOfficialGame(BasePostCommand command) {
     OfficialGame officialGame = basePostRepository.findOfficialGameByBasePostId(
             command.getBasePostId())
@@ -139,36 +190,22 @@ public class OfficialGameService {
       throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);
     }
 
+    // 연관된 미디어 파일을 실제로 삭제
+    List<BaseMedia> medias = baseMediaRepository.findAllByBasePost_BasePostId(
+        command.getBasePostId());
+    if (medias != null && !medias.isEmpty()) {
+      baseMediaService.deleteMedias(medias);
+    }
+
     // 게시글을 삭제된 것으로 표시
     officialGame.markAsDeleted();
+    officialGame.setIntroMediaFileInGamePostUrl(null);
+
+    // 창작자 경험치 회수
+    expManagerService.updateExp(requestingMember, POST_DELETION);
+
     // 변경사항을 저장
     basePostRepository.save(officialGame);
   }
 
-
-//  public ReportDto reportGame(ReportCommand reportCommand) {
-//    OfficialGame officialGame = (OfficialGame) basePostRepository.findById(reportCommand.getSourceId())
-//        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
-//
-//    Member member = memberRepository.findById(reportCommand.getMemberId())
-//        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-//
-//    // 중복 신고 여부 확인
-//    boolean isAlreadyReported = reportService.isAlreadyReported(
-//        member, reportCommand.getSourceId(), SourceType.OFFICIAL_GAME);
-//    if (isAlreadyReported) {
-//      throw new CustomException(ErrorCode.ALREADY_REPORTED);
-//    }
-//
-//    // 리포트 생성
-//    ReportCommand command = ReportCommand.builder()
-//        .memberId(member.getMemberId())
-//        .sourceId(officialGame.getBasePostId())
-//        .sourceType(SourceType.OFFICIAL_GAME)
-//        .reportType(reportCommand.getReportType())
-//        .build();
-//
-//    reportService.createReport(command);
-//    return null;
-//  }
 }

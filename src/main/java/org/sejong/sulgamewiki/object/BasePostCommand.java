@@ -34,9 +34,9 @@ public class BasePostCommand {
   private List<MultipartFile> gameMultipartFiles = new ArrayList<>();
   private List<String> imageUrls;
   private Set<GameTag> gameTags;
-  private String introLyrics;
-  private MultipartFile introMediaFileInGamePost;
-
+  private String introLyricsInGame;
+  private MultipartFile introMultipartFileInGame;
+  private String IntroMediaUrlFromGame;
 
   // creation, intro
   private Boolean isCreatorInfoPrivate;

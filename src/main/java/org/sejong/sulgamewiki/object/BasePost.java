@@ -10,7 +10,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -44,13 +46,19 @@ public abstract class BasePost extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long basePostId;
 
+  // 20
   @Column(length = 100)
+  @Size(max = 20, message = "제목 20자 제한")
   private String title;
 
-  @Column(length = 90)
+  // 20
+  @Column(length = 100)
+  @Size(max = 20, message = "소개 20자 제한")
   private String introduction;
 
-  @Column(length = 500)
+  // 1000
+  @Lob
+  @Size(max = 1000, message = "설명 1000자 제한")
   private String description;
 
   @Builder.Default
@@ -76,6 +84,9 @@ public abstract class BasePost extends BaseTimeEntity {
   private int weeklyScore = 0;  // 매주 일요일마다 초기화
 
   @Builder.Default
+  private int totalScore = 0;   // 초기화 x
+
+  @Builder.Default
   private int commentCount = 0;
 
   private SourceType sourceType;
@@ -84,6 +95,7 @@ public abstract class BasePost extends BaseTimeEntity {
   // 썸네일 아이콘 선택 필드
   @Column(length = 255)
   private String thumbnailIcon;
+
 
   // 내 정보 공개 여부 필드
   @Builder.Default
