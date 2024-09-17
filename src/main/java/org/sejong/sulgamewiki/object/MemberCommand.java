@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.sejong.sulgamewiki.object.constants.RankChangeStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 @Builder
@@ -36,4 +37,12 @@ public class MemberCommand {
   private Long remainingExpForNextLevel; // 다음 레벨까지 남은 경험치
   private Double progressPercentToNextLevel; // 다음 레벨까지의 진행 퍼센트
   private Integer rankChange; // 어제와 비교해서 랭크 변화
+
+  // 경험치 계산
+//  private Long memberId;
+//  private String nickname;
+  private Integer rank;
+  private Long exp;
+  private RankChangeStatus rankChangeStatus;
+//  private Integer rankChange;
 }

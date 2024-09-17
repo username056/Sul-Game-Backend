@@ -110,6 +110,32 @@ public interface MemberControllerDocs {
       @ModelAttribute MemberCommand command);
 
   @Operation(
+      summary = "내가 작성한 글",
+      description = """
+    **내가 작성한 글**
+
+    회원(본인)이 작성한 글을 제공합니다. 이 API는 사용자가 작성한 모든 게시글을 조회합니다.
+
+    **JWT 토큰 필요:**
+    
+    이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
+
+    **입력 파라미터 값:**
+
+    - **`필요없음`**
+
+    **반환 파라미터 값:**
+
+    - **`List<BasePost> myOfficialGames`**: 회원(본인)이 작성한 공식 게임 게시글 리스트
+    - **`List<BasePost> myCreationGames`**: 회원(본인)이 작성한 창작 게임 게시글 리스트
+    - **`List<BasePost> myIntros`**: 회원(본인)이 작성한 소개글 리스트
+    """
+  )
+  ResponseEntity<MemberDto> getMyPosts(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
+
+  @Operation(
       summary = "즐겨찾기한 글",
       description = """
         **즐겨찾기한 글**
@@ -296,5 +322,26 @@ public interface MemberControllerDocs {
   )
   ResponseEntity<MemberDto> getExpLogs(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command);
+
+  @Operation(
+      summary = "회원 경험치 랭킹 목록",
+      description = """
+        **회원 경험치 랭킹 목록**
+
+        이 API는 사용자가 회원 경험치 랭킹 목록을 조회할 수 있습니다. 
+        페이징 처리가 되어 있으며, 페이지 번호와 크기를 요청 파라미터로 보낼 수 있습니다.
+
+        **JWT 토큰 인증 필요없음:**
+
+        **입력 파라미터 값:**
+        - **`int pageNumber`**: 페이지 번호 (기본값: 0, 첫 페이지)
+        - **`int pageSize`**: 페이지 크기 (기본값: 10)
+
+        **반환 파라미터 값:**
+        - **`Page<DailyMemberExpRank>`**: 회원 경험치 랭킹 목록록
+        """
+  )
+  ResponseEntity<MemberDto> getDailyMemberExpRankings(
       @ModelAttribute MemberCommand command);
 }

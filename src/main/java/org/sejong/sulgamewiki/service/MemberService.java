@@ -5,7 +5,9 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePost;
+import org.sejong.sulgamewiki.object.CreationGame;
 import org.sejong.sulgamewiki.object.ExpLog;
+import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberInteraction;
@@ -114,6 +116,20 @@ public class MemberService implements UserDetailsService {
     List<Report> reports = reportRepository.findByReporter(member);
     return MemberDto.builder()
         .reports(reports)
+        .build();
+  }
+
+  @Transactional(readOnly = true)
+  public MemberDto getMyPosts(MemberCommand command) {
+    Member member = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    List<CreationGame> myCreationGames = basePostRepository.findCreationGamesByMemberId(member.getMemberId());
+    List<Intro> myIntros = basePostRepository.findIntrosByMemberId(member.getMemberId());
+
+    return MemberDto.builder()
+        .myCreationGames(myCreationGames)
+        .myIntros(myIntros)
         .build();
   }
 

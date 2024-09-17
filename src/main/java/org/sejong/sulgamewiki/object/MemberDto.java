@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.domain.Page;
 
 @Builder
 @Getter
@@ -28,6 +29,9 @@ public class MemberDto {
   private List<BasePost> bookmarkedCreationGameIds;
   private List<BasePost> bookmarkedIntroIds;
 
+  private List<CreationGame> myCreationGames;
+  private List<Intro> myIntros;
+
   // reports
   private List<Report> reports;
 
@@ -45,4 +49,7 @@ public class MemberDto {
   private int totalPages;        // 총 페이지 수
   private int currentPage;       // 현재 페이지 번호
   private long totalElements;    // 총 로그 수
+
+  // 회원 랭킹
+  private Page<RankingHistory> rankingHistoryPage;
 }
