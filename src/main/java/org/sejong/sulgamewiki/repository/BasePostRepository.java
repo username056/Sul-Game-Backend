@@ -50,7 +50,20 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
   @Query("SELECT entity FROM CreationGame entity WHERE entity.basePostId = :basePostId AND entity.isDeleted = false")
   Optional<CreationGame> findCreationGameByBasePostId(Long basePostId);
 
-  // 검색 쿼리
+  /*
+   * History
+   * 2024.09.14 : [서새찬] 쿼리 String 을 통한 통합 검색 : 제목, 상세설명 검색 쿼리 추가
+   */
   @Query("SELECT bp FROM BasePost bp WHERE bp.isDeleted = false AND (bp.title LIKE %:query% OR bp.introduction LIKE %:query% OR bp.description LIKE %:query%)")
   List<BasePost> searchBasePosts(String query);
+
+  /*
+   * History
+   * 2024.09.17 : [서새찬] 내가 작성한 글 리스트 반환 쿼리문, CreationGame, Intro 조회 쿼리 추가
+   */
+  @Query("SELECT entity FROM CreationGame entity WHERE entity.member.memberId = :memberId AND entity.isDeleted = false")
+  List<CreationGame> findCreationGamesByMemberId(Long memberId);
+  @Query("SELECT entity FROM Intro entity WHERE entity.member.memberId = :memberId AND entity.isDeleted = false")
+  List<Intro> findIntrosByMemberId(Long memberId);
+
 }
