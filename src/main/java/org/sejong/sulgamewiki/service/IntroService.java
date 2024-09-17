@@ -1,6 +1,8 @@
 package org.sejong.sulgamewiki.service;
 
 import static org.sejong.sulgamewiki.object.BasePost.checkCreatorInfoIsPrivate;
+import static org.sejong.sulgamewiki.object.constants.ExpRule.POST_CREATION;
+import static org.sejong.sulgamewiki.object.constants.ExpRule.POST_DELETION;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
+import org.sejong.sulgamewiki.object.constants.ScoreRule;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
@@ -33,12 +36,18 @@ public class IntroService {
   private final BasePostRepository basePostRepository;
   private final BaseMediaRepository baseMediaRepository;
   private final BaseMediaService baseMediaService;
+  private final ExpManagerService expManagerService;
 
   public BasePostDto createIntro(BasePostCommand command) {
 
     // 멤버 조회
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    // 태그 최대 개수 검사
+    if (command.getGameTags().size() > 4) {
+      throw new CustomException(ErrorCode.TAG_LIMIT_EXCEEDED);
+    }
 
     // 공식 게임 조회 및 예외 처리
     Optional<OfficialGame> officialGame = Optional.empty();
@@ -75,6 +84,9 @@ public class IntroService {
     command.setBasePost(savedIntro);
     List<BaseMedia> savedMedias = baseMediaService.uploadMediasFromIntro(command);
 
+    // 창작자 EXP
+    expManagerService.updateExp(member, POST_CREATION);
+
     return BasePostDto.builder()
         .basePost(savedIntro)
         .baseMedias(savedMedias)
@@ -92,6 +104,12 @@ public class IntroService {
 
     List<BaseMedia> medias = basePostRepository.findMediasByBasePostId(
         command.getBasePostId());
+
+    // 조회수 증가로직
+    intro.increaseViews();
+
+    // 게시글 Score
+    intro.updateScore(ScoreRule.VIEW);
 
     return BasePostDto.builder()
         .basePost(intro)
@@ -176,6 +194,10 @@ public class IntroService {
     }
     // 게시글을 삭제된 것으로 표시
     intro.markAsDeleted();
+
+    // 창작자 EXP
+    expManagerService.updateExp(requestingMember, POST_DELETION);
+
     // 변경사항을 저장합니다.
     basePostRepository.save(intro);
   }
