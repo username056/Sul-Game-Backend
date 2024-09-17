@@ -4,12 +4,31 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.CustomUserDetails;
+import org.sejong.sulgamewiki.util.annotation.ApiChangeLog;
+import org.sejong.sulgamewiki.util.annotation.ApiChangeLogs;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 public interface MemberControllerDocs {
 
+  @ApiChangeLogs({
+      @ApiChangeLog(
+          date = "2024.09.17",
+          author = "서새찬",
+          description = "반환 파라미터 값을 `List<BasePost>`에서 `List<CreationGame>`으로 수정"
+      ),
+      @ApiChangeLog(
+          date = "2024.08.25",
+          author = "홍길동",
+          description = "입력 파라미터 설명 추가"
+      ),
+      @ApiChangeLog(
+          date = "2024.08.10",
+          author = "이영희",
+          description = "API 최초 작성"
+      )
+  })
   @Operation(
       summary = "회원 등록 완료",
       description = """
