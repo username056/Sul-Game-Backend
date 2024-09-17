@@ -102,14 +102,6 @@ public abstract class BasePost extends BaseTimeEntity {
   private boolean isCreatorInfoPrivate = false; // 기본값은 공개
 
 
-  public void postLike(Long memberId){
-    if(this.likedMemberIds.contains(memberId)){
-      cancelLike(memberId);
-    } else if (!this.likedMemberIds.contains(memberId)) {
-      upLike(memberId);
-    }
-  }
-
   public void cancelLike(Long memberId) {
     if(!this.likedMemberIds.contains(memberId)) {
       throw new CustomException(ErrorCode.NO_LIKE_TO_CANCEL);
@@ -130,10 +122,15 @@ public abstract class BasePost extends BaseTimeEntity {
     this.likedMemberIds.add(memberId);
   }
 
+  public void increaseViews(){
+    this.views++;
+  }
+
 
   public void updateScore(ScoreRule scoreRule){
     increaseDailyScore(scoreRule.getScore());
     increaseWeeklyScore(scoreRule.getScore());
+    increaseTotalScore(scoreRule.getScore());
 
     log.info("[ 스코어 SCORE ] 게시물 {}에 {}점 부여 (사유: {})", basePostId,
         scoreRule.getScore(), scoreRule.getDescription());
@@ -143,14 +140,19 @@ public abstract class BasePost extends BaseTimeEntity {
 
   public void decreaseCommentCount(){this.commentCount--;}
 
-  // 데일리 점수 증가
+  // 데일리 스코어 증가
   public void increaseDailyScore(int score) {
     this.dailyScore += score;
   }
 
-  // 위클리 점수 증가
+  // 위클리 스코어 증가
   public void increaseWeeklyScore(int score) {
     this.weeklyScore += score;
+  }
+
+  // 토탈 스코어 증가
+  private void increaseTotalScore(int score) {
+    this.totalScore += score;
   }
 
   // 점수 초기화 로직
@@ -161,6 +163,8 @@ public abstract class BasePost extends BaseTimeEntity {
   public void resetWeeklyScore() {
     this.weeklyScore = 0;
   }
+
+  public void resetTotalScore() {this.totalScore = 0;}
 
   public static Boolean checkCreatorInfoIsPrivate(Boolean isCreatorInfoPrivate) {
     return Optional.ofNullable(isCreatorInfoPrivate).orElse(false);
