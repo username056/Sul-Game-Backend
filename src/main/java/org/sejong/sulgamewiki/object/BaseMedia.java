@@ -17,6 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.object.constants.MediaType;
+import org.sejong.sulgamewiki.object.constants.PostMediaType;
 
 @Entity
 @Getter
@@ -43,4 +44,7 @@ public class BaseMedia extends BaseTimeEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   private BasePost basePost;
+
+  //TODO: 포스트의 미디어 타입 enum으로 추가하기. 변수명 명확하게
+  private PostMediaType postMediaType;
 }
