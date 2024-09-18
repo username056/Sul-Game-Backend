@@ -115,7 +115,7 @@ public class HomeService {
   }
 
   public HomeDto getPosts(HomeCommand command) {
-    Pageable pageable = createPageable(command, Direction.DESC, SortBy.CREATION_DATE);  // 기본값으로 설정
+    Pageable pageable = createPageable(command);  // 기본값으로 설정
 
     Slice<CreationGame> creationGamesSlice;
     Slice<Intro> introsSlice;
@@ -158,6 +158,14 @@ public class HomeService {
         command.getPageNumber(),
         command.getPageSize(),
         Sort.by(direction, sortBy.getValue())
+    );
+  }
+
+  private Pageable createPageable(HomeCommand command) {
+    return PageRequest.of(
+        command.getPageNumber(),
+        command.getPageSize(),
+        Sort.by(command.getDirection(),command.getSortBy().getValue())
     );
   }
 }
