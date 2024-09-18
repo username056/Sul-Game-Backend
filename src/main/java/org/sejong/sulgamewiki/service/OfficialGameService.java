@@ -15,6 +15,7 @@ import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.CreationGame;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
+import org.sejong.sulgamewiki.object.constants.ScoreRule;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
@@ -84,7 +85,7 @@ public class OfficialGameService {
     List<BaseMedia> savedMedias = baseMediaService.uploadMediasFromGame(command);
     BaseMedia savedIntroMedia = baseMediaService.uploadIntroMediaFromGame(command);
 
-    // 창작자 점수 올리는 메서드
+    // 창작자 EXP
     expManagerService.updateExp(member, POST_CREATION);
 
     return BasePostDto.builder()
@@ -108,6 +109,12 @@ public class OfficialGameService {
     //TODO: 해당 포스트와 연관된 창작 술게임 가져와야함
 
     List<CreationGame> relatedCreationGames = basePostRepository.findCreationGamesByRelatedOfficialGame(officialGame);
+
+    // 조회수 증가로직
+    officialGame.increaseViews();
+
+    // 게시글 Score
+    officialGame.updateScore(ScoreRule.VIEW);
 
     return BasePostDto.builder()
         .officialGame(officialGame)
