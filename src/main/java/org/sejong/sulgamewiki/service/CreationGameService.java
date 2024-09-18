@@ -13,6 +13,7 @@ import org.sejong.sulgamewiki.object.CreationGame;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.constants.ExpRule;
+import org.sejong.sulgamewiki.object.constants.ScoreRule;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
@@ -94,6 +95,12 @@ public class CreationGameService {
         command.getBasePostId());
 
     BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(command.getIntroMediaUrlFromGame());
+
+    // 조회수 증가로직
+    creationGame.increaseViews();
+
+    // 게시글 Score
+    creationGame.updateScore(ScoreRule.VIEW);
 
     return BasePostDto.builder()
         .creationGame(creationGame)
