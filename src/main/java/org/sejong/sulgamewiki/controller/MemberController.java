@@ -50,6 +50,16 @@ public class MemberController implements MemberControllerDocs{
     return ResponseEntity.ok(memberService.getProfile(command));
   }
 
+  @PostMapping(value = "/my-posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Override
+  @LogMonitoringInvocation
+  public ResponseEntity<MemberDto> getMyPosts(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @ModelAttribute MemberCommand command){
+    command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
+    return ResponseEntity.ok(memberService.getMyPosts(command));
+  }
+
   @PostMapping(value = "/liked-posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Override
   @LogMonitoringInvocation
@@ -128,5 +138,13 @@ public class MemberController implements MemberControllerDocs{
       @ModelAttribute MemberCommand command) {
     command.setMemberId(Long.parseLong(customUserDetails.getUsername()));
     return ResponseEntity.ok(memberService.getExpLogs(command));
+  }
+
+  @PostMapping(value = "/rank/daily", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  @Override
+  public ResponseEntity<MemberDto> getDailyMemberExpRankings(
+      @ModelAttribute MemberCommand command) {
+    return ResponseEntity.ok(memberRankingService.getDailyMemberExpRankings(command));
   }
 }
