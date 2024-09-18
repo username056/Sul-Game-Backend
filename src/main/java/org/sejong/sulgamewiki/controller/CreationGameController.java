@@ -64,7 +64,7 @@ public class CreationGameController {
   }
 
   @PostMapping(value = "/like", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<BasePostDto> likeOfficial(
+  public ResponseEntity<BasePostDto> likeCreation(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command) {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));

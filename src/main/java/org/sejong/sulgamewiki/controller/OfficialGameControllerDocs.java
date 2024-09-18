@@ -171,4 +171,26 @@ public interface OfficialGameControllerDocs {
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command);
 
+  @Operation(
+      summary = "공식게임 좋아요",
+      description = """
+          **토큰 필요**
+          
+          **공식게임 좋아요**
+
+          특정 공식게임 좋아요합니다.
+
+          **입력 파라미터 값:**
+
+          - **`Long basePostId`**: 좋아요할 공식게임 고유 ID
+
+          **반환 파라미터 값:**
+
+          - **`BasePost basePost`**: 해당 게시물의 정보를 반환합니다
+          """
+  )
+  ResponseEntity<BasePostDto> likeOfficial(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute BasePostCommand command);
+
 }

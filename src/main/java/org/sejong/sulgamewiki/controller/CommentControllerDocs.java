@@ -83,4 +83,28 @@ public interface CommentControllerDocs {
   ResponseEntity<Void> deleteComment(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute CommentCommand command);
+
+  @Operation(
+      summary = "댓글 좋아요",
+      description = """
+            **토큰 필요**
+            
+            **댓글 좋아요**
+
+            특정 댓글을 좋아요합니다.
+    
+            **입력 파라미터 값:**
+                    
+            - **`Long commentId`**: 좋아요할 댓글의 Id값
+            
+            - **`Long BasePostId;`**: 좋아요할 댓글이 있는 게시물의 Id값
+             
+            **반환 파라미터 값:**
+    
+            - **`Comment comment`**: 좋아요가 완료되면 해당 댓글의 정보를 반환합니다.
+            """
+  )
+  ResponseEntity<CommentDto> likeComment(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute CommentCommand command);
 }

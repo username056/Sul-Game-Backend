@@ -62,7 +62,7 @@ public class CommentController implements CommentControllerDocs{
 
   @PostMapping(value = "/like", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
-  public ResponseEntity<CommentDto> commentLike(
+  public ResponseEntity<CommentDto> likeComment(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute CommentCommand command
   ){
