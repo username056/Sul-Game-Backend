@@ -75,7 +75,10 @@ public class WebSecurityConfig {
   @Bean
   public WebSecurityCustomizer configure() {
     return (web) -> web.ignoring()
-        .requestMatchers(new AntPathRequestMatcher("/static/**"));
+        .requestMatchers(new AntPathRequestMatcher("/static/**"))
+        .requestMatchers(new AntPathRequestMatcher("/css/**"))
+        .requestMatchers(new AntPathRequestMatcher("/js/**"))
+        .requestMatchers(new AntPathRequestMatcher("/images/**"));
   }
 
   @Bean
