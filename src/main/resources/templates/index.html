@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>술겜위키 - 홈</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+  <!-- 커스텀 술겜위키 CSS -->
+  <link rel="stylesheet" th:href="@{/css/sul-game.css}" />
+</head>
+<body>
+
+<!-- 네비게이션 바 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <img src="/images/homePageTopLogo.png" class="logo-img" alt="술겜위키 로고">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav"
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <form class="d-flex ms-auto" action="/search" method="get">
+        <input class="form-control me-2" type="search" placeholder="검색" aria-label="Search" name="query">
+        <button class="btn btn-outline-success" type="submit">검색</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<!-- 검색 섹션 -->
+<div class="container text-center">
+  <p>술겜위키와의 술게임 한판, 제대로 달리실 준비 되셨나요?</p>
+  <div class="search-bar">
+    <form action="/search" method="get">
+      <input class="form-control" type="search" placeholder="게임을 검색하세요" aria-label="Search" name="query">
+    </form>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 최신 게시물 섹션 -->
+  <h2 class="section-title">최신 게시물</h2>
+  <div class="row">
+    <div class="col-6">
+      <button class="btn btn-filter btn-outline-primary">창작</button>
+    </div>
+    <div class="col-6 text-end">
+      <button class="btn btn-filter btn-outline-primary">인트로</button>
+    </div>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item" th:each="game : ${homeDto.latestCreationGames}">
+      <img src="/images/default-thumbnail.png" alt="Game Thumbnail">
+      <div class="game-info">
+        <h5 th:text="${game.title}">게임 제목</h5>
+        <p th:text="${game.introduction}">게임 소개</p>
+      </div>
+      <div class="like-info">
+        <span>구해조</span>
+        <span th:text="${game.likes}">30</span>
+      </div>
+    </li>
+  </ul>
+
+  <!-- 국룰 술게임 섹션 -->
+  <h2 class="section-title mt-5">국룰 술게임</h2>
+  <ul class="list-group">
+    <li class="list-group-item" th:each="game : ${homeDto.officialGamesByLikes}">
+      <img src="/images/default-thumbnail.png" alt="Game Thumbnail">
+      <div class="game-info">
+        <h5 th:text="${game.title}">게임 제목</h5>
+        <p th:text="${game.introduction}">게임 소개</p>
+      </div>
+      <div class="like-info">
+        <span>구해조</span>
+        <span th:text="${game.likes}">30</span>
+      </div>
+    </li>
+  </ul>
+
+  <!-- 실시간 차트 섹션 -->
+  <h2 class="section-title mt-5">실시간 술겜위키 차트</h2>
+  <div class="row">
+    <div class="col-4">
+      <button class="btn btn-filter btn-outline-primary">창작</button>
+    </div>
+    <div class="col-4 text-center">
+      <button class="btn btn-filter btn-outline-primary">인트로</button>
+    </div>
+    <div class="col-4 text-end">
+      <button class="btn btn-filter btn-outline-primary">국룰</button>
+    </div>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item" th:each="game : ${homeDto.creationGamesByDailyScore}">
+      <h5 th:text="${game.title}">게임 제목</h5>
+      <span th:text="${game.dailyScore}">0</span>
+    </li>
+  </ul>
+
+  <!-- 인트로 자랑하기 섹션 -->
+  <h2 class="section-title mt-5">인트로 자랑하기</h2>
+  <div class="row">
+    <div class="col-4">
+      <button class="btn btn-filter btn-outline-primary">최신순</button>
+    </div>
+    <div class="col-4 text-center">
+      <button class="btn btn-filter btn-outline-primary">좋아요순</button>
+    </div>
+    <div class="col-4 text-end">
+      <button class="btn btn-filter btn-outline-primary">조회수순</button>
+    </div>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item" th:each="intro : ${homeDto.introsByLikes}">
+      <img src="/images/default-thumbnail.png" alt="Intro Thumbnail">
+      <div class="game-info">
+        <h5 th:text="${intro.title}">인트로 제목</h5>
+        <p th:text="${intro.introduction}">인트로 소개</p>
+      </div>
+      <div class="like-info">
+        <span>구해조</span>
+        <span th:text="${intro.likes}">30</span>
+      </div>
+    </li>
+  </ul>
+
+  <!-- 오늘 가장 핫했던 술게임 -->
+  <h2 class="section-title mt-5">오늘 가장 핫했던 술게임</h2>
+  <ul class="list-group">
+    <li class="list-group-item" th:each="game : ${homeDto.gamesByWeeklyScore}">
+      <img src="/images/default-thumbnail.png" alt="Game Thumbnail">
+      <div class="game-info">
+        <h5 th:text="${game.title}">게임 제목</h5>
+        <p th:text="${game.introduction}">게임 소개</p>
+      </div>
+      <div class="like-info">
+        <span>구해조</span>
+        <span th:text="${game.weeklyScore}">30</span>
+      </div>
+    </li>
+  </ul>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
