@@ -152,6 +152,8 @@ public interface IntroControllerDocs {
           **입력 파라미터 값:**
 
           - **`Long basePostId`**: 좋아요할 인트로의 고유 ID
+          
+          - **`Boolean isLiked`**: 게시물에 대한 사용자의 좋아요 상태
 
           **반환 파라미터 값:**
 
