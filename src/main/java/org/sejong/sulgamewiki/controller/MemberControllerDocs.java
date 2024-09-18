@@ -4,12 +4,31 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.sejong.sulgamewiki.object.MemberCommand;
 import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.CustomUserDetails;
+import org.sejong.sulgamewiki.util.annotation.ApiChangeLog;
+import org.sejong.sulgamewiki.util.annotation.ApiChangeLogs;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 public interface MemberControllerDocs {
 
+  @ApiChangeLogs({
+      @ApiChangeLog(
+          date = "2024.09.17",
+          author = "서새찬",
+          description = "반환 파라미터 값을 `List<BasePost>`에서 `List<CreationGame>`으로 수정"
+      ),
+      @ApiChangeLog(
+          date = "2024.08.25",
+          author = "홍길동",
+          description = "입력 파라미터 설명 추가"
+      ),
+      @ApiChangeLog(
+          date = "2024.08.10",
+          author = "이영희",
+          description = "API 최초 작성"
+      )
+  })
   @Operation(
       summary = "회원 등록 완료",
       description = """
@@ -117,7 +136,7 @@ public interface MemberControllerDocs {
     회원(본인)이 작성한 글을 제공합니다. 이 API는 사용자가 작성한 모든 게시글을 조회합니다.
 
     **JWT 토큰 필요:**
-    
+
     이 API는 인증이 필요합니다. 요청 시 `Authorization` 헤더에 `Bearer` 형식으로 JWT 토큰을 포함해야 합니다.
 
     **입력 파라미터 값:**
@@ -126,9 +145,8 @@ public interface MemberControllerDocs {
 
     **반환 파라미터 값:**
 
-    - **`List<BasePost> myOfficialGames`**: 회원(본인)이 작성한 공식 게임 게시글 리스트
-    - **`List<BasePost> myCreationGames`**: 회원(본인)이 작성한 창작 게임 게시글 리스트
-    - **`List<BasePost> myIntros`**: 회원(본인)이 작성한 소개글 리스트
+    - **`List<CreationGame> myCreationGames`**: 회원(본인)이 작성한 창작 게임 게시글 리스트
+    - **`List<Intro> myIntros`**: 회원(본인)이 작성한 소개글 리스트
     """
   )
   ResponseEntity<MemberDto> getMyPosts(

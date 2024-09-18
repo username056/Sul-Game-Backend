@@ -1,11 +1,12 @@
-package org.sejong.sulgamewiki.util.log;
+package org.sejong.sulgamewiki.util.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(value = RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface LogTimeInvocation {
+public @interface ApiChangeLogs {
+  ApiChangeLog[] value();
 }

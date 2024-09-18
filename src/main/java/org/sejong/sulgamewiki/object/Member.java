@@ -82,6 +82,7 @@ public class Member extends BaseTimeEntity {
   private Boolean infoPopupVisible = true;
 
   // 마지막 로그인 일시
+  @Builder.Default
   private LocalDateTime lastLoginTime = LocalDateTime.now();
 
   private String refreshToken;

@@ -50,10 +50,11 @@ public class CommentService {
 
     Comment savedComment = commentRepository.save(comment);
 
-    interaction.increaseCommentCount();
-
+    // 댓글 작성자 EXP
     expManagerService.updateExp(member, ExpRule.COMMENT_CREATION);
-
+    interaction.increaseCommentCount();
+    
+    // 게시글 Score
     basePost.updateScore(ScoreRule.WRITE_COMMENT);
     basePost.increaseCommentCount();
 
@@ -85,12 +86,14 @@ public class CommentService {
     }
     commentRepository.deleteById(comment.getCommentId());
 
+    // 댓글 작성자 EXP
+    expManagerService.updateExp(member, ExpRule.COMMENT_DELETION);
     interaction.decreaseCommentCount();
 
-    expManagerService.updateExp(member, ExpRule.COMMENT_DELETION);
-
+    // 게시글 Score
     basePost.updateScore(ScoreRule.DELETE_COMMENT);
     basePost.decreaseCommentCount();
+
     basePostRepository.save(basePost);
   }
 

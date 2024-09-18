@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.util.log;
+package org.sejong.sulgamewiki.util.annotation;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;

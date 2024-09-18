@@ -1,4 +1,4 @@
-package org.sejong.sulgamewiki.util.log;
+package org.sejong.sulgamewiki.util.annotation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
