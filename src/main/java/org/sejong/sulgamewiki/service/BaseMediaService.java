@@ -77,7 +77,6 @@ public class BaseMediaService {
             .postMediaType(postMediaType)
             .build()
     );
-    // url 추가 로직 필요
     command.setIntroMediaUrlFromGame(savedMedia.getMediaUrl());
     setIntroMediaFileInGamePostUrl(savedMedia, postMediaType);
 
