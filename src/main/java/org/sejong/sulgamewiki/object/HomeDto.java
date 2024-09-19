@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.domain.Slice;
 
 @Getter
 @Setter
@@ -39,6 +40,11 @@ public class HomeDto {
   오늘 가장 핫했던 술게임
    */
   private List<BasePost> gamesByWeeklyScore;
+
+  // 정렬기준에 따른 전체보기 슬라이스
+  private Slice<OfficialGame> officialGameSlice;
+  private Slice<CreationGame> creationGameSlice;
+  private Slice<Intro> introSlice;
 
   private boolean hasNext;
 }

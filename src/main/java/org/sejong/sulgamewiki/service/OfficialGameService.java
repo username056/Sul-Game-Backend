@@ -13,6 +13,8 @@ import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.CreationGame;
+import org.sejong.sulgamewiki.object.HomeCommand;
+import org.sejong.sulgamewiki.object.HomeDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.constants.ScoreRule;
@@ -22,6 +24,10 @@ import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,8 +130,21 @@ public class OfficialGameService {
         .build();
   }
 
+  public HomeDto getSortedOfficialGames(HomeCommand command) {
+    Pageable pageable = createPageable(command);  // 기본값으로 설정
+
+    Slice<OfficialGame> officialGamesSlice;
+
+    officialGamesSlice = basePostRepository.getSliceOfficialGames(pageable);
+
+    return HomeDto.builder()
+        .officialGameSlice(officialGamesSlice)
+        .hasNext(officialGamesSlice.hasNext())
+        .build();
+  }
+
   @Transactional(readOnly = true)
-  public BasePostDto getOfficialGames(BasePostCommand command) {
+  public BasePostDto getOfficialGames() {
 
     List<OfficialGame> officialGames = basePostRepository.findAllOfficialGame();
 
@@ -213,6 +232,14 @@ public class OfficialGameService {
 
     // 변경사항을 저장
     basePostRepository.save(officialGame);
+  }
+
+  private Pageable createPageable(HomeCommand command) {
+    return PageRequest.of(
+        command.getPageNumber(),
+        command.getPageSize(),
+        Sort.by(command.getDirection(),command.getSortBy().getValue())
+    );
   }
 
 }

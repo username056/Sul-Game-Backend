@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.object.HomeCommand;
+import org.sejong.sulgamewiki.object.HomeDto;
 import org.sejong.sulgamewiki.service.BookmarkService;
 import org.sejong.sulgamewiki.service.CreationGameService;
 import org.sejong.sulgamewiki.service.LikeService;
@@ -47,6 +49,13 @@ public class CreationGameController implements CreationGameControllerDocs {
   public ResponseEntity<BasePostDto> getCreationGame(
       @ModelAttribute BasePostCommand command) {
     return ResponseEntity.ok(creationGameService.getCreationGame(command));
+  }
+
+  @PostMapping(value = "/get-sorted-slice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  public ResponseEntity<HomeDto> getSortedCreationGames(
+      @ModelAttribute HomeCommand command){
+    return ResponseEntity.ok(creationGameService.getSortedCreationGames(command));
   }
 
   @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

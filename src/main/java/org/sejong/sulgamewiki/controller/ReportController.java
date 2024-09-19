@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
     name = "신고 관리 API",
     description = "신고 관리 API 제공"
 )
-public class ReportController {
+public class ReportController implements ReportControllerDocs{
   private final ReportService reportService;
 
   @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

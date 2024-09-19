@@ -27,12 +27,6 @@ public class HomeController implements HomeControllerDocs{
   @PostMapping(value = "/get", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<HomeDto> getHomepage(@ModelAttribute HomeCommand command) {
 
-    return ResponseEntity.ok(homeService.getHomepage(command));
-  }
-
-  @PostMapping(value = "/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<HomeDto> getPosts(@ModelAttribute HomeCommand command) {
-
-    return ResponseEntity.ok(homeService.getPosts(command));
+    return ResponseEntity.ok(homeService.getHomepage());
   }
 }
