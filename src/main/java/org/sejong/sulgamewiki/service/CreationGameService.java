@@ -59,6 +59,7 @@ public class CreationGameService {
             .isUpdated(false)
             .title(command.getTitle())
             .introduction(command.getIntroduction())
+            .isIntroExist(command.getIsIntroExist())
             .description(command.getDescription())
             .likes(0)
             .likedMemberIds(new HashSet<>())
@@ -72,6 +73,9 @@ public class CreationGameService {
             .thumbnailIcon(command.getThumbnailIcon())
             .isCreatorInfoPrivate(checkCreatorInfoIsPrivate(command.getIsCreatorInfoPrivate()))
             .gameTags(command.getGameTags())
+            .levelTag(command.getLevelTag())
+            .headCountTag(command.getHeadCountTag())
+            .noiseLevelTag(command.getNoiseLevelTag())
             .officialGame(officialGame)
             .build());
 
