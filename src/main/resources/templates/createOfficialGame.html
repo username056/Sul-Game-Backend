@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>국룰 술게임 작성</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+  <link rel="stylesheet" th:href="@{/css/sul-game.css}" />
+  <!-- Global JS 포함 -->
+  <script th:src="@{/js/global.js}"></script>
+</head>
+<body>
+<div class="container">
+  <h2>국룰 술게임 작성</h2>
+
+  <form th:action="@{/create-official-game}" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="title" class="form-label">제목</label>
+      <input type="text" class="form-control" id="title" name="title" maxlength="20" placeholder="술게임 제목">
+    </div>
+    <div class="mb-3">
+      <label for="introduction" class="form-label">한줄 소개</label>
+      <input type="text" class="form-control" id="introduction" name="introduction" maxlength="20" placeholder="한줄 소개">
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">튜토리얼</label>
+      <textarea class="form-control" id="description" name="description" rows="4" maxlength="1000" placeholder="술게임의 진행 방법을 작성해 주세요."></textarea>
+    </div>
+
+    <!-- 썸네일 아이콘 선택 -->
+    <div class="mb-3">
+      <label class="form-label">썸네일 아이콘 선택</label>
+      <input type="file" name="thumbnailIcon" accept="image/*" class="form-control">
+    </div>
+
+    <!-- 태그 선택 -->
+    <div class="mb-3">
+      <label class="form-label">태그</label>
+      <div>
+                    <span th:each="tag : ${gameTags}">
+                        <input type="checkbox" th:value="${tag.name()}" name="gameTags" th:id="${tag.name()}" />
+                        <label th:for="${tag.name()}" th:text="${tag.getDescription()}"></label>
+                    </span>
+      </div>
+    </div>
+
+    <!-- 난이도, 인원수, 소음 선택 -->
+    <div class="mb-3">
+      <label class="form-label">난이도</label>
+      <select class="form-select" name="difficulty">
+        <option value="적당함">적당함</option>
+        <option value="어려움">어려움</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">인원수</label>
+      <select class="form-select" name="players">
+        <option value="관계 없음">관계 없음</option>
+        <option value="최소 4명 이상">최소 4명 이상</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">소음</label>
+      <select class="form-select" name="noiseLevel">
+        <option value="조용함">조용함</option>
+        <option value="시끄러움">시끄러움</option>
+        <option value="모르겠음">모르겠음</option>
+      </select>
+    </div>
+
+    <!-- 정보 공개 여부 -->
+    <div class="mb-3">
+      <label class="form-label">내 정보 공개 여부</label>
+      <div>
+        <input type="radio" id="public" name="isCreatorInfoPrivate" value="false">
+        <label for="public">공개</label>
+        <input type="radio" id="private" name="isCreatorInfoPrivate" value="true">
+        <label for="private">비공개</label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">등록하기</button>
+  </form>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
