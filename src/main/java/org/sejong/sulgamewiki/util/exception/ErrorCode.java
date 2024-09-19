@@ -82,7 +82,15 @@ public enum ErrorCode {
 
   MEMBER_ALREADY_REPORTED (HttpStatus.BAD_REQUEST, "이미 신고했습니다."),
 
-  S3_DELETE_FILE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일삭제를 실패했습니다.");
+  S3_DELETE_FILE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일삭제를 실패했습니다."),
+
+  // FCM
+
+  FCM_SEND_ERROR(HttpStatus.BAD_GATEWAY, "FCM 서버와의 통신에 실패했습니다."),
+
+  FCM_SUBSCRIBE_ERROR(HttpStatus.BAD_REQUEST, "FCM 주제 구독에 실패했습니다."),
+
+  GOOGLE_REQUEST_TOKEN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Google 요청 토큰 발급에 실패했습니다.");
 
   private final HttpStatus status;
   private final String message;
