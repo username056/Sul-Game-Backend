@@ -9,6 +9,7 @@ import org.sejong.sulgamewiki.service.BookmarkService;
 import org.sejong.sulgamewiki.service.CreationGameService;
 import org.sejong.sulgamewiki.service.LikeService;
 import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
     name = "창작 게임 관리 API",
     description = "창작 게임 관리 API 제공"
 )
-public class CreationGameController {
+public class CreationGameController implements CreationGameControllerDocs {
 
   private final CreationGameService creationGameService;
   private final LikeService likeService;

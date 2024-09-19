@@ -55,6 +55,7 @@ public class Comment extends BaseTimeEntity {
     @Builder.Default
     private int reportedCount = 0;
 
+    public void increaseReportedCount() {this.reportedCount++;}
 
     public void cancelLike(Long memberId) {
         if(!this.likedMemberIds.contains(memberId)) {
