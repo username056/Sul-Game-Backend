@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.object.HomeCommand;
+import org.sejong.sulgamewiki.object.HomeDto;
 import org.sejong.sulgamewiki.service.BookmarkService;
 import org.sejong.sulgamewiki.service.IntroService;
 import org.sejong.sulgamewiki.service.LikeService;
@@ -26,7 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
     name = "인트로 관리 API",
     description = "인트로 관리 API 제공"
 )
-public class IntroController implements IntroControllerDocs{
+public class IntroController implements IntroControllerDocs {
+
   private final IntroService introService;
   private final LikeService likeService;
   private final BookmarkService bookmarkService;
@@ -40,9 +43,17 @@ public class IntroController implements IntroControllerDocs{
     return ResponseEntity.ok(introService.createIntro(command));
   }
 
-  @PostMapping(value = "/get", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<BasePostDto> getIntro(@ModelAttribute BasePostCommand command) {
+  @PostMapping(value = "/details", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<BasePostDto> getIntro(
+      @ModelAttribute BasePostCommand command) {
     return ResponseEntity.ok(introService.getIntro(command));
+  }
+
+  @PostMapping(value = "/get-sorted-slice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  public ResponseEntity<HomeDto> getSortedIntros(
+      @ModelAttribute HomeCommand command) {
+    return ResponseEntity.ok(introService.getSortedIntroGames(command));
   }
 
   @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -54,7 +65,8 @@ public class IntroController implements IntroControllerDocs{
   }
 
   @PostMapping(value = "/delete", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<Void> deleteIntro(@AuthenticationPrincipal UserDetails userDetails,
+  public ResponseEntity<Void> deleteIntro(
+      @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command) {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
     introService.deleteIntro(command);
@@ -74,7 +86,7 @@ public class IntroController implements IntroControllerDocs{
   public ResponseEntity<BasePostDto> bookmarkIntro(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command
-  ){
+  ) {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
     return ResponseEntity.ok(bookmarkService.bookmarkPost(command));

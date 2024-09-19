@@ -37,32 +37,6 @@ public interface HomeControllerDocs {
               - **`hasNext`**: 다음 페이지 존재 여부
             """
   )
-  ResponseEntity<HomeDto> getHomepage(@ModelAttribute HomeCommand command);
-
-  @Operation(
-      summary = "게시물 전체보기 조회",
-      description = """
-            **게시물 전체보기 조회**
-
-            메인 페이지의 특정 섹션에 대한 게시물 전체목록을 조회합니다.
-
-            **입력 파라미터 값:**
-
-            - **`Integer pageNumber`**: 조회할 페이지 번호. 기본값은 0입니다.(디폴트라는 말 아님 값 넣으셈)
-
-            - **`Integer pageSize`**: 페이지당 항목 수. 기본값은 10입니다.(디폴트라는 말 아님 값 넣으셈)
-
-            - **`SourceType postType`**: 게시물 유형 (예: CREATION, INTRO, OFFICIAL).
-
-            - **`SortBy sortBy`**: 정렬 기준 (예: CREATED_DATE, LIKES, VIEWS).
-
-            - **`Direction direction`**: 정렬 방향 (ASC: 오름차순, DESC: 내림차순).
-
-            **반환 파라미터 값:**
-
-            - **`HomeDto`**: 조회된 섹션의 게시물 정보를 담고 있습니다.
-            """
-  )
-  ResponseEntity<HomeDto> getPosts(@ModelAttribute HomeCommand command);
+  ResponseEntity<HomeDto> getHomepage(@ModelAttribute HomeCommand homeCommand);
 
 }
