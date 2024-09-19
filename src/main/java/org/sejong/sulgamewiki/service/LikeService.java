@@ -12,7 +12,6 @@ import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.MemberInteraction;
 import org.sejong.sulgamewiki.object.constants.ExpRule;
 import org.sejong.sulgamewiki.object.constants.ScoreRule;
-import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.CommentRepository;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
@@ -47,6 +46,7 @@ public class LikeService {
     // 좋아요 할 게시물
     BasePost basePost = basePostRepository.findById(command.getBasePostId())
         .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+    command.setBasePost(basePost);
 
     // 게시글 작성자
     Member postOwner = memberRepository.findById(basePost.getMember().getMemberId())
@@ -89,6 +89,7 @@ public class LikeService {
     // 좋아요 취소할 게시물
     BasePost basePost = basePostRepository.findById(command.getBasePostId())
         .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+    command.setBasePost(basePost);
 
     // 게시글 작성자
     Member postOwner = memberRepository.findById(basePost.getMember().getMemberId())
