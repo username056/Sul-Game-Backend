@@ -24,12 +24,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FCMService {
 
-
+  private final ObjectMapper objectMapper;
   private final String API_URL = "https://fcm.googleapis.com/v1/projects/sul-game/messages:send";
   // 주제 구독을 위한 URL 추가
   private final String SUBSCRIBE_URL = "https://iid.googleapis.com/iid/v1:batchAdd";
 
-  private final ObjectMapper objectMapper;
   private final MemberRepository memberRepository;
 
   // 주제 구독
@@ -90,14 +89,9 @@ public class FCMService {
   }
 
 
-  public void sendMessageToTopic(FCMCommand command) {
-    try {
-      String message = makeMessage(command);
-      sendFcmRequest(message);
-    } catch (IOException e) {
-      log.error("FCM 토픽 메시지 전송 중 오류 발생: {}", e.getMessage());
-      throw new CustomException(ErrorCode.FCM_SEND_ERROR);
-    }
+  public void sendMessageToTopic(FCMCommand command) throws IOException {
+    String message = makeMessage(command);
+    sendFcmRequest(message);
   }
 
   // 메시지를 구성한다 (단일 토큰 또는 토픽으로)
@@ -202,4 +196,6 @@ public class FCMService {
     member.updateFcmToken(fcmToken);
     memberRepository.save(member);
   }
+
 }
+

@@ -65,4 +65,5 @@ public class FCMMessage {
       this.fcmToken = fcmToken;
     }
   }
+
 }
