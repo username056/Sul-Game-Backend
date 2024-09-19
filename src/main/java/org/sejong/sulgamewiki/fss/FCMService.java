@@ -103,14 +103,14 @@ public class FCMService {
   // 메시지를 구성한다 (단일 토큰 또는 토픽으로)
   private String makeMessage(FCMCommand command)
       throws JsonProcessingException {
-    FCMMessage.Notification notification = FCMMessage.Notification.builder()
+    FCMMessage.ApiNotification notification = FCMMessage.ApiNotification.builder()
         .title(command.getTitle())
         .body(command.getBody())  // 여기는 'body'를 사용해야 합니다.
         .image(command.getImage())
         .build();
 
     FCMMessage.Message.MessageBuilder messageBuilder = FCMMessage.Message.builder()
-        .notification(notification);
+        .apiNotification(notification);
 
     if (command.getToken() != null) {
       messageBuilder.token(command.getToken());
