@@ -9,10 +9,13 @@ import org.sejong.sulgamewiki.object.Comment;
 import org.sejong.sulgamewiki.object.CommentCommand;
 import org.sejong.sulgamewiki.object.CommentDto;
 import org.sejong.sulgamewiki.object.Member;
+import org.sejong.sulgamewiki.object.MemberInteraction;
 import org.sejong.sulgamewiki.object.constants.ExpRule;
 import org.sejong.sulgamewiki.object.constants.ScoreRule;
+import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.CommentRepository;
+import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
@@ -26,6 +29,7 @@ public class LikeService {
   private final BasePostRepository basePostRepository;
   private final CommentRepository commentRepository;
   private final ExpManagerService expManagerService;
+  private final MemberInteractionRepository memberInteractionRepository;
 
   //TODO comment Like 추가해야함
   //FIXME: 지금 basePost에 LikedMemberIds 추가함 : 이전 코드 수정 필요
@@ -50,6 +54,10 @@ public class LikeService {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+    // 사용자 Interaction 정보 가져오기
+    MemberInteraction interaction = memberInteractionRepository.findById(member.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
+
     basePost.upLike(command.getMemberId());
 
     expManagerService.updateExp(postOwner, ExpRule.POST_LIKE_GIVEN);
@@ -57,6 +65,9 @@ public class LikeService {
     // 게시글 Score
     basePost.updateScore(ScoreRule.UP_LIKE);
 
+    interaction.addLikedPostId(command);
+
+    memberInteractionRepository.save(interaction);
     BasePost savedBasePost = basePostRepository.save(basePost);
 
     return BasePostDto.builder()

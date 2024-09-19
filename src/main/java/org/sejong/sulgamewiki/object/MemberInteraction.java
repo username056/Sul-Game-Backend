@@ -22,6 +22,9 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.constants.ExpLevel;
+import org.sejong.sulgamewiki.object.constants.SourceType;
+import org.sejong.sulgamewiki.util.exception.CustomException;
+import org.sejong.sulgamewiki.util.exception.ErrorCode;
 
 @Entity
 @Getter
@@ -136,4 +139,51 @@ public class MemberInteraction extends BaseTimeEntity {
 
   public void decreaseCommentCount(){this.totalCommentCount--;}
 
+  public void addLikedPostId(BasePostCommand command){
+    if(command.getBasePost().getSourceType().equals(SourceType.INTRO)){
+      this.likedIntroIds.add(command.getBasePostId());
+    } else if (command.getBasePost().getSourceType().equals(SourceType.OFFICIAL_GAME)) {
+      this.likedOfficialGameIds.add(command.getBasePostId());
+    } else if (command.getBasePost().getSourceType().equals(SourceType.CREATION_GAME)) {
+      this.likedCreationGameIds.add(command.getBasePostId());
+    }else{
+      throw new CustomException(ErrorCode.INVALID_SOURCE_TYPE);
+    }
+  }
+
+  public void removeLikedPostId(BasePostCommand command){
+    if(command.getBasePost().getSourceType().equals(SourceType.INTRO)){
+      this.likedIntroIds.remove(command.getBasePostId());
+    } else if (command.getBasePost().getSourceType().equals(SourceType.OFFICIAL_GAME)) {
+      this.likedOfficialGameIds.remove(command.getBasePostId());
+    } else if (command.getBasePost().getSourceType().equals(SourceType.CREATION_GAME)) {
+      this.likedCreationGameIds.remove(command.getBasePostId());
+    } else{
+      throw new CustomException(ErrorCode.INVALID_SOURCE_TYPE);
+    }
+  }
+
+  public void addBookmarkedPostId(BasePostCommand command) {
+    if(command.getBasePost().getSourceType().equals(SourceType.INTRO)){
+      this.bookmarkedIntroIds.add(command.getBasePostId());
+    } else if (command.getBasePost().getSourceType().equals(SourceType.OFFICIAL_GAME)) {
+      this.bookmarkedOfficialGameIds.add(command.getBasePostId());
+    } else if (command.getBasePost().getSourceType().equals(SourceType.CREATION_GAME)) {
+      this.bookmarkedCreationGameIds.add(command.getBasePostId());
+    }else{
+      throw new CustomException(ErrorCode.INVALID_SOURCE_TYPE);
+    }
+  }
+
+  public void removeBookmarkedPostId(BasePostCommand command) {
+    if(command.getBasePost().getSourceType().equals(SourceType.INTRO)){
+      this.bookmarkedIntroIds.remove(command.getBasePostId());
+    } else if (command.getBasePost().getSourceType().equals(SourceType.OFFICIAL_GAME)) {
+      this.bookmarkedOfficialGameIds.remove(command.getBasePostId());
+    } else if (command.getBasePost().getSourceType().equals(SourceType.CREATION_GAME)) {
+      this.bookmarkedCreationGameIds.remove(command.getBasePostId());
+    } else{
+      throw new CustomException(ErrorCode.INVALID_SOURCE_TYPE);
+    }
+  }
 }
