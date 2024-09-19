@@ -78,6 +78,12 @@ dependencies {
 
 	// Thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	// Firebase
+	implementation 'com.google.firebase:firebase-admin:9.1.1'
+	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+
+
 }
 
 tasks.named('test') {

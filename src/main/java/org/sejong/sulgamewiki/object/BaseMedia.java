@@ -45,6 +45,5 @@ public class BaseMedia extends BaseTimeEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   private BasePost basePost;
 
-  //TODO: 포스트의 미디어 타입 enum으로 추가하기. 변수명 명확하게
   private PostMediaType postMediaType;
 }

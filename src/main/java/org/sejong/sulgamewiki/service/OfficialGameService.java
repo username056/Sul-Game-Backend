@@ -13,6 +13,8 @@ import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.CreationGame;
+import org.sejong.sulgamewiki.object.HomeCommand;
+import org.sejong.sulgamewiki.object.HomeDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.constants.ScoreRule;
@@ -22,6 +24,10 @@ import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +70,7 @@ public class OfficialGameService {
             .isUpdated(false)
             .title(command.getTitle())
             .introduction(command.getIntroduction())
+            .isIntroExist(command.getIsIntroExist())
             .description(command.getDescription())
             .likes(0)
             .likedMemberIds(new HashSet<>())
@@ -75,8 +82,11 @@ public class OfficialGameService {
             .commentCount(0)
             .sourceType(SourceType.OFFICIAL_GAME)
             .thumbnailIcon(command.getThumbnailIcon())
-            .isCreatorInfoPrivate(false)
+            .isCreatorInfoPrivate(checkCreatorInfoIsPrivate(command.getIsCreatorInfoPrivate()))
             .gameTags(command.getGameTags())
+            .levelTag(command.getLevelTag())
+            .headCountTag(command.getHeadCountTag())
+            .noiseLevelTag(command.getNoiseLevelTag())
             .build());
 
     command.setBasePost((savedOfficialGame));
@@ -106,7 +116,6 @@ public class OfficialGameService {
         command.getBasePostId());
 
     BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(command.getIntroMediaUrlFromGame());
-    //TODO: 해당 포스트와 연관된 창작 술게임 가져와야함
 
     List<CreationGame> relatedCreationGames = basePostRepository.findCreationGamesByRelatedOfficialGame(officialGame);
 
@@ -124,8 +133,21 @@ public class OfficialGameService {
         .build();
   }
 
+  public HomeDto getSortedOfficialGames(HomeCommand command) {
+    Pageable pageable = createPageable(command);  // 기본값으로 설정
+
+    Slice<OfficialGame> officialGamesSlice;
+
+    officialGamesSlice = basePostRepository.getSliceOfficialGames(pageable);
+
+    return HomeDto.builder()
+        .officialGameSlice(officialGamesSlice)
+        .hasNext(officialGamesSlice.hasNext())
+        .build();
+  }
+
   @Transactional(readOnly = true)
-  public BasePostDto getOfficialGames(BasePostCommand command) {
+  public BasePostDto getOfficialGames() {
 
     List<OfficialGame> officialGames = basePostRepository.findAllOfficialGame();
 
@@ -213,6 +235,14 @@ public class OfficialGameService {
 
     // 변경사항을 저장
     basePostRepository.save(officialGame);
+  }
+
+  private Pageable createPageable(HomeCommand command) {
+    return PageRequest.of(
+        command.getPageNumber(),
+        command.getPageSize(),
+        Sort.by(command.getDirection(),command.getSortBy().getValue())
+    );
   }
 
 }

@@ -20,6 +20,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.sejong.sulgamewiki.object.constants.GameTag;
+import org.sejong.sulgamewiki.object.constants.HeadCountTag;
+import org.sejong.sulgamewiki.object.constants.LevelTag;
+import org.sejong.sulgamewiki.object.constants.NoiseLevelTag;
 
 @ToString(callSuper = true)
 @Entity
@@ -40,6 +43,12 @@ public class CreationGame extends BasePost {
   private String introLyricsInGamePost;
   
   private String introMediaFileInGamePostUrl;
+
+  private Boolean isIntroExist;
+
+  private LevelTag levelTag;
+  private HeadCountTag headCountTag;
+  private NoiseLevelTag noiseLevelTag;
 
   // 창작 술게임의 태그
   // 4개 이하

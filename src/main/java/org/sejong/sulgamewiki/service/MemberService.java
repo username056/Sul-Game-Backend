@@ -269,4 +269,17 @@ public class MemberService implements UserDetailsService {
         .currentPage(expLogPage.getNumber())
         .build();
   }
+
+  public MemberDto updateFcmTokenAfterLogin(Long memberId, String fcmToken) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    member.updateFcmToken(fcmToken);
+    // FCM 토큰이 변경되었으므로, 저장소에 변경사항 반영
+    memberRepository.save(member);
+
+    return MemberDto.builder()
+        .member(member)
+        .build();
+  }
 }

@@ -53,11 +53,14 @@ public class WebSecurityConfig {
       "/api/auth/refresh-token", // AccessToken 재발행
       "/login/oauth2/code/**", // OAuth 리다이렉션
       "/oauth2/authorization/**", // OAuth 로그인 페이지
-      "/api/intro/get",
-      "/api/comment/get",
+      "/api/intro/details",
+      "/api/intro/get-sorted-slice",
       "/api/official/details",
-      "/api/creation/details",
       "/api/official/get-all",
+      "/api/official/get-sorted-slice",
+      "/api/creation/details",
+      "/api/creation/get-sorted-slice",
+      "/api/comment/get",
       "/api/home/**"
   };
 

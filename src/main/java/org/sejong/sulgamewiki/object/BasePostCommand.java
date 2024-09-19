@@ -7,8 +7,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.sejong.sulgamewiki.object.constants.HeadCountTag;
 import org.sejong.sulgamewiki.object.constants.IntroTag;
 import org.sejong.sulgamewiki.object.constants.IntroType;
+import org.sejong.sulgamewiki.object.constants.LevelTag;
+import org.sejong.sulgamewiki.object.constants.NoiseLevelTag;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.object.constants.GameTag;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,10 +33,14 @@ public class BasePostCommand {
   private String introduction;
   private String title;
   private String description;
+  private Boolean isIntroExist;
   @Builder.Default
   private List<MultipartFile> gameMultipartFiles = new ArrayList<>();
   private List<String> imageUrls;
   private Set<GameTag> gameTags;
+  private LevelTag levelTag;
+  private HeadCountTag headCountTag;
+  private NoiseLevelTag noiseLevelTag;
   private String introLyricsInGame;
   private MultipartFile introMultipartFileInGame;
   private String IntroMediaUrlFromGame;

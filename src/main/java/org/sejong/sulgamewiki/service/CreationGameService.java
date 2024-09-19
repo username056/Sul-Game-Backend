@@ -10,6 +10,8 @@ import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
 import org.sejong.sulgamewiki.object.CreationGame;
+import org.sejong.sulgamewiki.object.HomeCommand;
+import org.sejong.sulgamewiki.object.HomeDto;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.constants.ExpRule;
@@ -20,6 +22,10 @@ import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +59,7 @@ public class CreationGameService {
             .isUpdated(false)
             .title(command.getTitle())
             .introduction(command.getIntroduction())
+            .isIntroExist(command.getIsIntroExist())
             .description(command.getDescription())
             .likes(0)
             .likedMemberIds(new HashSet<>())
@@ -66,6 +73,9 @@ public class CreationGameService {
             .thumbnailIcon(command.getThumbnailIcon())
             .isCreatorInfoPrivate(checkCreatorInfoIsPrivate(command.getIsCreatorInfoPrivate()))
             .gameTags(command.getGameTags())
+            .levelTag(command.getLevelTag())
+            .headCountTag(command.getHeadCountTag())
+            .noiseLevelTag(command.getNoiseLevelTag())
             .officialGame(officialGame)
             .build());
 
@@ -106,6 +116,19 @@ public class CreationGameService {
         .creationGame(creationGame)
         .baseMedias(medias)
         .introMediaInGame(introMediaFileInGamePost)
+        .build();
+  }
+
+  public HomeDto getSortedCreationGames(HomeCommand command) {
+    Pageable pageable = createPageable(command);  // 기본값으로 설정
+
+    Slice<CreationGame> creationGameSlice;
+
+    creationGameSlice = basePostRepository.getSliceCreationGames(pageable);
+
+    return HomeDto.builder()
+        .creationGameSlice(creationGameSlice)
+        .hasNext(creationGameSlice.hasNext())
         .build();
   }
 
@@ -188,6 +211,12 @@ public class CreationGameService {
     basePostRepository.save(creationGame);
   }
 
-
+  private Pageable createPageable(HomeCommand command) {
+    return PageRequest.of(
+        command.getPageNumber(),
+        command.getPageSize(),
+        Sort.by(command.getDirection(),command.getSortBy().getValue())
+    );
+  }
 
 }
