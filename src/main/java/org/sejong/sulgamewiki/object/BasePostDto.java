@@ -22,6 +22,7 @@ public class BasePostDto {
   private BaseMedia introMediaFileInGame;
   private Boolean isLiked;
   private Boolean isBookmarked;
+  private Boolean isIntroExist;
 
   private List<CreationGame> relatedCreationGames;
   // 이거 전부 가져오는게 맞나...? 이름이랑 썸네일 정도만 있어도 될 것 같은데
