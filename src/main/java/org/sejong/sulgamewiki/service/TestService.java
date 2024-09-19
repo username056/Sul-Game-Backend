@@ -26,7 +26,7 @@ import org.sejong.sulgamewiki.repository.ExpLogRepository;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.repository.NotificationRepository;
-import org.sejong.sulgamewiki.repository.RankingHistoryRepository;
+import org.sejong.sulgamewiki.repository.DailyMemberRankingRepository;
 import org.sejong.sulgamewiki.repository.ReportRepository;
 import org.sejong.sulgamewiki.util.MockUtil;
 import org.sejong.sulgamewiki.util.exception.CustomException;
@@ -46,7 +46,7 @@ public class TestService {
   private final CommentRepository commentRepository;
   private final NotificationRepository notificationRepository;
   private final ReportRepository reportRepository;
-  private final RankingHistoryRepository rankingHistoryRepository;
+  private final DailyMemberRankingRepository dailyMemberRankingRepository;
   private final ExpLogRepository expLogRepository;
   private final BaseMediaRepository baseMediaRepository;
 
@@ -156,7 +156,7 @@ public class TestService {
     reportRepository.deleteAll(memberReports);
 
     // 6. 회원의 랭킹 히스토리 삭제
-    rankingHistoryRepository.deleteByMember(member);
+    dailyMemberRankingRepository.deleteByMember(member);
 
     // 7. 회원의 경험치 로그 삭제
     expLogRepository.deleteByMember(member);
