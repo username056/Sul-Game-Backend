@@ -6,6 +6,7 @@ import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.CreationGame;
 import org.sejong.sulgamewiki.object.Intro;
+import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -71,4 +72,6 @@ public interface BasePostRepository extends JpaRepository<BasePost, Long> {
 
   @Query("SELECT entity FROM OfficialGame entity WHERE entity.isDeleted = false")
   List<OfficialGame> findAllOfficialGame();
+
+  List<BasePost> findByMember(Member member);
 }

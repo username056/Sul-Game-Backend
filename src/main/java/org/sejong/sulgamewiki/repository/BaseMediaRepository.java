@@ -2,6 +2,8 @@ package org.sejong.sulgamewiki.repository;
 
 import java.util.List;
 import org.sejong.sulgamewiki.object.BaseMedia;
+import org.sejong.sulgamewiki.object.BasePost;
+import org.sejong.sulgamewiki.object.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,4 +22,8 @@ public interface BaseMediaRepository extends JpaRepository<BaseMedia, Long> {
 
   @Query("SELECT entity FROM BaseMedia entity WHERE entity.basePost.basePostId = :basePostId AND entity.isDeleted = false")
   List<BaseMedia> findByBasePost_BasePostId(Long basePostId);
+
+  List<BasePost> findByMember(Member member);
+
+  void deleteByBasePost_BasePostId(Long basePostId);
 }
