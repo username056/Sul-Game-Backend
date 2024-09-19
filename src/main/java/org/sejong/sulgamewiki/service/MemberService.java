@@ -2,7 +2,6 @@ package org.sejong.sulgamewiki.service;
 
 import java.util.List;
 import java.util.Optional;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePost;
@@ -184,10 +183,8 @@ public class MemberService implements UserDetailsService {
   }
 
   @Transactional
-  public MemberDto deleteMember(MemberCommand command) {
-//    memberRepository.deleteById(command.getMemberId());
-    return MemberDto.builder()
-        .build();
+  public void deleteMember(MemberCommand command) {
+    memberRepository.deleteById(command.getMemberId());
   }
 
   @Transactional

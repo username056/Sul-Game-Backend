@@ -6,13 +6,9 @@ import org.sejong.sulgamewiki.object.MemberDto;
 import org.sejong.sulgamewiki.object.CustomUserDetails;
 import org.sejong.sulgamewiki.util.annotation.ApiChangeLog;
 import org.sejong.sulgamewiki.util.annotation.ApiChangeLogs;
-import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 
 public interface MemberControllerDocs {
 
@@ -366,20 +362,4 @@ public interface MemberControllerDocs {
   )
   ResponseEntity<MemberDto> getDailyMemberExpRankings(
       @ModelAttribute MemberCommand command);
-
-  @Operation(
-      summary = "회원 탈퇴",
-      description = """
-
-        **JWT 토큰 인증 필요:**
-
-        **입력 파라미터 값:**
-
-        **반환 파라미터 값:**
-        """
-  )
-  ResponseEntity<MemberDto> deleteMember(
-      @AuthenticationPrincipal UserDetails userDetails,
-      @ModelAttribute MemberCommand command
-  );
 }
