@@ -141,12 +141,12 @@ public abstract class BasePost extends BaseTimeEntity {
   public void decreaseCommentCount(){this.commentCount--;}
 
   // 데일리 스코어 증가
-  public void increaseDailyScore(int score) {
+  private void increaseDailyScore(int score) {
     this.dailyScore += score;
   }
 
   // 위클리 스코어 증가
-  public void increaseWeeklyScore(int score) {
+  private void increaseWeeklyScore(int score) {
     this.weeklyScore += score;
   }
 
@@ -154,6 +154,9 @@ public abstract class BasePost extends BaseTimeEntity {
   private void increaseTotalScore(int score) {
     this.totalScore += score;
   }
+
+  // 신고 횟수 증가
+  public void increaseReportedCount() {this.reportedCount++;}
 
   // 점수 초기화 로직
   public void resetDailyScore() {
