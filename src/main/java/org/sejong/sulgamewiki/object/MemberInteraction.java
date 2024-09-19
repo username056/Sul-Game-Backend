@@ -139,6 +139,10 @@ public class MemberInteraction extends BaseTimeEntity {
 
   public void decreaseCommentCount(){this.totalCommentCount--;}
 
+  public void increaseCommentLikeCount(){this.totalLikeCount++;}
+
+  public void decreaseCommentLikeCount(){this.totalLikeCount--;}
+
   public void addLikedPostId(BasePostCommand command){
     if(command.getBasePost().getSourceType().equals(SourceType.INTRO)){
       this.likedIntroIds.add(command.getBasePostId());

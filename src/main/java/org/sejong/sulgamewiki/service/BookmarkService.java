@@ -31,6 +31,7 @@ public class BookmarkService {
       return undoBookmark(command);
     }
   }
+
   public BasePostDto doBookmark(BasePostCommand command){
 
     // 즐겨찾기 할 게시물
@@ -52,12 +53,12 @@ public class BookmarkService {
     // 즐겨찾기에 추가
     interaction.addBookmarkedPostId(command);
 
-    // 게시글 점수 증가
+    // 게시글 Score 갱신
     basePost.updateScore(ScoreRule.BOOKMARK);
 
-    // 게시글 작성자 EXP 증가
+    // 게시글 작성자 EXP 갱신
     expManagerService.updateExp(postOwner, ExpRule.BOOKMARKED);
-    // 즐겨찾기 누른 멤버 EXP 증가
+    // 즐겨찾기 누른 멤버 EXP 갱신
     expManagerService.updateExp(member, ExpRule.BOOKMARK);
 
     // 변경사항 저장
