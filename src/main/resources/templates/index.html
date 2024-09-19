@@ -7,6 +7,8 @@
   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
   <!-- 커스텀 술겜위키 CSS -->
   <link rel="stylesheet" th:href="@{/css/sul-game.css}" />
+  <!-- Global JS 포함 -->
+  <script th:src="@{/js/global.js}"></script>
 </head>
 <body>
 
@@ -22,6 +24,20 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/create-intro}">인트로 추가하기</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/create-creation-game}">창작술게임 추가하기</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/create-official-game}">국룰술게임 추가하기</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/oauth-login}">로그인 하기</a>
+        </li>
+      </ul>
       <form class="d-flex ms-auto" action="/search" method="get">
         <input class="form-control me-2" type="search" placeholder="검색" aria-label="Search" name="query">
         <button class="btn btn-outline-success" type="submit">검색</button>
@@ -29,6 +45,7 @@
     </div>
   </div>
 </nav>
+
 
 <!-- 검색 섹션 -->
 <div class="container text-center">
@@ -54,7 +71,7 @@
   </div>
   <ul class="list-group">
     <li class="list-group-item" th:each="game : ${homeDto.latestCreationGames}">
-      <img src="/images/default-thumbnail.png" alt="Game Thumbnail">
+      <img src="/images/default-thumbnail.svg" alt="Game Thumbnail">
       <div class="game-info">
         <h5 th:text="${game.title}">게임 제목</h5>
         <p th:text="${game.introduction}">게임 소개</p>
@@ -70,7 +87,7 @@
   <h2 class="section-title mt-5">국룰 술게임</h2>
   <ul class="list-group">
     <li class="list-group-item" th:each="game : ${homeDto.officialGamesByLikes}">
-      <img src="/images/default-thumbnail.png" alt="Game Thumbnail">
+      <img src="/images/default-thumbnail.svg" alt="Game Thumbnail">
       <div class="game-info">
         <h5 th:text="${game.title}">게임 제목</h5>
         <p th:text="${game.introduction}">게임 소개</p>
@@ -117,7 +134,7 @@
   </div>
   <ul class="list-group">
     <li class="list-group-item" th:each="intro : ${homeDto.introsByLikes}">
-      <img src="/images/default-thumbnail.png" alt="Intro Thumbnail">
+      <img src="/images/default-thumbnail.svg" alt="Intro Thumbnail">
       <div class="game-info">
         <h5 th:text="${intro.title}">인트로 제목</h5>
         <p th:text="${intro.introduction}">인트로 소개</p>
@@ -133,7 +150,7 @@
   <h2 class="section-title mt-5">오늘 가장 핫했던 술게임</h2>
   <ul class="list-group">
     <li class="list-group-item" th:each="game : ${homeDto.gamesByWeeklyScore}">
-      <img src="/images/default-thumbnail.png" alt="Game Thumbnail">
+      <img src="/images/default-thumbnail.svg" alt="Game Thumbnail">
       <div class="game-info">
         <h5 th:text="${game.title}">게임 제목</h5>
         <p th:text="${game.introduction}">게임 소개</p>
