@@ -25,7 +25,6 @@ import org.sejong.sulgamewiki.repository.CommentRepository;
 import org.sejong.sulgamewiki.repository.ExpLogRepository;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
-import org.sejong.sulgamewiki.repository.NotificationRepository;
 import org.sejong.sulgamewiki.repository.RankingHistoryRepository;
 import org.sejong.sulgamewiki.repository.ReportRepository;
 import org.sejong.sulgamewiki.util.MockUtil;
@@ -44,7 +43,6 @@ public class TestService {
   private final MemberInteractionRepository memberInteractionRepository;
   private final BasePostRepository basePostRepository;
   private final CommentRepository commentRepository;
-  private final NotificationRepository notificationRepository;
   private final ReportRepository reportRepository;
   private final RankingHistoryRepository rankingHistoryRepository;
   private final ExpLogRepository expLogRepository;
@@ -148,8 +146,7 @@ public class TestService {
     Long targetDeleteMemberInteractionId = memberInteraction.getId();
     memberInteractionRepository.deleteById(targetDeleteMemberInteractionId);
 
-    // 4. 회원의 알림 삭제
-    notificationRepository.deleteByMember(member);
+    // 4. 회원의 알림 삭제\
 
     // 5. 회원이 작성한 신고 삭제
     List<Report> memberReports = reportRepository.findByReporter(member);
