@@ -99,6 +99,8 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/create-creation-game").permitAll()
                 .requestMatchers(HttpMethod.GET, "/create-official-game").permitAll()
                 .requestMatchers(HttpMethod.GET, "/oauth-login").permitAll()
+                // 허용 API
+                .requestMatchers(HttpMethod.POST, "/api/members/top-rank").permitAll()
                 // API
                 .requestMatchers(HttpMethod.POST, "/api/members/complete-registration").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/members/profile").hasRole("USER")
