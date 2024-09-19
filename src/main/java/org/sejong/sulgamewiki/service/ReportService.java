@@ -4,13 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.Comment;
 import org.sejong.sulgamewiki.object.Member;
+import org.sejong.sulgamewiki.object.MemberInteraction;
 import org.sejong.sulgamewiki.object.OfficialGame;
 import org.sejong.sulgamewiki.object.Report;
 import org.sejong.sulgamewiki.object.ReportCommand;
 import org.sejong.sulgamewiki.object.ReportDto;
+import org.sejong.sulgamewiki.object.constants.ExpRule;
+import org.sejong.sulgamewiki.object.constants.ReportStatus;
+import org.sejong.sulgamewiki.object.constants.ScoreRule;
 import org.sejong.sulgamewiki.object.constants.SourceType;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.CommentRepository;
+import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.repository.ReportRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
@@ -21,19 +26,27 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ReportService {
 
-  private final ReportRepository reportRepository;
   private final MemberRepository memberRepository;
   private final BasePostRepository basePostRepository;
+  private final ReportRepository reportRepository;
   private final CommentRepository commentRepository;
+  private final MemberInteractionRepository memberInteractionRepository;
+  private final ExpManagerService expManagerService;
 
-  private ReportDto createReport(ReportCommand command, Member member) {
+  public ReportDto createReport(ReportCommand command) {
+
+    // 멤버 조회
+    Member reporter = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
     // 리포트 생성 및 저장
     Report report = Report.builder()
-        .reporter(member)
+        .reporter(reporter)
         .sourceType(command.getSourceType())
         .sourceId(command.getSourceId())
         .reportType(command.getReportType())
         .build();
+
     Report savedReport = reportRepository.save(report);
 
     return ReportDto.builder()
@@ -41,94 +54,107 @@ public class ReportService {
         .build();
   }
 
-  private Object findSourceObject(Long sourceId, SourceType sourceType) {
-    if (sourceType == SourceType.INTRO || sourceType == SourceType.OFFICIAL_GAME || sourceType == SourceType.CREATION_GAME) {
-      return basePostRepository.findById(sourceId)
-          .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-    } else if (sourceType == SourceType.COMMENT) {
-      return commentRepository.findById(sourceId)
-          .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-    } else {
-      throw new CustomException(ErrorCode.INVALID_SOURCE_TYPE);
-    }
-  }
+  public boolean isAlreadyReported(ReportCommand command) {
+    Member reporter = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-  public ReportDto getReport(Long reportId) {
-    Report report = reportRepository.findById(reportId)
-        .orElseThrow(() -> new CustomException(ErrorCode.REPORT_NOT_FOUND));
-
-    return ReportDto.builder()
-        .report(report)
-        .build();
-  }
-
-  public void increaseReportCount(Object sourceObject) {
-    if (sourceObject instanceof BasePost) {
-      BasePost basePost = (BasePost) sourceObject;
-      basePost.setReportedCount(basePost.getReportedCount() + 1);
-      basePostRepository.save(basePost);
-    } else if (sourceObject instanceof Comment) {
-      Comment comment = (Comment) sourceObject;
-      comment.setReportedCount(comment.getReportedCount() + 1);
-      commentRepository.save(comment);
-    } else {
-      throw new CustomException(ErrorCode.INVALID_SOURCE_TYPE);
-    }
-  }
-
-  public boolean isAlreadyReported(Member member, Long sourceId,
-      SourceType sourceType) {
-    return reportRepository.existsByReporterAndSourceIdAndSourceType(member,
-        sourceId, sourceType);
+    return reportRepository.existsByReporterAndSourceIdAndSourceType(reporter,
+        command.getSourceId(), command.getSourceType());
   }
 
   // 게시물 신고 로직
-  public ReportDto reportBasePost(ReportCommand reportCommand) {
-    BasePost basePost = basePostRepository.findById(reportCommand.getSourceId())
-        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+  public ReportDto reportBasePost(ReportCommand command) {
 
-    Member member = memberRepository.findById(reportCommand.getMemberId())
+    // 신고할 게시물
+    BasePost basePost = basePostRepository.findById(command.getSourceId())
+        .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+    // 게시글 작성자
+    Member postOwner = memberRepository.findById(
+            basePost.getMember().getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+    // 신고자
+    Member reporter = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
     // 중복 신고 여부 확인
-    if (isAlreadyReported(member, reportCommand.getSourceId(),
-        reportCommand.getSourceType())) {
+    if (isAlreadyReported(command)) {
       throw new CustomException(ErrorCode.MEMBER_ALREADY_REPORTED);
     }
 
-    // 리포트 생성
-    ReportCommand command = ReportCommand.builder()
-        .memberId(member.getMemberId())
-        .sourceId(basePost.getBasePostId())
-        .sourceType(reportCommand.getSourceType())
-        .reportType(reportCommand.getReportType())
-        .build();
+    // 신고자 EXP 갱신
+    expManagerService.updateExp(reporter, ExpRule.REPORT_FILED);
 
-    return createReport(command, member);
+    /*
+    TODO: 신고가 유효한 신고인지 관리자가 검증하는 로직 필요
+     */
+
+    // 게시글 신고횟수 증가
+    basePost.increaseReportedCount();
+    // 게시글 SCORE 갱신
+    basePost.updateScore(ScoreRule.REPORTED);
+
+    // 신고자 EXP 갱신
+    expManagerService.updateExp(reporter, ExpRule.REPORT_ACCEPTED);
+    // 신고당한 멤버 EXP 갱신
+    expManagerService.applyPenaltyForReport(postOwner, command.getReportType());
+
+    return createReport(command);
   }
 
   // 댓글 신고 로직
-  public ReportDto reportComment(ReportCommand reportCommand){
-      Comment comment = commentRepository.findById(reportCommand.getSourceId())
-          .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+  public ReportDto reportComment(ReportCommand command) {
 
-      Member member = memberRepository.findById(reportCommand.getMemberId())
-          .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    // 신고할 댓글
+    Comment comment = commentRepository.findById(command.getSourceId())
+        .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-      // 중복 신고 여부 확인
-      if (isAlreadyReported(member, reportCommand.getSourceId(),
-          reportCommand.getSourceType())) {
-        throw new CustomException(ErrorCode.MEMBER_ALREADY_REPORTED);
-      }
+    // 게시글 작성자
+    Member postOwner = memberRepository.findById(
+            comment.getMember().getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-      ReportCommand command = ReportCommand.builder()
-          .memberId(member.getMemberId())
-          .sourceId(comment.getCommentId())
-          .sourceType(reportCommand.getSourceType())
-          .reportType(reportCommand.getReportType())
-          .build();
+    // 신고자
+    Member reporter = memberRepository.findById(command.getMemberId())
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-      return createReport(command, member);
+    // 중복 신고 여부 확인
+    if (isAlreadyReported(command)) {
+      throw new CustomException(ErrorCode.MEMBER_ALREADY_REPORTED);
     }
+
+    // 신고자 EXP 갱신
+    expManagerService.updateExp(reporter, ExpRule.REPORT_FILED);
+
+    /*
+    TODO: 신고가 유효한 신고인지 관리자가 검증하는 로직 필요
+     */
+
+    // 댓글 신고횟수 증가
+    comment.increaseReportedCount();
+
+    // 신고자 EXP 갱신
+    expManagerService.updateExp(reporter, ExpRule.REPORT_ACCEPTED);
+    // 신고당한 멤버 EXP 갱신
+    expManagerService.applyPenaltyForReport(postOwner, command.getReportType());
+
+    return createReport(command);
+  }
+
+  // TODO: 신고 접수 후 관리자 검토 상태로 변경하는 로직 필요
+  public ReportDto submitReportForReview(Report report) {
+    report.setStatus(ReportStatus.PENDING);
+    Report savedReport = reportRepository.save(report);
+    notifyAdmin(savedReport); // 관리자에게 알림 전송
+    return ReportDto.builder()
+        .report(savedReport)
+        .build();
+  }
+
+  // 관리자에게 알림을 보내는 메서드
+  private void notifyAdmin(Report report) {
+    // 메일, 슬랙 메시지, UI 알림 등으로 관리자에게 알림 전송
+  }
 
 }
