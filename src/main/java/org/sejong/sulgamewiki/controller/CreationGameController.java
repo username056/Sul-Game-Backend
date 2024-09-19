@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.service.BookmarkService;
 import org.sejong.sulgamewiki.service.CreationGameService;
 import org.sejong.sulgamewiki.service.LikeService;
 import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
@@ -29,6 +30,7 @@ public class CreationGameController {
 
   private final CreationGameService creationGameService;
   private final LikeService likeService;
+  private final BookmarkService bookmarkService;
 
   @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
@@ -64,11 +66,21 @@ public class CreationGameController {
   }
 
   @PostMapping(value = "/like", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<BasePostDto> likeOfficial(
+  public ResponseEntity<BasePostDto> likeCreation(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command) {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
     return ResponseEntity.ok(likeService.likePost(command));
+  }
+
+  @PostMapping(value = "/bookmark", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<BasePostDto> bookmarkCreation(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute BasePostCommand command
+  ){
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+
+    return ResponseEntity.ok(bookmarkService.bookmarkPost(command));
   }
 }
