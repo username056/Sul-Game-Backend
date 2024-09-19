@@ -8,18 +8,26 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePost;
+import org.sejong.sulgamewiki.object.Comment;
 import org.sejong.sulgamewiki.object.CreationGame;
 import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.MemberInteraction;
 import org.sejong.sulgamewiki.object.OfficialGame;
+import org.sejong.sulgamewiki.object.Report;
 import org.sejong.sulgamewiki.object.TestCommand;
 import org.sejong.sulgamewiki.object.TestDto;
 import org.sejong.sulgamewiki.object.constants.AccountStatus;
 import org.sejong.sulgamewiki.object.constants.ExpLevel;
+import org.sejong.sulgamewiki.repository.BaseMediaRepository;
 import org.sejong.sulgamewiki.repository.BasePostRepository;
+import org.sejong.sulgamewiki.repository.CommentRepository;
+import org.sejong.sulgamewiki.repository.ExpLogRepository;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
+import org.sejong.sulgamewiki.repository.NotificationRepository;
+import org.sejong.sulgamewiki.repository.RankingHistoryRepository;
+import org.sejong.sulgamewiki.repository.ReportRepository;
 import org.sejong.sulgamewiki.util.MockUtil;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
@@ -31,9 +39,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class TestService {
+
   private final MemberRepository memberRepository;
   private final MemberInteractionRepository memberInteractionRepository;
   private final BasePostRepository basePostRepository;
+  private final CommentRepository commentRepository;
+  private final NotificationRepository notificationRepository;
+  private final ReportRepository reportRepository;
+  private final RankingHistoryRepository rankingHistoryRepository;
+  private final ExpLogRepository expLogRepository;
+  private final BaseMediaRepository baseMediaRepository;
 
   /**
    * 설명: 새로운 Mock Member를 생성 DB저장
@@ -97,29 +112,61 @@ public class TestService {
   }
 
   /**
-   * 회원과 관련된 전체 정보를 삭제 합니다
-   * 전체 MemberRepository에 대한 정보를 삭제합니다
-   * 전체 memberContentInteractionRepository도 삭제합니다.
+   * 회원과 관련된 모든 데이터를 삭제합니다.
    *
-   * @return MockDto
-   * List<Member> members;
-   * List<MemberContentInteraction> memberContentInteractions;
-   * 전부 비어있어야 정상입니다!!
-   *
+   * @param command 삭제할 회원의 이메일 정보를 포함하는 커맨드 객체
+   * @return 삭제된 회원의 ID 및 관련 데이터 ID를 포함한 DTO
    */
   @Transactional
   public TestDto deleteMockMemberByEmail(TestCommand command) {
     Member member = memberRepository.findByEmail(command.getEmail())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
+    Long targetDeleteMemberId = member.getMemberId();
+
+    // 1. 회원이 작성한 모든 게시물 삭제
+    List<BasePost> posts = basePostRepository.findByMember(member);
+    for (BasePost post : posts) {
+      // 게시물에 연결된 댓글 삭제
+      List<Comment> postComments = commentRepository.findByBasePost(post);
+      commentRepository.deleteAll(postComments);
+
+      // 게시물에 연결된 미디어 삭제 (BaseMediaRepository에 delete 메서드 필요 시 추가)
+      baseMediaRepository.deleteByBasePost_BasePostId(post.getBasePostId());
+
+      // 게시물 삭제
+      basePostRepository.delete(post);
+    }
+
+    // 2. 회원이 작성한 모든 댓글 삭제
+    List<Comment> memberComments = commentRepository.findByMember(member);
+    commentRepository.deleteAll(memberComments);
+
+    // 3. 회원과 관련된 인터랙션 데이터 삭제
     MemberInteraction memberInteraction = memberInteractionRepository.findById(member.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_INTERACTION_NOT_FOUND));
-
-    Long targetDeleteMemberId = member.getMemberId();
     Long targetDeleteMemberInteractionId = memberInteraction.getId();
-
     memberInteractionRepository.deleteById(targetDeleteMemberInteractionId);
+
+    // 4. 회원의 알림 삭제
+    notificationRepository.deleteByMember(member);
+
+    // 5. 회원이 작성한 신고 삭제
+    List<Report> memberReports = reportRepository.findByReporter(member);
+    reportRepository.deleteAll(memberReports);
+
+    // 6. 회원의 랭킹 히스토리 삭제
+    rankingHistoryRepository.deleteByMember(member);
+
+    // 7. 회원의 경험치 로그 삭제
+    expLogRepository.deleteByMember(member);
+
+    // 8. 기타 관련된 데이터 삭제 (필요 시 추가)
+
+    // 9. 회원 삭제
     memberRepository.deleteById(targetDeleteMemberId);
+
+    log.info("회원 삭제 완료: id={}, email={}", targetDeleteMemberId, member.getEmail());
 
     return TestDto.builder()
         .deletedMemberId(targetDeleteMemberId)

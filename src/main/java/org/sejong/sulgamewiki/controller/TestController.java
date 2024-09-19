@@ -29,7 +29,7 @@ public class TestController {
 
   private final TestService testService;
 
-  @PostMapping("/member")
+  @PostMapping(value = "/member",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   @Operation(
       summary = "모의 회원 생성",
@@ -43,12 +43,12 @@ public class TestController {
     return ResponseEntity.ok(testService.createMockMember());
   }
 
-  @GetMapping("/member-list")
+  @PostMapping(value = "/member-list",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   @Operation(
       summary = "전체 회원 조희",
       description = "전체 회원 조회\n\n"
-          + "DB에 저장되어있는 모든 회원의 ID값, 이메일, 닉네임을 확인하실 수 있습니다"
+          + "DB에 저장되어 있는 모든 회원의 ID값, 이메일, 닉네임을 확인하실 수 있습니다"
   )
   public ResponseEntity<TestDto> getAllMember() {
     return ResponseEntity.ok(testService.getAllMember());
