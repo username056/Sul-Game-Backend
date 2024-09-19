@@ -112,7 +112,6 @@ public class OfficialGameService {
         command.getBasePostId());
 
     BaseMedia introMediaFileInGamePost = baseMediaRepository.findByMediaUrl(command.getIntroMediaUrlFromGame());
-    //TODO: 해당 포스트와 연관된 창작 술게임 가져와야함
 
     List<CreationGame> relatedCreationGames = basePostRepository.findCreationGamesByRelatedOfficialGame(officialGame);
 
