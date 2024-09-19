@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.object.HomeCommand;
+import org.sejong.sulgamewiki.object.HomeDto;
 import org.sejong.sulgamewiki.service.BookmarkService;
 import org.sejong.sulgamewiki.service.LikeService;
 import org.sejong.sulgamewiki.service.OfficialGameService;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
     description = "공식 게임 관리 API 제공"
 )
 public class OfficialGameController implements OfficialGameControllerDocs {
+
   private final OfficialGameService officialGameService;
   private final LikeService likeService;
   private final BookmarkService bookmarkService;
@@ -47,11 +50,18 @@ public class OfficialGameController implements OfficialGameControllerDocs {
     return ResponseEntity.ok(officialGameService.getOfficialGame(command));
   }
 
+  @PostMapping(value = "/get-sorted-slice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  public ResponseEntity<HomeDto> getSortedOfficialGames(
+      @ModelAttribute HomeCommand command) {
+    return ResponseEntity.ok(
+        officialGameService.getSortedOfficialGames(command));
+  }
+
   @PostMapping(value = "/get-all", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
-  public ResponseEntity<BasePostDto> getOfficialGames(
-      @ModelAttribute BasePostCommand command){
-    return ResponseEntity.ok(officialGameService.getOfficialGames(command));
+  public ResponseEntity<BasePostDto> getOfficialGames() {
+    return ResponseEntity.ok(officialGameService.getOfficialGames());
   }
 
   @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -84,7 +94,7 @@ public class OfficialGameController implements OfficialGameControllerDocs {
   public ResponseEntity<BasePostDto> bookmarkOfficial(
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command
-  ){
+  ) {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
     return ResponseEntity.ok(bookmarkService.bookmarkPost(command));

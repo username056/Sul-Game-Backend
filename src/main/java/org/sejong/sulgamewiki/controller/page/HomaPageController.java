@@ -22,7 +22,7 @@ public class HomaPageController {
         .pageSize(5) // 기본 5개씩
         .build();
 
-    model.addAttribute("homeDto", homeService.getHomepage(command));
+    model.addAttribute("homeDto", homeService.getHomepage());
     return "index"; // templates/index.html 에 있습니다.
   }
 }

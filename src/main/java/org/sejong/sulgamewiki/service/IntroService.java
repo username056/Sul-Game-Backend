@@ -7,13 +7,13 @@ import static org.sejong.sulgamewiki.object.constants.ExpRule.POST_DELETION;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.sejong.sulgamewiki.object.BaseMedia;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.object.HomeCommand;
+import org.sejong.sulgamewiki.object.HomeDto;
 import org.sejong.sulgamewiki.object.Intro;
 import org.sejong.sulgamewiki.object.Member;
 import org.sejong.sulgamewiki.object.OfficialGame;
@@ -24,6 +24,10 @@ import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,6 +121,19 @@ public class IntroService {
         .build();
   }
 
+  public HomeDto getSortedIntroGames(HomeCommand command) {
+    Pageable pageable = createPageable(command);  // 기본값으로 설정
+
+    Slice<Intro> introSlices;
+
+    introSlices = basePostRepository.getSliceIntros(pageable);
+
+    return HomeDto.builder()
+        .introSlice(introSlices)
+        .hasNext(introSlices.hasNext())
+        .build();
+  }
+
   @Transactional
   public BasePostDto updateIntro(BasePostCommand command) {
     // 기존 Intro 게시글 조회
@@ -200,5 +217,13 @@ public class IntroService {
 
     // 변경사항을 저장합니다.
     basePostRepository.save(intro);
+  }
+
+  private Pageable createPageable(HomeCommand command) {
+    return PageRequest.of(
+        command.getPageNumber(),
+        command.getPageSize(),
+        Sort.by(command.getDirection(),command.getSortBy().getValue())
+    );
   }
 }

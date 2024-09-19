@@ -14,8 +14,8 @@ import org.springframework.data.domain.Sort.Direction;
 @Setter
 @ToString
 public class HomeCommand {
-  private int pageNumber;
-  private int pageSize;
+  private Integer pageNumber;
+  private Integer pageSize;
   private SourceType postType;
   private SortBy sortBy;
   private Direction Direction;
