@@ -1,7 +1,8 @@
 package org.sejong.sulgamewiki.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
+import org.sejong.sulgamewiki.fss.FCMCommand;
+import org.sejong.sulgamewiki.fss.FCMService;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.Comment;
 import org.sejong.sulgamewiki.object.CommentCommand;
@@ -27,6 +28,7 @@ public class CommentService {
   private final CommentRepository commentRepository;
   private final MemberInteractionRepository memberInteractionRepository;
   private final ExpManagerService expManagerService;
+  private final FCMService fcmService;
 
   public CommentDto createComment(CommentCommand command) {
 
@@ -59,6 +61,21 @@ public class CommentService {
     basePost.increaseCommentCount();
 
     basePostRepository.save(basePost);
+
+    String title = "새로운 댓글이 달렸습니다!";
+    String body = "게시물 [" + basePost.getTitle() + "]에 새로운 댓글: " + command.getContent();
+
+    Member postOwner = basePost.getMember(); // 게시물 작성자
+    String deviceToken = postOwner.getFcmToken(); // 게시물 작성자의 디바이스 토큰
+
+    // 게시물 작성자에게 FCM 알림 보내기
+    if (deviceToken != null && !deviceToken.isEmpty()) {
+      fcmService.sendMessageTo(FCMCommand.builder()
+          .token(deviceToken)
+          .title(title)
+          .body(body)
+          .build());
+    }
 
     return CommentDto.builder()
         .comment(savedComment)
