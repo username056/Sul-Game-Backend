@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BasePostCommand;
 import org.sejong.sulgamewiki.object.BasePostDto;
+import org.sejong.sulgamewiki.service.BookmarkService;
 import org.sejong.sulgamewiki.service.LikeService;
 import org.sejong.sulgamewiki.service.OfficialGameService;
 import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OfficialGameController implements OfficialGameControllerDocs {
   private final OfficialGameService officialGameService;
   private final LikeService likeService;
+  private final BookmarkService bookmarkService;
 
   @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
@@ -76,5 +78,15 @@ public class OfficialGameController implements OfficialGameControllerDocs {
     command.setMemberId(Long.parseLong(userDetails.getUsername()));
 
     return ResponseEntity.ok(likeService.likePost(command));
+  }
+
+  @PostMapping(value = "/bookmark", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<BasePostDto> bookmarkOfficial(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute BasePostCommand command
+  ){
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+
+    return ResponseEntity.ok(bookmarkService.bookmarkPost(command));
   }
 }

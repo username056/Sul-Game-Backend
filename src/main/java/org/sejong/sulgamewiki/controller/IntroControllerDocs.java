@@ -140,4 +140,28 @@ public interface IntroControllerDocs {
       @AuthenticationPrincipal UserDetails userDetails,
       @ModelAttribute BasePostCommand command);
 
+  @Operation(
+      summary = "인트로 좋아요",
+      description = """
+          **토큰 필요**
+          
+          **인트로 좋아요**
+
+          특정 인트로를 좋아요합니다.
+
+          **입력 파라미터 값:**
+
+          - **`Long basePostId`**: 좋아요할 인트로의 고유 ID
+          
+          - **`Boolean isLiked`**: 게시물에 대한 사용자의 좋아요 상태
+
+          **반환 파라미터 값:**
+
+          - **`BasePost basePost`**: 해당 게시물의 정보를 반환합니다
+          """
+  )
+  ResponseEntity<BasePostDto> likeIntro(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute BasePostCommand command);
+
 }
