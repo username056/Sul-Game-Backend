@@ -87,6 +87,8 @@ public class Member extends BaseTimeEntity {
 
   private String refreshToken;
 
+  private String fcmToken;
+
   public void setNickname(String name) {
     if (!isNicknameModified) {
       this.nickname = name;
