@@ -27,6 +27,7 @@ import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
 import org.sejong.sulgamewiki.repository.NotificationRepository;
 import org.sejong.sulgamewiki.repository.DailyMemberRankingRepository;
+import org.sejong.sulgamewiki.repository.RankingHistoryRepository;
 import org.sejong.sulgamewiki.repository.ReportRepository;
 import org.sejong.sulgamewiki.util.MockUtil;
 import org.sejong.sulgamewiki.util.exception.CustomException;
