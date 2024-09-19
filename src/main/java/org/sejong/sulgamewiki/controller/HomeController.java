@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
     name = "메인 페이지 관리 API",
     description = "메인 페이지 관리 API 제공"
 )
-public class HomeController {
+public class HomeController implements HomeControllerDocs{
 
   private final HomeService homeService;
 
