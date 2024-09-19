@@ -26,4 +26,6 @@ public interface MemberInteractionRepository extends JpaRepository<MemberInterac
 
   @Query("SELECT mi.member FROM MemberInteraction mi")
   List<Member> findMemberOrderByMemberInteractionPageable(Pageable pagable);
+
+  void deleteByMember(Member member);
 }

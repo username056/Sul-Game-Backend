@@ -23,6 +23,13 @@ import org.springframework.context.annotation.Configuration;
             - 🔐 **[로컬 서버 로그인](http://localhost:8080/login)**  
               
             - 🔐 **[테스트 서버 로그인](https://test.sul-game.info/login)**  
+            
+            ### **웹페이지** : 서버사이드 랜더링 페이지 
+            - 🌐 **[메인 서버 웹페이지](https://api.sul-game.info)**  
+            
+            - 🌐 **[로컬 서버 웹페이지](http://localhost:8080)**  
+              
+            - 🌐 **[테스트 서버 웹페이지](https://test.sul-game.info)**  
 
             ### 📲 **앱 다운로드 및 정보:**
             - 📥 **[술겜위키 APK 다운로드](http://220.85.169.165/sul-game/)**  

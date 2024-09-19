@@ -13,4 +13,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
   List<Report> findByReporter(Member member);
 
+  void deleteByReporter(Member member);
+
+  void deleteBySourceIdAndSourceType(Long sourceId, SourceType sourceType);
 }
