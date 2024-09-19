@@ -83,9 +83,10 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     // accessToken을 헤더에 추가
     response.setHeader("Authorization", "Bearer " + accessToken);
 
-    // 응답 데이터 (refreshToken은 Body에 추가)
+    // 응답 데이터 (aceessToken, refreshToken 동시 반환)
     AuthDto dto = AuthDto.builder()
         .loginAccountStatus(member.getAccountStatus())
+        .accessToken(accessToken)
         .refreshToken(refreshToken)
         .nickname(member.getNickname())
         .email(email)

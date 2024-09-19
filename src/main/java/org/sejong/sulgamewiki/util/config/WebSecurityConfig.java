@@ -91,6 +91,12 @@ public class WebSecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers(AUTH_WHITELIST).permitAll()
+                // PAGE (FIXME: 임시로 전체 허용)
+                .requestMatchers(HttpMethod.GET, "/create-intro").permitAll()
+                .requestMatchers(HttpMethod.GET, "/create-creation-game").permitAll()
+                .requestMatchers(HttpMethod.GET, "/create-official-game").permitAll()
+                .requestMatchers(HttpMethod.GET, "/oauth-login").permitAll()
+                // API
                 .requestMatchers(HttpMethod.POST, "/api/members/complete-registration").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/members/profile").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/members/liked-posts").hasRole("USER")
