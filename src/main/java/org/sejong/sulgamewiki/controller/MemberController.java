@@ -12,6 +12,7 @@ import org.sejong.sulgamewiki.util.annotation.LogMonitoringInvocation;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -146,5 +147,17 @@ public class MemberController implements MemberControllerDocs{
   public ResponseEntity<MemberDto> getDailyMemberExpRankings(
       @ModelAttribute MemberCommand command) {
     return ResponseEntity.ok(memberRankingService.getDailyMemberExpRankings(command));
+  }
+
+  @PostMapping(value = "/delete", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @LogMonitoringInvocation
+  @Override
+  public ResponseEntity<MemberDto> deleteMember(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @ModelAttribute MemberCommand command
+  ){
+    command.setMemberId(Long.parseLong(userDetails.getUsername()));
+
+    return ResponseEntity.ok(memberService.deleteMember(command));
   }
 }
