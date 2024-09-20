@@ -122,7 +122,8 @@ public class MemberRankingService {
   /**
    * 매 3시간마다 상위 50명의 회원 랭킹을 업데이트하여 저장하는 스케줄러.
    */
-  @Scheduled(cron = "0 0 0/3 * * ?") // 매 3시간마다
+//  @Scheduled(cron = "0 0 0/3 * * ?") // 매 3시간마다
+  @Scheduled(cron = "0 0/5 * * * ?")
   @Async
   @Transactional
   public void saveTop50DailyMemberRankings() {
