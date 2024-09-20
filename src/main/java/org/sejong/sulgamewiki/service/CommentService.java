@@ -2,6 +2,7 @@ package org.sejong.sulgamewiki.service;
 
 import lombok.RequiredArgsConstructor;
 import org.sejong.sulgamewiki.fss.FCMCommand;
+import org.sejong.sulgamewiki.fss.FCMMessage.ApiNotification;
 import org.sejong.sulgamewiki.fss.FCMService;
 import org.sejong.sulgamewiki.object.BasePost;
 import org.sejong.sulgamewiki.object.Comment;
@@ -15,6 +16,7 @@ import org.sejong.sulgamewiki.repository.BasePostRepository;
 import org.sejong.sulgamewiki.repository.CommentRepository;
 import org.sejong.sulgamewiki.repository.MemberInteractionRepository;
 import org.sejong.sulgamewiki.repository.MemberRepository;
+import org.sejong.sulgamewiki.repository.NotificationRepository;
 import org.sejong.sulgamewiki.util.exception.CustomException;
 import org.sejong.sulgamewiki.util.exception.ErrorCode;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class CommentService {
   private final MemberInteractionRepository memberInteractionRepository;
   private final ExpManagerService expManagerService;
   private final FCMService fcmService;
+  private final NotificationRepository notificationRepository;
 
   public CommentDto createComment(CommentCommand command) {
 
@@ -68,18 +71,39 @@ public class CommentService {
     Member postOwner = basePost.getMember(); // 게시물 작성자
     String deviceToken = postOwner.getFcmToken(); // 게시물 작성자의 디바이스 토큰
 
-    // 게시물 작성자에게 FCM 알림 보내기
-    if (deviceToken != null && !deviceToken.isEmpty()) {
-      fcmService.sendMessageTo(FCMCommand.builder()
-          .token(deviceToken)
-          .title(title)
-          .body(body)
-          .build());
-    }
+    // 게시글 작성자에게 알림
+    sendNotificationForComment(savedComment);
 
     return CommentDto.builder()
         .comment(savedComment)
         .build();
+  }
+
+
+  // 알림 생성 로직
+  private final NotificationRepository NotificationRepository; // 수정된 이름
+
+  // 알림 생성 로직
+  private void sendNotificationForComment(Comment comment) {
+    Member postOwner = comment.getBasePost().getMember(); // 게시글 작성자
+    if (postOwner != null) {
+      String title = "새로운 댓글이 달렸습니다!";
+      String body = "게시물 [" + comment.getBasePost().getTitle() + "]에 새로운 댓글: " + comment.getContent();
+
+      // 알림을 DB에 저장
+      ApiNotification apiNotification = new ApiNotification(title, body, comment.getCommentId(),null);
+      notificationRepository.save(apiNotification);
+
+      // FCM 알림 전송
+      String deviceToken = postOwner.getFcmToken();
+      if (deviceToken != null && !deviceToken.isEmpty()) {
+        fcmService.sendMessageTo(FCMCommand.builder()
+            .token(deviceToken)
+            .title(title)
+            .body(body)
+            .build());
+      }
+    }
   }
 
   public void deleteComment(CommentCommand command) {
@@ -102,6 +126,12 @@ public class CommentService {
       throw new CustomException(ErrorCode.COMMENT_NOT_OWNED_BY_USER);
     }
     commentRepository.deleteById(comment.getCommentId());
+
+    // 알림 삭제
+    ApiNotification apiNotification = notificationRepository.findByCommentId(comment.getCommentId());
+    if (apiNotification != null) {
+      notificationRepository.delete(apiNotification);
+    }
 
     // 댓글 작성자 EXP
     expManagerService.updateExp(member, ExpRule.COMMENT_DELETION);
@@ -140,6 +170,12 @@ public class CommentService {
     comment.markAsUpdated();
 
     Comment updatedComment = commentRepository.save(comment);
+
+    ApiNotification notification = notificationRepository.findByCommentId(comment.getCommentId());
+    if (notification != null) {
+      notification.setMessage("수정된 댓글: " + command.getContent());
+      notificationRepository.save(notification);
+    }
 
     return CommentDto.builder()
         .comment(updatedComment)
