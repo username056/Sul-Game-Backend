@@ -42,7 +42,7 @@ public class BaseMedia extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private MediaType mediaType;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   private BasePost basePost;
 
   private PostMediaType postMediaType;

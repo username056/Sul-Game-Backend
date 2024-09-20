@@ -1,6 +1,7 @@
 package org.sejong.sulgamewiki.object;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,7 +30,7 @@ public class Report extends BaseTimeEntity{
   private Long reportId;
 
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   private Member reporter; // 신고자
 
   private SourceType sourceType; // 신고된 게시물 소스타입 TODO: 이름 나중에 바꾸기
