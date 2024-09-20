@@ -64,7 +64,11 @@ public class S3Service {
 
   public String uploadFileByCustomName(String customFileName, MultipartFile file)
       throws IOException {
-    amazonS3.putObject(new PutObjectRequest(bucket, customFileName, file.getInputStream(), null)
+    // Content-Type 설정을 위한 ObjectMetadata 생성
+    ObjectMetadata metadata = new ObjectMetadata();
+    metadata.setContentType(file.getContentType());  // MultipartFile에서 Content-Type을 가져옴
+
+    amazonS3.putObject(new PutObjectRequest(bucket, customFileName, file.getInputStream(), metadata)
         .withCannedAcl(CannedAccessControlList.PublicRead));
     return amazonS3.getUrl(bucket, customFileName).toString();
   }
