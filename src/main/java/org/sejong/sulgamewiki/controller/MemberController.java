@@ -140,11 +140,11 @@ public class MemberController implements MemberControllerDocs{
     return ResponseEntity.ok(memberService.getExpLogs(command));
   }
 
-  @PostMapping(value = "/rank/daily", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/top-rank", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @LogMonitoringInvocation
   @Override
   public ResponseEntity<MemberDto> getDailyMemberExpRankings(
-      @ModelAttribute MemberCommand command) {
+      @ModelAttribute MemberCommand command){
     return ResponseEntity.ok(memberRankingService.getDailyMemberExpRankings(command));
   }
 }

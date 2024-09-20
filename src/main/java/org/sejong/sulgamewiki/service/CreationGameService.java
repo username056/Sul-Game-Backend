@@ -4,6 +4,7 @@ import static org.sejong.sulgamewiki.object.BasePost.checkCreatorInfoIsPrivate;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sejong.sulgamewiki.object.BaseMedia;
@@ -46,14 +47,21 @@ public class CreationGameService {
     Member member = memberRepository.findById(command.getMemberId())
         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-    OfficialGame officialGame = (OfficialGame) basePostRepository.findById(command.getRelatedOfficialGameId())
-        .orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
-
     if (command.getGameTags().size() > 4) {
       throw new CustomException(ErrorCode.TAG_LIMIT_EXCEEDED);
     }
-    
-    CreationGame savedCreationGame = basePostRepository.save(
+
+    // 공식 게임 조회 및 예외 처리
+    Optional<OfficialGame> officialGame = Optional.empty();
+    if (command.getRelatedOfficialGameId() != null) {
+      officialGame = basePostRepository.findOfficialGameByBasePostId(command.getRelatedOfficialGameId());
+
+      // 존재하지 않는 공식 게임 ID일 경우 예외 발생
+      officialGame.orElseThrow(() -> new CustomException(ErrorCode.GAME_NOT_FOUND));
+    }
+
+
+    CreationGame.CreationGameBuilder creationGameBuilder =
         CreationGame.builder()
             .isDeleted(false)
             .isUpdated(false)
@@ -75,11 +83,13 @@ public class CreationGameService {
             .gameTags(command.getGameTags())
             .levelTag(command.getLevelTag())
             .headCountTag(command.getHeadCountTag())
-            .noiseLevelTag(command.getNoiseLevelTag())
-            .officialGame(officialGame)
-            .build());
+            .noiseLevelTag(command.getNoiseLevelTag());
 
-    command.setSourceType(savedCreationGame.getSourceType());
+    // 연관 공식 게임이 있으면 설정
+    officialGame.ifPresent(creationGameBuilder::officialGame);
+
+    CreationGame savedCreationGame = basePostRepository.save(creationGameBuilder.build());
+
     command.setBasePost((savedCreationGame));
 
     List<BaseMedia> savedCreationMedias = baseMediaService.uploadMediasFromGame(command);

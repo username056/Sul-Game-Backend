@@ -51,5 +51,9 @@ public class MemberDto {
   private long totalElements;    // 총 로그 수
 
   // 회원 랭킹
-  private Page<RankingHistory> rankingHistoryPage;
+  private Page<DailyMemberRanking> rankingHistoryPage;
+
+  // 페이징 정보를 위한 필드
+  private int pageNumber; // 현재 페이지 번호
+  private int pageSize;   // 페이지 크기
 }
