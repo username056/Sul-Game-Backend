@@ -34,7 +34,7 @@ import org.sejong.sulgamewiki.object.constants.NoiseLevelTag;
 @DiscriminatorValue("CreationGame")
 public class CreationGame extends BasePost {
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "official_game_id")
   private OfficialGame officialGame;
 
