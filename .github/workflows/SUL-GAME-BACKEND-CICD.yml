@@ -13,7 +13,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+        
+      - name: Create Firebase config directory
+        run: mkdir -p src/main/resources/firebase
+        
       - name: Decode Firebase Admin SDK
         run: |
           echo "${{ secrets.FIREBASE_ADMINSDK_BASE64 }}" | base64 -d > src/main/resources/firebase/sul-game-firebase-adminsdk.json
