@@ -74,7 +74,7 @@ public abstract class BasePost extends BaseTimeEntity {
   @Builder.Default
   private int reportedCount = 0;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   private Member member;
 
   @Builder.Default

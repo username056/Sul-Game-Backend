@@ -43,7 +43,7 @@ public class Intro extends BasePost {
   @Builder.Default
   private Set<IntroTag> introTags = new HashSet<>();
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "official_game_id")
   private OfficialGame officialGame;
 }
