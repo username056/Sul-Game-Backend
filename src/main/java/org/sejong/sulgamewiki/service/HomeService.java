@@ -41,6 +41,7 @@ public class HomeService {
     List<Intro> latestIntros = basePostRepository.getSliceIntros(
         createPageable(7, SortBy.CREATION_DATE)
     ).getContent();
+    
 
     /*
     국룰술게임
